@@ -1,0 +1,164 @@
+.container{
+    box-sizing: border-box;
+    width: 90%;
+    height: 95%;
+    position: relative;
+
+    background: white;
+    border-radius: 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.nums{
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    padding: 5%;
+    box-sizing: border-box;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden{
+    display: none !important;
+}
+
+.modal__players {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 5%;
+
+    border-radius: 15px;
+    background: white;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+
+    text-align: center;
+}
+
+.modal__join {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: grid;
+    place-items: center;
+    padding: 5%;
+
+    border-radius: 15px;
+    background: rgba(0, 0, 0, .85);
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    text-align: center;
+}
+
+.modal__join .content{
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+
+    background-color: white;
+    border-radius: 15px;
+
+    font-size: 24px;
+    padding: 5%;
+}
+
+.modal__join .content input{
+    font-family: ALSScriptus;
+    font-size: 28px;
+    padding: 15px 10px;
+    width: 90%;
+    outline: none;
+    border-radius: 15px;
+}
+
+.modal__join .modal_buttons, .modal__players .modal_buttons{
+    display: flex;
+    gap: 10px;
+    width: 90%;
+    flex-direction: column;
+}
+
+.buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+
+    width: 80%;
+}
+
+.modal__players .buttons_modal__players{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.back{
+    position: absolute;
+    top: 5%;
+    left: 5%;
+
+    width: 40px;
+    height: 40px;
+}
+
+.back svg{
+    width: 100%;
+    height: 100%;
+}
+
+.modal__players h1{
+    color: #F84E93;
+}
+
+.cancel{
+    color: #F84E93;
+}
+
+.cancel:hover, .cancel:focus{
+    background-color: #F84E93;
+    color: white;
+}
+
+.create, .start{
+    color: #6966F8;
+}
+
+.create:hover, .create:focus,
+.start:hover, .start:focus{
+    background-color: #6966F8;
+    color: white;
+}
+
+.join, .drink{
+    color: #0B997B;
+}
+
+.join:hover, .join:focus,
+.drink:hover, .drink:focus{
+    background-color: #0B997B;
+    color: white;
+}

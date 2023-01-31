@@ -1,0 +1,74 @@
+.container{
+    box-sizing: border-box;
+    width: 90%;
+    height: 95%;
+    position: relative;
+
+    padding: 2%;
+
+    background: white;
+    border-radius: 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.roomNumber{
+    font-size: 32px;
+    display: flex;
+    flex-direction: column;
+    color: #FF0000;
+    text-align: center;
+}
+
+.roomNumber span{
+    font-weight: bold;
+    line-height: 60px;
+    color: #34495E;
+    font-size: 128px;
+}
+
+.buttons{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.players_list{
+    height: 90%;
+}
+
+.leave{
+
+}
+
+.start{
+    color: #6966F8;
+}
+
+.start.disabled{
+    background-color: #d7d7d7 !important;
+    color: gray !important;
+
+    cursor: default !important;
+}
+
+.leave{
+    color: #F84E93;
+}
+
+.start:hover, .start:focus{
+    background-color: #6966F8;
+    color: white;
+}
+
+.leave:hover, .leave:focus{
+    background-color: #F84E93;
+    color: white;
+}

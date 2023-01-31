@@ -1,0 +1,95 @@
+.container{
+    box-sizing: border-box;
+    width: 90%;
+    height: 95%;
+    position: relative;
+
+    background: white;
+    border-radius: 15px;
+}
+
+.container, .buttons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.container img{
+    width: clamp(150px, 100%, 400px);
+}
+
+.single{
+    color: #0B997B;
+}
+
+.single:hover, .single:focus{
+    background-color: #0B997B;
+    color: white;
+}
+
+.multi{
+    color: #6966F8;
+}
+
+.multi:hover, .multi:focus{
+    background-color: #6966F8;
+    color: white;
+}
+
+.undrestood{
+    color: #F84E93;
+}
+
+.undrestood:hover, .undrestood:focus{
+    background-color: #F84E93;
+    color: white;
+}
+
+.help{
+    color: #FFB6C2;
+    text-decoration: underline;
+    font-size: 32px;
+
+    cursor: pointer;
+}
+
+.container button:hover, .container button:focus{
+    background: #ececec;
+}
+
+.buttons{
+    height: 100%;
+    width: clamp(150px, 80%, 400px);
+}
+
+.modal{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 5%;
+
+    border-radius: 15px;
+    background: white;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+
+.modal .rules{
+    font-size: 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal h1{
+    color: #FF0000;
+}

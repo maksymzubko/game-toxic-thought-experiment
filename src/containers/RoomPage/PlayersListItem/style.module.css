@@ -1,0 +1,47 @@
+.player{
+    position: relative;
+    border: 2px solid black;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+}
+
+.player.me{
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.player.me, .player.me .name{
+    border-color: #FF0000;
+    outline-color: #FF0000;
+}
+
+.player.me:before{
+    position: absolute;
+    top: -15px;
+    left: 0;
+
+    transform: translateY(-50%);
+    content: 'you';
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.avatar{
+    margin: 0 10px;
+}
+
+.name{
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    text-align: center;
+
+    font-size: 32px;
+}

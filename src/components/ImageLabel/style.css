@@ -1,0 +1,28 @@
+.img-label{
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+
+    /*background-image: url("../../assets/rectangle.png");*/
+    /*background-size: contain;*/
+    /*background-repeat: no-repeat;*/
+    width: 100%;
+    /*min-height: 60px;*/
+}
+
+.img-label img{
+    background-image: url("../../assets/square.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 50px;
+    /*padding: 10px 12px;*/
+    background-size: 110%;
+    height: auto;
+}
+
+.img-label .text{
+    background-image: url("../../assets/rectangle.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+
+}
