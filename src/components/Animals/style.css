@@ -9,8 +9,25 @@
     justify-content: space-between;
     z-index: 10;
 }
+.animal-bar-left{
+    right: unset;
+    left: 0;
+}
 .animal-bar img {
     transform: rotate(-90deg) scale(1.4) translateY(50%);
     height: 22%;
     object-fit: contain;
+}
+.animal-bar-left img {
+    transform: rotate(90deg) scale(1.4) translateY(50%);
+}
+@media (max-height: 800px) {
+    .animal-bar {
+        top: 15%;
+    }
+}
+@media (max-height: 600px) {
+    .animal-bar {
+        top: 5%;
+    }
 }

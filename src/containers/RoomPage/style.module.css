@@ -1,9 +1,9 @@
 .container{
     box-sizing: border-box;
     width: 90%;
-    height: 95%;
+    height: 90%;
     position: relative;
-
+    max-width: 600px;
     padding: 2%;
 
     background: white;
@@ -71,4 +71,28 @@
 .leave:hover, .leave:focus{
     background-color: #F84E93;
     color: white;
+}
+@media (max-width: 420px) {
+    .roomNumber{
+        font-size: 22px;
+    }
+    .roomNumber span{
+        font-size: 90px;
+        line-height: 20px;
+        margin-top: 10px;
+    }
+}
+@media (max-height: 665px) {
+    .roomNumber span{
+        font-size: 60px;
+
+    }
+}
+@media (max-height: 600px) {
+    .buttons{
+       flex-direction: row-reverse;
+    }
+    .buttons div {
+        border-radius: 15px;
+    }
 }

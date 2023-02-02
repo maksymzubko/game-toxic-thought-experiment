@@ -11,7 +11,7 @@ const DrinkTogether = (d: { players: { id: string, letter: string }[], listAnima
     return (
         <div className="modal">
             <h1>who drinks today?</h1>
-            <div className="users-list">
+            <div className="users-list" style={{gridTemplateRows: `repeat(${Math.ceil(d.players.length / 2)}, ${80 / Math.ceil(d.players.length / 2)}%)`}}>
                 {d.players.map(p => (
                     <div className="user">
                         <div className="user-name">{getAnimalNameByLetter(p.letter)}</div>

@@ -26,3 +26,13 @@ h1{
     overflow: hidden auto;
     scrollbar-width: thin;
 }
+@media (max-height: 720px) {
+    .container h1{
+        font-size: 24px;
+    }
+}
+@media (max-height: 525px) {
+    container h1{
+        font-size: 18px;
+    }
+}

@@ -35,7 +35,7 @@ const DrinkSolo = (d: {drinkStatus: string, drinkStatusBool: boolean, players: a
                 <img src={imageSource} alt="" className="animal-img-big"/>
             </div>
             <img src={jugImg} alt="" className="jug-img"/>
-            <Button onClick={() => d.letDrink()} className="continue-button">Let's Drink!</Button>
+            <Button onClick={() => d.letDrink()} className="continue-button-2">Let's Drink!</Button>
         </>
     );
 };

@@ -1,9 +1,7 @@
 import React from 'react';
 import './style.css'
 import {getAnimalColorByLetter, getAnimalGreyByLetter} from "../../helpers/animalHelp2";
-import {Avatar} from "@mui/material";
-import {getAnimalByLetter} from "../../helpers/animalHelp";
-import style from "../../containers/GamePage/style.module.css";
+
 
 const AnimalBar = (d : {players: { id: string, letter: string }[], currentStep: string}) => {
 
@@ -14,9 +12,21 @@ const AnimalBar = (d : {players: { id: string, letter: string }[], currentStep: 
     }
 
     return (
-        <div className="animal-bar">
-            {d.players.map(p => <img src={getSourceImg(p.letter)} alt={'animal' + p.letter}/>)}
-        </div>
+        <>
+            <div className="animal-bar">
+                {d.players.map((p, index) => {
+                    if (index < 4) return <img src={getSourceImg(p.letter)} alt={'animal' + p.letter}/>
+                })}
+            </div>
+            {
+                d.players.length > 4 &&
+                <div className="animal-bar animal-bar-left">
+                    {d.players.map((p, index) => {
+                        if (index > 3) return <img src={getSourceImg(p.letter)} alt={'animal' + p.letter} />
+                    })}
+                </div>
+            }
+        </>
     );
 };
 
