@@ -5,7 +5,7 @@
     position: relative;
 
     background: white;
-    border-radius: 15px;
+    border-radius: 30px;
 
     display: flex;
     flex-direction: column;
@@ -131,7 +131,7 @@
 }
 
 .modal__players h1{
-    color: #F84E93;
+    color: #FF0000;
 }
 
 .cancel{

@@ -13,6 +13,12 @@ import Button from "../../components/Button";
 import {LeaveInterface} from "../RoomPage";
 import GameRunningItem from "./GameRunningItem";
 import GameResultItem from "./GameResultsItem";
+import answerBg from './assets/bg.png'
+import AnimalBar from "../../components/Animals";
+import GameDrinkItem from "./DrinkTogether";
+import DrinkTogether from "./DrinkTogether";
+import ReadyScreen from "./ReadyScreen";
+import DrinkSolo from "./DrinkSolo";
 
 
 interface GameStartedInterface {
@@ -66,11 +72,14 @@ const GamePage = () => {
     const [loading, setLoading] = useState(true);
     const [loadingRequest, setLoadingRequest] = useState(false);
     const [players, setPlayers] = useState<{ id: string, letter: string }[]>([]);
-    const [gameStatus, setGameStatus] = useState<"waiting" | "running" | "results">("waiting");
+    const [gameStatus, setGameStatus] = useState<"waiting" | "running" | "results" | "drink" | "ready" >("waiting");
     const [data, setData] = useState<{ question: string; answers: string[] }>({question: "", answers: []})
     const [time, setTime] = useState<number>(-1);
     const [timer, setTimer] = useState<number>(60);
     const [round, setRound] = useState(1);
+    const [drinkStatus, setDrinkStatus] = useState('');
+    const [drinkStatusBool, setDrinkStatusBool] = useState(false);
+    const [listDrinkAnimals, setListDrinkAnimals] = useState([]);
 
     const [results, setResults] = useState<Result>({correct: 0, results: []});
     // single
@@ -194,11 +203,73 @@ const GamePage = () => {
         socket?.emit('answer', {answer: variant});
     }
 
+    const getDrinkAnimals = (list: any) => {
+        setGameStatus('drink');
+        setListDrinkAnimals(list);
+        setDrinkStatus('');
+    }
+
+    const getUserDrinkStatus = (status: string, statusBool: boolean) => {
+        setGameStatus('drink');
+        setDrinkStatus(status);
+        setDrinkStatusBool(statusBool);
+    }
+    console.log('log', userRoom, userId, players);
+
     return (
-        <Box className={style.container}>
-            <Box className={style.round}>
-                Round: {round}
-            </Box>
+        <>
+            {(gameStatus === 'running' || gameStatus === 'results' ) &&
+                <Box className={style.container}>
+                    <img className={style.answer_bg} src={answerBg }/>
+                    <Box className={style.question}>
+                        <Box className={style.content}>
+                            {data.question}
+                        </Box>
+                    </Box>
+                </Box>
+            }
+
+            {gameStatus === 'running' &&
+                <>
+                    <AnimalBar players={players} currentStep={currentStep}/>
+                </>
+            }
+            <div className={style.answers_block}>
+                {gameStatus === 'running' &&
+                    <GameRunningItem
+                        players={players}
+                        question={data}
+                        currentStep={currentStep}
+                        handleAnswer={handleAnswer}
+                        handleSkip={handleSkipQuestion}
+                        isAnswered={isAnswered}
+                        multiplayer={!userRoom.single}
+                        timer={timer}
+                    />}
+                {gameStatus === 'results' &&
+                    <GameResultItem
+                        result={results}
+                        question={data}
+                        passDrinkAnimals={getDrinkAnimals}
+                        setUserDrinkStatus={getUserDrinkStatus}
+                    />
+                }
+            </div>
+            {(gameStatus === 'drink' && !drinkStatus) &&
+            <DrinkTogether
+                players={players}
+                listAnimalsWithBeer={listDrinkAnimals}
+                letDrink={() => setGameStatus('ready')}
+            />}
+            {(gameStatus === 'drink' && drinkStatus) &&
+            <DrinkSolo
+                drinkStatus={drinkStatus}
+                drinkStatusBool={drinkStatusBool}
+                players={players} userId={userId}
+                letDrink={() => setGameStatus('ready')}
+            />}
+
+            {gameStatus === 'ready' && <ReadyScreen players={players} round={round}/>}
             <Backdrop open={loading} style={{color: 'black'}}>
                 {time < 0
                     ?
@@ -210,13 +281,7 @@ const GamePage = () => {
             <Backdrop open={loadingRequest} style={{color: "black"}}>
                 <h1>Sending request.. <CircularProgress/></h1>
             </Backdrop>
-
-            {gameStatus === 'running' && <GameRunningItem players={players} question={data} currentStep={currentStep}
-                                                          handleAnswer={handleAnswer} handleSkip={handleSkipQuestion}
-                                                          isAnswered={isAnswered} multiplayer={!userRoom.single}
-                                                          timer={timer}/>}
-            {gameStatus === 'results' && <GameResultItem result={results} question={data}/>}
-        </Box>
+        </>
     );
 };
 

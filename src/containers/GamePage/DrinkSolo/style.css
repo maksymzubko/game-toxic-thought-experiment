@@ -1,0 +1,32 @@
+.drink-bg {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    top: 150px;
+    height: 100%;
+}
+.animal-img-big{
+    height: 60vh;
+}
+.jug-img{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-65%, -50%);
+    height: 40vh;
+}
+.img-wrapper{
+    height: 30vh;
+    position: fixed;
+    bottom: calc(5% + 55px);
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+}
+.continue-button{
+    position: fixed;
+    bottom: 5%;
+    transform: translateX(-50%);
+    left: 50%;
+    background-color: #ffffff;
+}

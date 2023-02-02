@@ -1,16 +1,43 @@
 .btn {
     font-family: ALSScriptus, sans-serif !important;
-
+    max-width: 400px;
+    margin: 0 auto;
     border-radius: 30px;
     background: url("../../assets/btn.png") no-repeat;
     background-size: 100% 100%;
-    width: 100%;
+    width: 90%;
     height: 58px;
 
     display: grid;
     place-items: center;
     font-size: 32px;
     cursor: pointer;
+}
+.btn.cloud {
+    width: 248px;
+    height: 10vh;
+    background: url("../../assets/cloud/cloud.png") no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+.btn.unselected_answer {
+    background: none;
+    width: 248px;
+    height: 10vh;
+    color: #9A2D26;
+}
+.btn.correct{
+    color: white;
+    background: url("../../assets/cloud/cloud_blue.png") no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.btn.incorrect{
+    color: white;
+    background: url("../../assets/cloud/cloud_grey.png") no-repeat;
+    background-size: contain;
+    background-position: center;
 }
 
 .btn:hover {
