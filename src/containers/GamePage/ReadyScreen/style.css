@@ -1,0 +1,52 @@
+.modal {
+    margin: 5% auto;
+    width: 90%;
+    height: 90%;
+    background-color: #fff;
+    border-radius: 30px;
+    padding: 24px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.modal h1{
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 49px;
+    text-align: center;
+    margin-top: 40px;
+    color: red;
+    display: block;
+}
+.modal .users-list-2{
+    width: 90%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 35px;
+
+}
+.users-list-2 .user{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    justify-content: space-between;
+}
+.users-list-2 .user .user-name {
+    font-size: 32px;
+    line-height: 51px;
+    color: #444E3F;
+}
+.round-number{
+    width: 100%;
+    font-size: 120px;
+    line-height: 100px;
+    text-align: center;
+    color: #17A085;
+    margin: 0 auto;
+    font-weight: 700;
+}
+.modal .round-subtitle{
+    margin: 20px auto;
+}

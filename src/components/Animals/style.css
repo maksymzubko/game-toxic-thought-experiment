@@ -1,0 +1,16 @@
+.animal-bar{
+    position: fixed;
+    right: 0;
+    top: 25%;
+    height: 400px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 10;
+}
+.animal-bar img {
+    transform: rotate(-90deg) scale(1.4) translateY(50%);
+    height: 22%;
+    object-fit: contain;
+}

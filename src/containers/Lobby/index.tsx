@@ -178,7 +178,7 @@ const LobbyPage = () => {
             </Box>
 
             {isModalPlayersOpened && <Box className={style.modal__players}>
-                <h1>how many people wanna play?</h1>
+                <h1>number of players</h1>
                 <Box className={style.nums}>
                     {buttons.map(btn => <NumberItem id={btn.number} onClick={handleClick} number={btn.number}
                                                     active={btn.active}/>)}

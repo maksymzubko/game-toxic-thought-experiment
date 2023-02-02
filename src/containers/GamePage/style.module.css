@@ -1,12 +1,14 @@
 .container{
     box-sizing: border-box;
     width: 90%;
-    height: 95%;
     position: relative;
-    padding: 2%;
-
+    padding: 16px 20px 70px;
+    height: 200px;
+    max-width: 600px;
     background: white;
-    border-radius: 15px;
+    border-radius: 30px;
+    align-self: flex-start;
+    margin-top: 5%;
 
     display: flex;
     flex-direction: column;
@@ -47,12 +49,16 @@
 
 .question{
     font-size: 24px;
+    width: 100%;
+    position: relative;
+    height: 100%;
 }
 
 .question .content{
-    max-height: 200px;
     overflow: hidden auto;
-
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     scrollbar-width: thin;
 }
 
@@ -73,6 +79,7 @@
     flex-direction: column;
 
     width: 80%;
+    max-width: 250px;
 }
 
 .waiting{
@@ -88,15 +95,15 @@
     flex-direction: column;
 }
 
-.correct{
-    background-color: #0B997B !important;
-    color: white;
+.drink_button{
+    text-transform: uppercase;
+    color: #00FFA3;
+    width: 90% !important;
+    max-width: 400px;
+    background-color: #fff !important;
+    margin-top: 40px !important;
 }
 
-.incorrect{
-    background-color: #F84E93 !important;
-    color: white;
-}
 
 .results{
     width: 100%;
@@ -110,9 +117,66 @@
 }
 
 .timer{
-    font-size: 64px;
-    color: red;
+    font-size: 96px;
+    line-height: 112px;
+    font-weight: 700;
+    color: #34495E;
     text-align: center;
+}
+.timer_subtitle {
+    color: #FF0000;
+    text-align: center;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 40px;
+    margin-bottom: 10px;
+}
+
+.background_layer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.answer_bg {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    top: 150px;
+    height: 100%;
+}
+
+.answers_block{
+    position: fixed;
+    top: 200px;
+    width: 100%;
+    left: 0;
+}
+
+.control_buttons{
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+.skip_buttons {
+    width: 130px !important;
+    background: url("../../assets/btn_small.png") no-repeat !important;
+    color: #17A085;
+    position: relative;
+    padding-left: 10px ;
+}
+.beer_icon{
+    position: absolute;
+    left: -15px;
+    bottom: 0;
+}
+.submit_buttons{
+    width: 130px !important;
+    background: url("../../assets/btn_small.png") no-repeat !important;
+    color: #D2B100;
 }
 
 @keyframes pulse {

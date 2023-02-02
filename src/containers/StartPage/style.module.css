@@ -1,11 +1,15 @@
 .container{
     box-sizing: border-box;
     width: 90%;
-    height: 95%;
+    height: 90%;
     position: relative;
-
     background: white;
     border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    justify-content: center;
+    max-width: 600px;
 }
 
 .container, .buttons{
@@ -17,7 +21,8 @@
 }
 
 .container img{
-    width: clamp(150px, 100%, 400px);
+    max-width: clamp(150px, 100%, 400px);
+    max-height: calc(100% - 250px);
 }
 
 .single{
@@ -40,6 +45,7 @@
 
 .undrestood{
     color: #F84E93;
+    max-width: 400px;
 }
 
 .undrestood:hover, .undrestood:focus{
@@ -60,7 +66,7 @@
 }
 
 .buttons{
-    height: 100%;
+    height: 200px;
     width: clamp(150px, 80%, 400px);
 }
 
@@ -73,7 +79,7 @@
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
-    padding: 5%;
+    padding: 48px 12px 23px;
 
     border-radius: 15px;
     background: white;
@@ -92,4 +98,36 @@
 
 .modal h1{
     color: #FF0000;
+    margin: 0 auto;
+}
+.modal li {
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 37px;
+}
+
+.modal li::marker {
+    font-size: 8px;
+}
+@media (max-height: 800px) and (max-width: 560px), (max-height: 600px) {
+    .modal {
+        padding-top: 24px;
+    }
+    .modal li {
+        font-size: 22px;
+        line-height: 28px;
+    }
+}
+
+@media (max-height: 600px) and (max-width: 560px) {
+    .modal {
+        padding: 12px;
+    }
+    .modal h1 {
+        font-size: 28px;
+    }
+    .modal li {
+        font-size: 18px;
+        line-height: 22px;
+    }
 }
