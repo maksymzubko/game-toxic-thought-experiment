@@ -23,27 +23,7 @@ const GameRunningItem = (d: { players: { id: string, letter: string }[], timer: 
 
     return (
         <Box style={{width: "100%"}}>
-            {/*<Box className={style.players_list}>*/}
-            {/*    <h1>players: </h1>*/}
-            {/*    <Box className={style.players_list_avatars}>*/}
-            {/*        {d.players.map(p => <Avatar className={getClassName(p.letter)}*/}
-            {/*                                    src={getAnimalByLetter(p.letter)} alt={'animal' + p.letter}/>)}*/}
-            {/*    </Box>*/}
-            {/*</Box>*/}
-
-            {/*<Box className={style.question}>*/}
-            {/*    <h1>*/}
-            {/*        question:*/}
-            {/*    </h1>*/}
-            {/*    <Box className={style.content}>*/}
-            {/*        {d.question.question}*/}
-            {/*    </Box>*/}
-            {/*</Box>*/}
-
             {!d.isAnswered && <Box className={style.answers}>
-                {/*<h1>*/}
-                {/*    answers:*/}
-                {/*</h1>*/}
                 <Box className={style.content}>
                     {d.question.answers.map((a, i) =>
                         <Button onClick={() => setSelectedIndex(i)} className={selectedIndex === i ? 'cloud' : 'unselected_answer' }>

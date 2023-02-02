@@ -16,11 +16,13 @@
 .btn.cloud {
     width: 248px;
     height: 10vh;
+    font-size: 20px;
     background: url("../../assets/cloud/cloud.png") no-repeat;
-    background-size: contain;
+    background-size: 100% 100%;
     background-position: center;
 }
 .btn.unselected_answer {
+    font-size: 20px;
     background: none;
     width: 248px;
     height: 10vh;
@@ -29,17 +31,44 @@
 .btn.correct{
     color: white;
     background: url("../../assets/cloud/cloud_blue.png") no-repeat;
-    background-size: contain;
+    background-size: 100% 100%;
     background-position: center;
 }
 
 .btn.incorrect{
     color: white;
     background: url("../../assets/cloud/cloud_grey.png") no-repeat;
-    background-size: contain;
+    background-size: 100% 100%;
     background-position: center;
 }
 
 .btn:hover {
 
+}
+
+.button-wrapper {
+    position: relative;
+}
+.avatars-wrapper {
+    position: absolute;
+    transform: translateX(-50%);
+    left: 50%;
+    bottom: -20%;
+    z-index: 1;
+}
+.size-med, .size-small {
+    display: none;
+}
+@media (max-height: 800px) {
+    .size-big {display: none}
+    .size-med {display: block}
+}
+@media (max-height: 600px) {
+    .btn.cloud, .btn.unselected_answer {
+        height: 8vh;
+        width: 220px;
+    }
+    .size-big {display: none}
+    .size-med {display: none}
+    .size-small {display: block}
 }

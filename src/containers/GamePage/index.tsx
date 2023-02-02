@@ -270,10 +270,10 @@ const GamePage = () => {
             />}
 
             {gameStatus === 'ready' && <ReadyScreen players={players} round={round}/>}
-            <Backdrop open={loading} style={{color: 'black'}}>
+            <Backdrop open={loading} style={{color: 'black', fontSize: 32 }}>
                 {time < 0
                     ?
-                    <h1>Waiting... <CircularProgress/></h1>
+                    <h1>Waiting... <br/> <CircularProgress/></h1>
                     :
                     <h1>{time}</h1>}
             </Backdrop>

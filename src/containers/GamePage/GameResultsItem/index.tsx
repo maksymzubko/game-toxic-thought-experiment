@@ -13,7 +13,6 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
     const userRoom = useSelector(SelectUserRoom);
 
     const [correct, setCorrect] = useState(-1);
-    const [showResult, setShowResult] = useState(true);
     useEffect(() => {
         setCorrect(d.result.correct);
     }, [d.result])
@@ -47,16 +46,16 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
     const badgeStyle = {
         "& .MuiBadge-badge": {
             transform: 'translate(-50%, -50%)',
-            left: '50%',
+            left: 125,
         }
     }
 
-    const getListVoted = (variant: number) => {
+    const getListVoted = (variant: number, size: number) => {
         return (
-            <AvatarGroup max={2}>
+            <AvatarGroup max={4}>
                 {d.result.results
                     .filter(r => r.answer.variant === variant)
-                    .map(a => <Avatar src={getAnimalByLetter(a.player ?? "")} alt={'animal-img'}></Avatar>)}
+                    .map(a => <Avatar src={getAnimalByLetter(a.player ?? "")} alt={'animal-img'} sx={{ width: size, height: size }}/>)}
             </AvatarGroup>
         )
     }
@@ -64,42 +63,47 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
     if(d.result.results.length > 0)
     return (
         <Box className={style.results}>
-            {showResult ?
-                <>
-                    <Box className={style.players_list}>
-                        <Box className={style.answers}>
-                            <Box className={style.content}>
-                                {d.question.answers.map((a, i) =>
-                                    <Badge style={{width: '100%'}} badgeContent={getListVoted(i)} sx={{badgeStyle}}
-                                           anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
-                                        <Button className={correct === i ? 'cloud correct' : 'cloud incorrect'}>
-                                            {a}
-                                        </Button>
-                                    </Badge>
-                                )}
-                                <Badge style={{width: '100%'}} badgeContent={getListVoted(-1)} sx={{badgeStyle}}  anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
-                                    <Button className={correct === -1 ? 'cloud correct' : 'cloud incorrect'}>
-                                        skip (drink)
-                                    </Button>
-                                </Badge>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box className={style.result_buttons}>
-                        <Button onClick={() => isDrinking()} className={style.drink_button}>Continue</Button>
-                    </Box>
-                </>
-                :
-                <Box>
-                    <h1>
-                        {isDrinking()}
-                    </h1>
-                    <Box className={style.result_buttons}>
-                        {userRoom.isOwner && <Button onClick={handleGameStart}>continue</Button>}
-                        <Button onClick={handleLeave}>leave</Button>
+
+            <Box className={style.players_list}>
+                <Box className={style.answers}>
+                    <Box className={style.content}>
+                        {d.question.answers.map((a, i) =>
+
+                            <div className="button-wrapper" style={{ width: '100%' }}>
+                                <div className="avatars-wrapper size-big">
+                                    {getListVoted(i, 40)}
+                                </div>
+                                <div className="avatars-wrapper size-med">
+                                    {getListVoted(i, 30)}
+                                </div>
+                                <div className="avatars-wrapper size-small">
+                                    {getListVoted(i, 20)}
+                                </div>
+                                <Button className={correct === i ? 'cloud correct' : 'cloud incorrect'}>
+                                    {a}
+                                </Button>
+                            </div>
+                        )}
+                        <div className="button-wrapper" style={{ width: '100%' }}>
+                            <div className="avatars-wrapper size-big">
+                                {getListVoted(-1, 40)}
+                            </div>
+                            <div className="avatars-wrapper size-med">
+                                {getListVoted(-1, 30)}
+                            </div>
+                            <div className="avatars-wrapper size-small">
+                                {getListVoted(-1, 20)}
+                            </div>
+                            <Button className={correct === -1 ? 'cloud correct' : 'cloud incorrect'}>
+                                skip (drink)
+                            </Button>
+                        </div>
                     </Box>
                 </Box>
-            }
+            </Box>
+            <Box className={style.result_buttons}>
+                <Button onClick={() => isDrinking()} className={style.drink_button}>Continue</Button>
+            </Box>
         </Box>
     );
     else

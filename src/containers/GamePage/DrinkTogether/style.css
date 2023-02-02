@@ -19,7 +19,6 @@
     grid-template-rows: calc(50% - 20px) calc(50% - 20px);
     gap: 40px;
     height: calc(100% - 250px);
-    margin-bottom: 50px;
 }
 .user{
     display: flex;
@@ -47,4 +46,17 @@
     width: 90% !important;
     max-width: 400px;
    margin: 0 auto;
+}
+@media (max-height: 800px) {
+    .modal .users-list{
+        height: calc(100% - 150px);
+    }
+    .modal h1{
+        margin-top: 20px !important;
+    }
+}
+@media (max-height: 600px) {
+    .modal h1{
+        margin-top: 0 !important;
+    }
 }
