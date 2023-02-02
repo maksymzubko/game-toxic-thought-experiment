@@ -6,7 +6,7 @@ import beerIcon from './assets/beer2-icon.png'
 import style from "../style.module.css";
 import Button from "../../../components/Button";
 
-const DrinkTogether = (d: { players: { id: string, letter: string }[], listAnimalsWithBeer: any, letDrink: any},  ) => {
+const DrinkTogether = (d: { players: { id: string, letter: string }[], listAnimalsWithBeer: {player?: string}[], letDrink: any},  ) => {
 
     return (
         <div className="modal">

@@ -7,7 +7,7 @@ import Button from "../../../components/Button";
 
 const DrinkSolo = (d: {drinkStatus: string, drinkStatusBool: boolean, players: any[], userId: any, letDrink: any}) => {
 
-    const [imageSource, setImageSource] = useState();
+    const [imageSource, setImageSource] = useState("");
 
 
     const getImageSrc = () => {

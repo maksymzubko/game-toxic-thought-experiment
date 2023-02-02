@@ -1,0 +1,12 @@
+{
+  "start_url": "./",
+  "name": "PWA",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "256x256",
+      "type": "image/svg"
+    }
+  ]
+}

@@ -47,6 +47,15 @@ const LobbyPage = () => {
             goto(links.start);
         }
         else setLoading(false);
+
+        socket?.on('initiatedStart', (data: { status: boolean }) => {
+            if (data.status)
+                goto(links.game);
+        })
+
+        return () => {
+            socket?.off('initiatedStart');
+        }
     }, [])
 
     useEffect(() => {
@@ -107,7 +116,7 @@ const LobbyPage = () => {
 
 
     const handleCreateLobby = () => {
-        handleToggleModalPlayers()
+        // handleToggleModalPlayers()
 
         socket?.emit('createRoom', {solo: single, playersCount: playersCount});
         setLoading(true);
@@ -131,7 +140,9 @@ const LobbyPage = () => {
             {
                 dispatch(setUserLetter({user_letter: data.letter ?? ""}));
                 !single && enqueueSnackbar(`Connected to created room!`, {variant: 'success'});
-                goto(links.room);
+                if(!single)
+                    goto(links.room);
+                else socket?.emit('initStart');
             }
             else {
                 enqueueSnackbar(data.message, {variant: 'error'});

@@ -63,7 +63,6 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
     if(d.result.results.length > 0)
     return (
         <Box className={style.results}>
-
             <Box className={style.players_list}>
                 <Box className={style.answers}>
                     <Box className={style.content}>
