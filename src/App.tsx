@@ -18,6 +18,24 @@ function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        let defferedPrompt: any;
+
+        window.addEventListener('beforeinstallprompt', event => {
+            event.preventDefault();
+            console.log(event)
+            defferedPrompt = event
+        });
+
+        document.body.addEventListener('click', event => {
+            defferedPrompt.prompt();
+
+            defferedPrompt.userChoice.then((choice: any) => {
+                if(choice.outcome === 'accepted'){
+                    console.log('user accepted the prompt')
+                }
+                defferedPrompt = null;
+            })
+        })
         const getSize = () => document.body.style.setProperty('--app-height', window.innerHeight + "px");
 
         window.addEventListener('popstate', (e) => {

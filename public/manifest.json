@@ -1,12 +1,25 @@
 {
   "start_url": "./",
-  "name": "PWA",
+  "name": "Game Toxic Thought",
   "display": "standalone",
   "icons": [
     {
-      "src": "/vite.svg",
+      "src": "/vite_х256.svg",
       "sizes": "256x256",
-      "type": "image/svg"
+      "type": "image/svg",
+      "purpose": "any"
+    },
+	{
+      "src": "/144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/vite_х64.svg",
+      "sizes": "64x64",
+      "type": "image/svg",
+      "purpose": "any"
     }
   ]
 }

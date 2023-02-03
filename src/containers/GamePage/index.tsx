@@ -222,7 +222,7 @@ const GamePage = () => {
     const handleSkipQuestion = () => {
         setLoadingRequest(true);
         if (gameStage === 1) {
-            handleSetCorrect(null, true);
+            handleSetCorrect(-1, true);
         } else {
             socket?.emit('skip-question');
 
