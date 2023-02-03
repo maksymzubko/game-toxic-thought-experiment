@@ -1,11 +1,27 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Avatar, Box, Typography} from "@mui/material";
 import style from "../style.module.css";
 import {getAnimalByLetter} from "../../../helpers/animalHelp";
 import Button from "../../../components/Button";
 import beerIcon from '../assets/beer-icon.png';
+import useSound from "use-sound";
+import buttonSound from "../../../assets/sounds/button.mp3";
+import questionSound from "../../../assets/sounds/question.mp3";
 
 const GameRunningItem = (d: { players: { id: string, letter: string }[], timer: number, multiplayer: boolean, question: { question: string; answers: string[] }, currentStep: string, handleAnswer: any, handleSkip: any, isAnswered: boolean }) => {
+
+    const [playButton] = useSound(buttonSound);
+
+    const [questionSoundLoad, setQuestionSoundLoad] = useState(false)
+    const [playQuestion] = useSound(questionSound, {
+        onload: () => setQuestionSoundLoad(true)
+    });
+    useEffect(() => {
+        if (questionSoundLoad) {
+            playQuestion();
+        }
+    }, [questionSoundLoad])
+
     const getClassName = (letter: string) => {
         if (d.multiplayer || letter === d.currentStep)
             return style.current;
@@ -16,6 +32,7 @@ const GameRunningItem = (d: { players: { id: string, letter: string }[], timer: 
 
     const submitAnswer = () => {
         if (selectedIndex !== undefined) {
+            playButton();
             d.handleAnswer(selectedIndex)
             setSelectedIndex(undefined);
         }
@@ -26,7 +43,7 @@ const GameRunningItem = (d: { players: { id: string, letter: string }[], timer: 
             {!d.isAnswered && <Box className={style.answers}>
                 <Box className={style.content}>
                     {d.question.answers.map((a, i) =>
-                        <Button onClick={() => setSelectedIndex(i)} className={selectedIndex === i ? 'cloud' : 'unselected_answer' }>
+                        <Button onClick={() => {setSelectedIndex(i); playButton()}} className={selectedIndex === i ? 'cloud' : 'unselected_answer' }>
                             {a}
                         </Button>)}
 
@@ -41,7 +58,7 @@ const GameRunningItem = (d: { players: { id: string, letter: string }[], timer: 
             <>
                 <Typography className={style.timer_subtitle}>answer secretly!</Typography>
                 <Box className={style.control_buttons}>
-                    <Button onClick={d.handleSkip} className={style.skip_buttons}>
+                    <Button onClick={() => {d.handleSkip(); playButton()}} className={style.skip_buttons}>
                         <img src={beerIcon} alt="" className={style.beer_icon}/>
                         skip
                     </Button>

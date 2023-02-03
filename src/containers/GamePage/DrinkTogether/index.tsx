@@ -1,12 +1,27 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import './style.css'
 import {getAnimalByLetter, getAnimalNameByLetter} from "../../../helpers/animalHelp";
 import {getAnimalDrinkByLetter} from "../../../helpers/animalHelp2";
 import beerIcon from './assets/beer2-icon.png'
 import style from "../style.module.css";
 import Button from "../../../components/Button";
+import useSound from "use-sound";
+import buttonSound from "../../../assets/sounds/button.mp3";
+import glassesSound from "../../../assets/sounds/glasses.mp3";
 
 const DrinkTogether = (d: { players: { id: string, letter: string }[], listAnimalsWithBeer: {player?: string}[], letDrink: any},  ) => {
+
+    const [playButton] = useSound(buttonSound);
+
+    const [glassesSoundLoad, setGlassesSoundLoad] = useState(false)
+    const [playGlasses] = useSound(glassesSound, {
+        onload: () => setGlassesSoundLoad(true)
+    });
+    useEffect(() => {
+        if (glassesSoundLoad) {
+            playGlasses();
+        }
+    }, [glassesSoundLoad])
 
     return (
         <div className="modal">
@@ -20,7 +35,7 @@ const DrinkTogether = (d: { players: { id: string, letter: string }[], listAnima
                     </div>
                 ))}
             </div>
-            <Button onClick={() => d.letDrink()} className="continue-button">Let's Drink!</Button>
+            <Button onClick={() => {d.letDrink(); playButton()}} className="continue-button">Let's Drink!</Button>
         </div>
     );
 };

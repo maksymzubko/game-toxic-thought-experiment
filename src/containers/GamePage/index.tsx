@@ -92,11 +92,12 @@ const GamePage = () => {
     const [drinkStatusBool, setDrinkStatusBool] = useState(false);
     const [listDrinkAnimals, setListDrinkAnimals] = useState([]);
     const [gameStage, setGameStage] = useState(1);
+    const [skipped, setSkipped] = useState(false)
 
     const [results, setResults] = useState<Result>({correct: 0, results: []});
     // single
     const [currentStep, setCurrentStep] = useState<string>("");
-    const [leader, setLeader] = useState<{id: string; letter: string;}>({id: '', letter: ''})
+    const [leader, setLeader] = useState<string>('')
     // multi
     const [isAnswered, setAnswered] = useState(false);
 
@@ -113,6 +114,15 @@ const GamePage = () => {
             }, 1000)
         }
     }, [time])
+
+    useEffect(() => {
+        console.log('skippedEffect', leader);
+        if (skipped) {
+            const customList = [{player: leader}]
+            setTimeout(() => getDrinkAnimals(customList), 100);
+        }
+    }, [skipped]);
+
 
     useEffect(() => {
         if (!userId || (!userLetter && !userRoom.single && gameStatus !== 'results')) {
@@ -159,7 +169,8 @@ const GamePage = () => {
             }
             else if(data.skipped)
             {
-                console.log('skipped')
+                console.log('skipped', leader, data)
+                setSkipped(true)
             }
         })
 
@@ -173,6 +184,7 @@ const GamePage = () => {
             setTimer(60);
             setLoading(false);
             if (data.status) {
+                setSkipped(false)
                 setAnswered(false);
                 setLeader(data.data.leader);
                 setData(data?.data?.question);
@@ -249,6 +261,7 @@ const GamePage = () => {
     }
 
     const getDrinkAnimals = (list: any) => {
+        console.log('list', list)
         setGameStatus('drink');
         setListDrinkAnimals(list);
         setDrinkStatus('');
@@ -259,7 +272,15 @@ const GamePage = () => {
         setDrinkStatus(status);
         setDrinkStatusBool(statusBool);
     }
-    console.log('log', userRoom, userId, players);
+
+    useEffect(() => {
+        console.log('gameStage', gameStage)
+    }, [gameStage])
+
+    useEffect(() => {
+        const buttons = document.getElementsByClassName('btn');
+        console.log('buttons', buttons)
+    }, [gameStatus])
 
     return (
         <>
@@ -270,15 +291,12 @@ const GamePage = () => {
                         <Box className={style.content}>
                             {data.question}
                         </Box>
+                        <img src={getAnimalByLetter(leader)} alt="" className={style.questionOwner}/>
                     </Box>
                 </Box>
             }
 
-            {gameStatus === 'running' &&
-                <>
-                    <AnimalBar players={players.filter(p=>p.letter !== leader.letter)} currentStep={currentStep}/>
-                </>
-            }
+            {(gameStatus === 'running' && players) && <AnimalBar players={players.filter(p=> p.letter !== leader )} currentStep={gameStage === 1 ? '' : currentStep}/>}
             <div className={style.answers_block}>
                 {gameStatus === 'running' &&
                     <GameRunningItem
@@ -297,6 +315,7 @@ const GamePage = () => {
                         question={data}
                         passDrinkAnimals={getDrinkAnimals}
                         setUserDrinkStatus={getUserDrinkStatus}
+                        leader={leader}
                     />
                 }
             </div>

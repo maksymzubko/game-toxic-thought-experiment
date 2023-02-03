@@ -8,16 +8,21 @@ import style from "../style.module.css";
 import Button from "../../../components/Button";
 import {useSelector} from "react-redux";
 import {SelectSocket, SelectUserRoom} from "../../../redux/store/socket/selector";
+import useSound from "use-sound";
+import buttonSound from "../../../assets/sounds/button.mp3";
 
 const ReadyScreen = (d: { players: { id: string, letter: string }[], round: number }  ) => {
     const socket = useSelector(SelectSocket);
     const userRoom = useSelector(SelectUserRoom);
+    const [playButton] = useSound(buttonSound);
 
     const handleGameStart = () => {
+        playButton();
         socket?.emit('startGame');
     }
 
     const handleLeave = () => {
+        playButton();
         socket?.emit('leaveRoom');
     }
 
@@ -25,7 +30,7 @@ const ReadyScreen = (d: { players: { id: string, letter: string }[], round: numb
         <div className="modal">
             <h1>ok, let's start</h1>
             <div className="round-container">
-                <p className="round-number">{d.round}</p>
+                <p className="round-number">{d.round + 1}</p>
                 <h1 className="round-subtitle">round</h1>
             </div>
             <div className="users-list-2">

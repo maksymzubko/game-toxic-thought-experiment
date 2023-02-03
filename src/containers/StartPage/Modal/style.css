@@ -1,0 +1,81 @@
+.modal-pwa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5%;
+}
+.modal-pwa .window {
+    padding: 15px 15px 30px;
+    position: relative;
+    background-color: #ffffff;
+    box-shadow: 0 5px 10px rgba(22, 22, 22, 0.25);
+    border-radius: 20px;
+    width: 350px;
+    max-width: 80%;
+}
+.modal-pwa .window h1{
+    margin: 0;
+    font-size: 22px;
+    line-height: 26px;
+    letter-spacing: 0.02em;
+}
+.modal-pwa .window h2{
+    margin: 0;
+    font-size: 32px;
+    line-height: 38px;
+    grid-column: 1/3;
+    text-align: center;
+    color: red;
+}
+.modal-pwa .window p{
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.02em;
+    color: #000000;
+}
+.modal-pwa .window .part-2 p{
+    font-size: 32px;
+    line-height: 38px;
+    margin: 0;
+}
+.modal-pwa .window .btn{
+    max-width: 80%;
+    color: #0B997B;
+    width: 160px;
+    height: 32px;
+    font-size: 18px;
+    line-height: 21px;
+    grid-column: 1/3;
+}
+.modal-pwa .close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    max-width: none;
+    max-height: none;
+}
+.modal-pwa .part-2 {
+    display: grid;
+    grid-template-columns: 45% 45%;
+    column-gap: 10%;
+    grid-auto-rows: 50px 1fr 50px 1fr 60px;
+}
+.modal-pwa .part-2 {
+    font-size: 32px;
+    line-height: 38px;
+    text-align: center;
+    color: #333333;
+}
+.modal-pwa .part-2 img {
+    max-width: none;
+    max-height: none;
+    margin: 0 auto;
+}
