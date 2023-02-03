@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Box} from "@mui/material";
 import logo from './assets/toxic-logo.png'
 import style from './style.module.css'
@@ -8,11 +8,26 @@ import {useNavigate} from "react-router-dom";
 import {io} from "socket.io-client";
 import {useSelector} from "react-redux";
 import {SelectSocket, SelectUserId} from "../../redux/store/socket/selector";
+import buttonSound from '../../assets/sounds/button.mp3'
+import useSound from "use-sound";
+import Modal from "./Modal";
 
 const StartPage = () => {
     const [isModalOpened, setIsModalOpened] = useState(false)
     const goto = useNavigate()
     const userId = useSelector(SelectUserId)
+    const [playButton] = useSound(buttonSound);
+    const [firstInteractAllow, setFirstInteractAllow] = useState(true);
+    const [showModal, setShowModal] = useState(false)
+
+    const onShowModal = () => {
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            if (firstInteractAllow) {
+                setFirstInteractAllow(false)
+                setShowModal(true);
+            }
+        }
+    }
 
     useEffect(() => {
         console.log('user', userId)
@@ -27,12 +42,13 @@ const StartPage = () => {
     }, [userId])
 
     const handleToggleModal = () => {
+        playButton();
         setIsModalOpened(!isModalOpened);
     }
 
     const goLobby = (variant: number) => {
         // goto(links.game);
-
+        playButton();
         switch (variant){
             case 0:
                 goto(links.lobby, {state: {single: true}})
@@ -44,7 +60,8 @@ const StartPage = () => {
     }
 
     return (
-        <Box className={style.container}>
+        <Box className={style.container} onClick={onShowModal}>
+            {showModal && <Modal onClose={() => setShowModal(false)}/>}
             <img src={logo} alt={'logo'}/>
             <Box className={`${style.buttons}`}>
                 <Button variant={'contained'} className={style.single} onClick={()=>goLobby(0)}>single device</Button>

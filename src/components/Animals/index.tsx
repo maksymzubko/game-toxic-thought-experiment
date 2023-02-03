@@ -6,6 +6,7 @@ import {getAnimalColorByLetter, getAnimalGreyByLetter} from "../../helpers/anima
 const AnimalBar = (d : {players: { id: string, letter: string }[], currentStep: string}) => {
 
     const getSourceImg = (letter: string) => {
+        console.log('getSourceImg', d.currentStep)
         if (letter === d.currentStep)
             return getAnimalColorByLetter(letter);
         else return getAnimalGreyByLetter(letter);

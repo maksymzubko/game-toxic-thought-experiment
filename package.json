@@ -21,7 +21,8 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.7.0",
     "redux": "^4.2.0",
-    "socket.io-client": "^4.5.4"
+    "socket.io-client": "^4.5.4",
+    "use-sound": "^4.0.1"
   },
   "devDependencies": {
     "@types/nprogress": "^0.2.0",

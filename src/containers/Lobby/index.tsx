@@ -13,6 +13,8 @@ import {SelectSocket, SelectUserId, SelectUserRoom} from "../../redux/store/sock
 import lobbyImg from './assets/image1.png';
 import createLobbyImg from './assets/image2.png';
 import joinLobbyImg from './assets/image4.png';
+import useSound from "use-sound";
+import buttonSound from "../../assets/sounds/button.mp3";
 
 
 const LobbyPage = () => {
@@ -24,6 +26,8 @@ const LobbyPage = () => {
     const dispatch = useDispatch();
     const userId = useSelector(SelectUserId);
     const socket = useSelector(SelectSocket);
+
+    const [playButton] = useSound(buttonSound);
 
     const [roomNumber, setRoomNumber] = useState('');
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -77,20 +81,24 @@ const LobbyPage = () => {
     }
 
     const handleChangeRoomNumber = (event: ChangeEvent<HTMLInputElement>) => {
+        playButton();
         const value = event.target.value;
         setRoomNumber(value)
     }
 
     const handleClick = (el: any) => {
+        playButton();
         const {id} = el.currentTarget;
         setPlayersCount(parseInt(id));
     }
 
     const createLobbyModal = () => {
+        playButton();
         handleToggleModalPlayers();
     }
 
     const joinLobbyModal = () => {
+        playButton();
         handleToggleModalRoom();
     }
 
@@ -99,6 +107,7 @@ const LobbyPage = () => {
     }
 
     const handleCancel = (variant: number) => {
+        playButton();
         if (variant === 0) {
             handleToggleModalPlayers()
             if (data.state.single) {
@@ -116,6 +125,7 @@ const LobbyPage = () => {
 
 
     const handleCreateLobby = () => {
+        playButton();
         // handleToggleModalPlayers()
 
         socket?.emit('createRoom', {solo: single, playersCount: playersCount});
@@ -151,6 +161,7 @@ const LobbyPage = () => {
     }
 
     const joinRoom = () => {
+        playButton();
         handleToggleModalRoom()
 
         setLoading(true);

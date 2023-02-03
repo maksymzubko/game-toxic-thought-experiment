@@ -4,11 +4,24 @@ import jugImg from './assets/jug.png'
 import './style.css'
 import {getAnimalColorByLetter, getAnimalDrinkByLetter} from "../../../helpers/animalHelp2";
 import Button from "../../../components/Button";
+import useSound from "use-sound";
+import buttonSound from "../../../assets/sounds/button.mp3";
+import glassesSound from "../../../assets/sounds/glasses.mp3";
 
 const DrinkSolo = (d: {drinkStatus: string, drinkStatusBool: boolean, players: any[], userId: any, letDrink: any}) => {
 
     const [imageSource, setImageSource] = useState("");
+    const [playButton] = useSound(buttonSound);
 
+    const [glassesSoundLoad, setGlassesSoundLoad] = useState(false)
+    const [playGlasses] = useSound(glassesSound, {
+        onload: () => setGlassesSoundLoad(true)
+    });
+    useEffect(() => {
+        if (glassesSoundLoad) {
+            playGlasses();
+        }
+    }, [glassesSoundLoad])
 
     const getImageSrc = () => {
         console.log('userId', d.userId)
@@ -35,7 +48,7 @@ const DrinkSolo = (d: {drinkStatus: string, drinkStatusBool: boolean, players: a
                 <img src={imageSource} alt="" className="animal-img-big"/>
             </div>
             <img src={jugImg} alt="" className="jug-img"/>
-            <Button onClick={() => d.letDrink()} className="continue-button-2">Let's Drink!</Button>
+            <Button onClick={() => {d.letDrink(); playButton()}} className="continue-button-2">Let's Drink!</Button>
         </>
     );
 };
