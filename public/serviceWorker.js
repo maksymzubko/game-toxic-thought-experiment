@@ -2,6 +2,24 @@ const CACHE_NAME = "ver-1"
 const urlsToCache = ['index.html']
 
 const self = this;
+let defferedPrompt;
+
+window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    console.log(event)
+    defferedPrompt = event
+});
+
+document.body.addEventListener('click', event => {
+    defferedPrompt.prompt();
+
+    defferedPrompt.userChoice.then(choice => {
+        if(choice.outcome === 'accepted'){
+            console.log('user accepted the prompt')
+        }
+        defferedPrompt = null;
+    })
+})
 
 self.addEventListener('install', (event) => {
     event.waitUntil(

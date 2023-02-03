@@ -20,6 +20,16 @@ import DrinkTogether from "./DrinkTogether";
 import ReadyScreen from "./ReadyScreen";
 import DrinkSolo from "./DrinkSolo";
 
+interface GameStageInterface {
+    status: boolean;
+    stage: number;
+}
+
+interface GameSetCorrectInterface {
+    status: boolean;
+    message?: string;
+    skipped?: boolean;
+}
 
 interface GameStartedInterface {
     status: boolean,
@@ -27,7 +37,8 @@ interface GameStartedInterface {
     data: {
         step?: string,
         question: { question: string; answers: string[] },
-        round: number
+        round: number,
+        leader: {id: string, letter: string}
     }
 }
 
@@ -72,7 +83,7 @@ const GamePage = () => {
     const [loading, setLoading] = useState(true);
     const [loadingRequest, setLoadingRequest] = useState(false);
     const [players, setPlayers] = useState<{ id: string, letter: string }[]>([]);
-    const [gameStatus, setGameStatus] = useState<"waiting" | "running" | "results" | "drink" | "ready" >("waiting");
+    const [gameStatus, setGameStatus] = useState<"waiting" | "running" | "results" | "drink" | "ready">("waiting");
     const [data, setData] = useState<{ question: string; answers: string[] }>({question: "", answers: []})
     const [time, setTime] = useState<number>(-1);
     const [timer, setTimer] = useState<number>(60);
@@ -80,10 +91,12 @@ const GamePage = () => {
     const [drinkStatus, setDrinkStatus] = useState('');
     const [drinkStatusBool, setDrinkStatusBool] = useState(false);
     const [listDrinkAnimals, setListDrinkAnimals] = useState([]);
+    const [gameStage, setGameStage] = useState(1);
 
     const [results, setResults] = useState<Result>({correct: 0, results: []});
     // single
     const [currentStep, setCurrentStep] = useState<string>("");
+    const [leader, setLeader] = useState<{id: string; letter: string;}>({id: '', letter: ''})
     // multi
     const [isAnswered, setAnswered] = useState(false);
 
@@ -139,10 +152,29 @@ const GamePage = () => {
             }
         })
 
+        socket?.on('setCorrect', (data: GameSetCorrectInterface) => {
+            if (!data.status) {
+                setLoadingRequest(false);
+                console.log(data.message)
+            }
+            else if(data.skipped)
+            {
+                console.log('skipped')
+            }
+        })
+
+        socket?.on('gameStage', (data: GameStageInterface) => {
+            setLoadingRequest(false);
+            console.log(data.stage);
+            setGameStage(data.stage);
+        })
+
         socket?.on('gameStarted', (data: GameStartedInterface) => {
+            setTimer(60);
             setLoading(false);
             if (data.status) {
                 setAnswered(false);
+                setLeader(data.data.leader);
                 setData(data?.data?.question);
                 setRound(data?.data?.round);
                 setCurrentStep(data?.data?.step ?? "");
@@ -177,6 +209,8 @@ const GamePage = () => {
         })
 
         return () => {
+            socket?.off('gameStage');
+            socket?.off('setCorrect');
             socket?.off('time');
             socket?.off('gameEnded');
             socket?.off('answer');
@@ -187,20 +221,31 @@ const GamePage = () => {
 
     const handleSkipQuestion = () => {
         setLoadingRequest(true);
-        socket?.emit('skip-question');
+        if (gameStage === 1) {
+            handleSetCorrect(null, true);
+        } else {
+            socket?.emit('skip-question');
 
-        socket?.once('skip-question', (data: SkipInterface) => {
-            setLoadingRequest(false);
-            if (data.status) {
-                setAnswered(true);
-            } else
-                enqueueSnackbar(`Failed skip. Try again.`, {variant: "error"});
-        })
+            socket?.once('skip-question', (data: SkipInterface) => {
+                setLoadingRequest(false);
+                if (data.status) {
+                    setAnswered(true);
+                } else
+                    enqueueSnackbar(`Failed skip. Try again.`, {variant: "error"});
+            })
+        }
+    }
+
+    const handleSetCorrect = (answer: number, skip = false) => {
+        socket?.emit('setCorrect', {correct: answer, skipQuestion: skip});
     }
 
     const handleAnswer = (variant: number) => {
         setLoadingRequest(true);
-        socket?.emit('answer', {answer: variant});
+        if (gameStage === 1)
+            handleSetCorrect(variant)
+        else
+            socket?.emit('answer', {answer: variant});
     }
 
     const getDrinkAnimals = (list: any) => {
@@ -218,9 +263,9 @@ const GamePage = () => {
 
     return (
         <>
-            {(gameStatus === 'running' || gameStatus === 'results' ) &&
+            {(gameStatus === 'running' || gameStatus === 'results') &&
                 <Box className={style.container}>
-                    <img className={style.answer_bg} src={answerBg }/>
+                    <img className={style.answer_bg} src={answerBg}/>
                     <Box className={style.question}>
                         <Box className={style.content}>
                             {data.question}
@@ -231,7 +276,7 @@ const GamePage = () => {
 
             {gameStatus === 'running' &&
                 <>
-                    <AnimalBar players={players} currentStep={currentStep}/>
+                    <AnimalBar players={players.filter(p=>p.letter !== leader.letter)} currentStep={currentStep}/>
                 </>
             }
             <div className={style.answers_block}>
@@ -256,21 +301,21 @@ const GamePage = () => {
                 }
             </div>
             {(gameStatus === 'drink' && !drinkStatus) &&
-            <DrinkTogether
-                players={players}
-                listAnimalsWithBeer={listDrinkAnimals}
-                letDrink={() => setGameStatus('ready')}
-            />}
+                <DrinkTogether
+                    players={players}
+                    listAnimalsWithBeer={listDrinkAnimals}
+                    letDrink={() => setGameStatus('ready')}
+                />}
             {(gameStatus === 'drink' && drinkStatus) &&
-            <DrinkSolo
-                drinkStatus={drinkStatus}
-                drinkStatusBool={drinkStatusBool}
-                players={players} userId={userId}
-                letDrink={() => setGameStatus('ready')}
-            />}
+                <DrinkSolo
+                    drinkStatus={drinkStatus}
+                    drinkStatusBool={drinkStatusBool}
+                    players={players} userId={userId}
+                    letDrink={() => setGameStatus('ready')}
+                />}
 
             {gameStatus === 'ready' && <ReadyScreen players={players} round={round}/>}
-            <Backdrop open={loading} style={{color: 'black', fontSize: 32 }}>
+            <Backdrop open={loading} style={{color: 'black', fontSize: 32}}>
                 {time < 0
                     ?
                     <h1>Waiting... <br/> <CircularProgress/></h1>

@@ -16,6 +16,10 @@ const StartPage = () => {
 
     useEffect(() => {
         console.log('user', userId)
+
+        return () => {
+
+        }
     }, [])
 
     useEffect(() => {
