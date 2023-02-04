@@ -11,10 +11,10 @@ import Modal from "./containers/Modal";
 
 
 // local
-const socket = io('ws://localhost:3000', {transports: ['websocket']});
+// const socket = io('ws://localhost:3000', {transports: ['websocket']});
 
 // server
-// const socket = io('https://project15.aestar.com.ua:5016/', {transports: ['websocket']});
+const socket = io('https://project15.aestar.com.ua:5016/', {transports: ['websocket']});
 
 function App() {
     const {enqueueSnackbar} = useSnackbar();
