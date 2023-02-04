@@ -4,7 +4,7 @@ import style from './style.module.css'
 import {useDispatch, useSelector} from "react-redux";
 import {SelectSocket, SelectUserId, SelectUserLetter, SelectUserRoom} from "../../redux/store/socket/selector";
 import {useSnackbar} from "notistack";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {links} from "../../router";
 import PlayerList from "./PlayersList";
 import Button from "../../components/Button";
@@ -36,7 +36,7 @@ const PageRoom = () => {
     const userRoom = useSelector(SelectUserRoom);
     const socket = useSelector(SelectSocket);
 
-    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+    const {enqueueSnackbar} = useSnackbar();
     const [loading, setLoading] = useState(true);
     const [players, setPlayers] = useState<{ id: string, letter: string }[]>([]);
     const [canStart, setCanStart] = useState(false);
@@ -75,7 +75,6 @@ const PageRoom = () => {
         })
 
         socket?.on('leavedRoom', (data: LeaveInterface) => {
-            console.log(data)
             if (data.status) {
                 if (data.client === userId) {
                     dispatch(setRoom({roomNumber: null, single: null, isOwner: null}));

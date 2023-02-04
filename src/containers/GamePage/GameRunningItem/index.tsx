@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, Box, Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import style from "../style.module.css";
-import {getAnimalByLetter} from "../../../helpers/animalHelp";
 import Button from "../../../components/Button";
 import beerIcon from '../assets/beer-icon.png';
 import useSound from "use-sound";
@@ -22,12 +21,6 @@ const GameRunningItem = (d: { players: { id: string, letter: string }[], timer: 
         }
     }, [questionSoundLoad])
 
-    const getClassName = (letter: string) => {
-        if (d.multiplayer || letter === d.currentStep)
-            return style.current;
-        else return "";
-    }
-    console.log('players', d.players);
     const [selectedIndex, setSelectedIndex] = useState<number>();
 
     const submitAnswer = () => {
@@ -43,7 +36,7 @@ const GameRunningItem = (d: { players: { id: string, letter: string }[], timer: 
             {!d.isAnswered && <Box className={style.answers}>
                 <Box className={style.content}>
                     {d.question.answers.map((a, i) =>
-                        <Button onClick={() => {setSelectedIndex(i); playButton()}} className={selectedIndex === i ? 'cloud' : 'unselected_answer' }>
+                        <Button key={i} onClick={() => {setSelectedIndex(i); playButton()}} className={selectedIndex === i ? 'cloud' : 'unselected_answer' }>
                             {a}
                         </Button>)}
 

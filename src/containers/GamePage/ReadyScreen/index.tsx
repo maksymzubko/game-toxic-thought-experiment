@@ -1,8 +1,7 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import './style.css';
 import {getAnimalNameByLetter} from "../../../helpers/animalHelp";
 import {getAnimalDrinkByLetter} from "../../../helpers/animalHelp2";
-import beerIcon from "../DrinkTogether/assets/beer2-icon.png";
 import {Box} from "@mui/material";
 import style from "../style.module.css";
 import Button from "../../../components/Button";
@@ -35,7 +34,7 @@ const ReadyScreen = (d: { players: { id: string, letter: string }[], round: numb
             </div>
             <div className="users-list-2" style={{gridTemplateColumns: 'repeat(4, 20%)'}}>
                 {d.players.map(p => (
-                    <div className="user">
+                    <div key={p.letter} className="user">
                         <div className="user-name">{getAnimalNameByLetter(p.letter)}</div>
                         <img className="animal-img" src={getAnimalDrinkByLetter(p.letter)} alt=""/>
                     </div>

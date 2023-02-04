@@ -24,7 +24,6 @@ const DrinkSolo = (d: {drinkStatus: string, drinkStatusBool: boolean, players: a
     }, [glassesSoundLoad])
 
     const getImageSrc = () => {
-        console.log('userId', d.userId)
         const letter =  d.players.find(player => player.id === d.userId).letter;
         if (d.drinkStatusBool) {
             setImageSource(getAnimalDrinkByLetter(letter))

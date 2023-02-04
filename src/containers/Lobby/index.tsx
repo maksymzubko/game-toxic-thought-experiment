@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ChangeEventHandler, EventHandler, useEffect, useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import {Backdrop, Box, CircularProgress} from "@mui/material";
 import style from './style.module.css'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -9,7 +9,7 @@ import {links} from "../../router";
 import {useSnackbar} from "notistack";
 import {useDispatch, useSelector} from "react-redux";
 import {setRoom, setUserLetter} from "../../redux/store/socket/slice";
-import {SelectSocket, SelectUserId, SelectUserRoom} from "../../redux/store/socket/selector";
+import {SelectSocket, SelectUserId} from "../../redux/store/socket/selector";
 import lobbyImg from './assets/image1.png';
 import createLobbyImg from './assets/image2.png';
 import joinLobbyImg from './assets/image4.png';
@@ -126,7 +126,6 @@ const LobbyPage = () => {
 
     const handleCreateLobby = () => {
         playButton();
-        // handleToggleModalPlayers()
 
         socket?.emit('createRoom', {solo: single, playersCount: playersCount});
         setLoading(true);
@@ -206,7 +205,7 @@ const LobbyPage = () => {
             {isModalPlayersOpened && <Box className={style.modal__players}>
                 <h1>number of players</h1>
                 <Box className={style.nums}>
-                    {buttons.map(btn => <NumberItem id={btn.number} onClick={handleClick} number={btn.number}
+                    {buttons.map(btn => <NumberItem key={btn.number} id={btn.number} onClick={handleClick} number={btn.number}
                                                     active={btn.active}/>)}
                 </Box>
                 <Box className={style.modal_buttons}>

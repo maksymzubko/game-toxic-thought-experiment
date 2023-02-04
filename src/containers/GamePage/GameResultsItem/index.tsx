@@ -4,15 +4,13 @@ import {Result} from "../index";
 import style from "../style.module.css";
 import Button from "../../../components/Button";
 import {useSelector} from "react-redux";
-import {SelectSocket, SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
-import {getAnimalByLetter, getAnimalNameByLetter} from "../../../helpers/animalHelp";
-import {createLogger} from "vite";
+import {SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
+import {getAnimalByLetter} from "../../../helpers/animalHelp";
 import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
 import resultSound from "../../../assets/sounds/results.mp3";
 
 const GameResultItem = (d: { result: Result, question: { question: string; answers: string[] }, passDrinkAnimals: any, setUserDrinkStatus: any, leader: string }) => {
-    const socket = useSelector(SelectSocket);
     const userLetter = useSelector(SelectUserLetter);
     const userRoom = useSelector(SelectUserRoom);
     const [playButton] = useSound(buttonSound);
@@ -52,29 +50,13 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
 
     }
 
-    const handleGameStart = () => {
-        socket?.emit('startGame');
-    }
-
-    const handleLeave = () => {
-        socket?.emit('leaveRoom');
-    }
-
-    const badgeStyle = {
-        "& .MuiBadge-badge": {
-            transform: 'translate(-50%, -50%)',
-            left: 125,
-        }
-    }
-
     const getListVoted = (variant: number, size: number) => {
-        console.log('getListVoted', d.result.results, d.leader )
         return (
             <AvatarGroup max={4}>
                 {d.result.results
                     .filter(r => r.answer.variant === variant)
                     .filter(l => l.player !== d.leader)
-                    .map(a => <Avatar src={getAnimalByLetter(a.player ?? "")} alt={'animal-img'} sx={{ width: size, height: size }}/>)}
+                    .map(a => <Avatar key={a.player} src={getAnimalByLetter(a.player ?? "")} alt={'animal-img'} sx={{ width: size, height: size }}/>)}
             </AvatarGroup>
         )
     }
@@ -86,8 +68,7 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
                 <Box className={style.answers}>
                     <Box className={style.content}>
                         {d.question.answers.map((a, i) =>
-
-                            <div className="button-wrapper" style={{ width: '100%' }}>
+                            <div key={i} className="button-wrapper" style={{ width: '100%' }}>
                                 <div className="avatars-wrapper size-big">
                                     {getListVoted(i, 40)}
                                 </div>

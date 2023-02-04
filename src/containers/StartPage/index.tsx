@@ -1,13 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Box} from "@mui/material";
 import logo from './assets/toxic-logo.png'
 import style from './style.module.css'
 import {links} from "../../router";
 import Button from "../../components/Button";
 import {useNavigate} from "react-router-dom";
-import {io} from "socket.io-client";
-import {useSelector} from "react-redux";
-import {SelectSocket, SelectUserId} from "../../redux/store/socket/selector";
 import buttonSound from '../../assets/sounds/button.mp3'
 import useSound from "use-sound";
 import Modal from "./Modal";
@@ -15,7 +12,6 @@ import Modal from "./Modal";
 const StartPage = () => {
     const [isModalOpened, setIsModalOpened] = useState(false)
     const goto = useNavigate()
-    const userId = useSelector(SelectUserId)
     const [playButton] = useSound(buttonSound);
     const [firstInteractAllow, setFirstInteractAllow] = useState(true);
     const [showModal, setShowModal] = useState(false)
@@ -28,18 +24,6 @@ const StartPage = () => {
             }
         }
     }
-
-    useEffect(() => {
-        console.log('user', userId)
-
-        return () => {
-
-        }
-    }, [])
-
-    useEffect(() => {
-        console.log('s', userId)
-    }, [userId])
 
     const handleToggleModal = () => {
         playButton();
