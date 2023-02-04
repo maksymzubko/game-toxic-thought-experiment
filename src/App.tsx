@@ -6,36 +6,48 @@ import styles from './app-style.module.css'
 import {io} from "socket.io-client";
 import {setSocket, setUserId} from "./redux/store/socket/slice";
 import {useDispatch} from "react-redux";
+import {useSnackbar} from "notistack";
 
 // local
-const socket = io('ws://localhost:3000', {transports: ['websocket']});
+// const socket = io('ws://localhost:3000', {transports: ['websocket']});
 
 // server
-// const socket = io('https://project15.aestar.com.ua:5016/', {transports: ['websocket']});
+const socket = io('https://project15.aestar.com.ua:5016/', {transports: ['websocket']});
 
 function App() {
+    const {enqueueSnackbar} = useSnackbar();
     const routes = useRoutes(r);
     const dispatch = useDispatch();
+    const [isInstalled, setIsInstalled] = useState(false)
 
     useEffect(() => {
+        if(!navigator.onLine)
+        {
+            enqueueSnackbar('You offline!', {variant: "info"});
+            socket.close();
+        }
+
         let defferedPrompt: any;
+        window.addEventListener('appinstalled', () => {
+            setIsInstalled(true);
+        })
 
         window.addEventListener('beforeinstallprompt', event => {
             event.preventDefault();
-            console.log(event)
             defferedPrompt = event
         });
 
         document.body.addEventListener('click', event => {
-            defferedPrompt.prompt();
+            if(!isInstalled)
+            {
+                defferedPrompt?.prompt();
 
-            defferedPrompt.userChoice.then((choice: any) => {
-                if(choice.outcome === 'accepted'){
-                    console.log('user accepted the prompt')
-                }
-                defferedPrompt = null;
-            })
-        })
+                defferedPrompt?.userChoice.then((choice: any) => {
+                    defferedPrompt = null;
+                })
+            }
+        }, {once: true})
+
         const getSize = () => document.body.style.setProperty('--app-height', window.innerHeight + "px");
 
         window.addEventListener('popstate', (e) => {
@@ -53,7 +65,6 @@ function App() {
         dispatch(setSocket({socket: socket}));
 
         socket.on('connected', (data: {id: string}) => {
-            console.log(data.id)
             dispatch(setUserId({user_id: data.id}));
         })
     }, [])

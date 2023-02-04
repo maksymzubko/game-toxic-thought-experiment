@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './style.css'
-import {getAnimalByLetter, getAnimalNameByLetter} from "../../../helpers/animalHelp";
+import {getAnimalNameByLetter} from "../../../helpers/animalHelp";
 import {getAnimalDrinkByLetter} from "../../../helpers/animalHelp2";
 import beerIcon from './assets/beer2-icon.png'
-import style from "../style.module.css";
 import Button from "../../../components/Button";
 import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
@@ -28,7 +27,7 @@ const DrinkTogether = (d: { players: { id: string, letter: string }[], listAnima
             <h1>who drinks today?</h1>
             <div className="users-list" style={{gridTemplateRows: `repeat(${Math.ceil(d.players.length / 2)}, calc(${80 / Math.ceil(d.players.length / 2)}% - 20px)`}}>
                 {d.players.map(p => (
-                    <div className="user">
+                    <div key={p.letter} className="user">
                         <div className="user-name">{getAnimalNameByLetter(p.letter)}</div>
                         <img className="animal-img" src={getAnimalDrinkByLetter(p.letter)} alt=""/>
                         {d.listAnimalsWithBeer.find(item => item.player === p.letter) && <img src={beerIcon} className="beer" style={{bottom: `-${d.players.length  * 10}%`}}/>}

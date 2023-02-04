@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, Backdrop, Box, CircularProgress} from "@mui/material";
+import {Backdrop, Box, CircularProgress} from "@mui/material";
 
 import style from './style.module.css'
 import {useNavigate} from "react-router-dom";
@@ -9,13 +9,11 @@ import {useSnackbar} from "notistack";
 import {links} from "../../router";
 import {setRoom, setUserLetter} from "../../redux/store/socket/slice";
 import {getAnimalByLetter} from "../../helpers/animalHelp";
-import Button from "../../components/Button";
 import {LeaveInterface} from "../RoomPage";
 import GameRunningItem from "./GameRunningItem";
 import GameResultItem from "./GameResultsItem";
 import answerBg from './assets/bg.png'
 import AnimalBar from "../../components/Animals";
-import GameDrinkItem from "./DrinkTogether";
 import DrinkTogether from "./DrinkTogether";
 import ReadyScreen from "./ReadyScreen";
 import DrinkSolo from "./DrinkSolo";
@@ -38,7 +36,7 @@ interface GameStartedInterface {
         step?: string,
         question: { question: string; answers: string[] },
         round: number,
-        leader: {id: string, letter: string}
+        leader: string
     }
 }
 
@@ -116,7 +114,6 @@ const GamePage = () => {
     }, [time])
 
     useEffect(() => {
-        console.log('skippedEffect', leader);
         if (skipped) {
             const customList = [{player: leader}]
             setTimeout(() => getDrinkAnimals(customList), 100);
@@ -165,18 +162,15 @@ const GamePage = () => {
         socket?.on('setCorrect', (data: GameSetCorrectInterface) => {
             if (!data.status) {
                 setLoadingRequest(false);
-                console.log(data.message)
             }
             else if(data.skipped)
             {
-                console.log('skipped', leader, data)
                 setSkipped(true)
             }
         })
 
         socket?.on('gameStage', (data: GameStageInterface) => {
             setLoadingRequest(false);
-            console.log(data.stage);
             setGameStage(data.stage);
         })
 
@@ -261,7 +255,6 @@ const GamePage = () => {
     }
 
     const getDrinkAnimals = (list: any) => {
-        console.log('list', list)
         setGameStatus('drink');
         setListDrinkAnimals(list);
         setDrinkStatus('');
@@ -272,15 +265,6 @@ const GamePage = () => {
         setDrinkStatus(status);
         setDrinkStatusBool(statusBool);
     }
-
-    useEffect(() => {
-        console.log('gameStage', gameStage)
-    }, [gameStage])
-
-    useEffect(() => {
-        const buttons = document.getElementsByClassName('btn');
-        console.log('buttons', buttons)
-    }, [gameStatus])
 
     return (
         <>

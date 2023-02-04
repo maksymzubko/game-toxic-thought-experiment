@@ -6,7 +6,6 @@ import {getAnimalColorByLetter, getAnimalGreyByLetter} from "../../helpers/anima
 const AnimalBar = (d : {players: { id: string, letter: string }[], currentStep: string}) => {
 
     const getSourceImg = (letter: string) => {
-        console.log('getSourceImg', d.currentStep)
         if (letter === d.currentStep)
             return getAnimalColorByLetter(letter);
         else return getAnimalGreyByLetter(letter);
@@ -16,14 +15,14 @@ const AnimalBar = (d : {players: { id: string, letter: string }[], currentStep: 
         <>
             <div className="animal-bar">
                 {d.players.map((p, index) => {
-                    if (index < 4) return <img src={getSourceImg(p.letter)} alt={'animal' + p.letter}/>
+                    if (index < 4) return <img key={p.letter} src={getSourceImg(p.letter)} alt={'animal' + p.letter}/>
                 })}
             </div>
             {
                 d.players.length > 4 &&
                 <div className="animal-bar animal-bar-left">
                     {d.players.map((p, index) => {
-                        if (index > 3) return <img src={getSourceImg(p.letter)} alt={'animal' + p.letter} />
+                        if (index > 3) return <img key={p.letter} src={getSourceImg(p.letter)} alt={'animal' + p.letter} />
                     })}
                 </div>
             }
