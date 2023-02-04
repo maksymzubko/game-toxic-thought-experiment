@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import './style.css';
-import Button from "../../../components/Button";
-import crossIcon from '../assets/cross-icon.png'
+import Button from "../../components/Button";
+import crossIcon from './assets/cross-icon.png'
 import useSound from "use-sound";
-import buttonSound from "../../../assets/sounds/button.mp3";
-import screen1 from '../assets/screens/screen1.png'
-import screen2 from '../assets/screens/screen2.png'
-import screen3 from '../assets/screens/screen3.png'
-import screen4 from '../assets/screens/screen4.png'
+import buttonSound from "../../assets/sounds/button.mp3";
+import screen1 from './assets/screens/screen1.png'
+import screen2 from './assets/screens/screen2.png'
+import screen3 from './assets/screens/screen3.png'
+import screen4 from './assets/screens/screen4.png'
 
 const Modal = (props: any) => {
 

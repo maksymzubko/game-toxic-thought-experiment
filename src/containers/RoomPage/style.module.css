@@ -95,4 +95,9 @@
     .buttons div {
         border-radius: 15px;
     }
+    .container {
+        box-sizing: border-box;
+        width: 97%;
+        height: 97%;
+    }
 }

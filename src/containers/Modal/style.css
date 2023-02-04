@@ -10,6 +10,7 @@
     align-items: flex-start;
     padding-top: 5%;
     box-sizing: border-box;
+    z-index: 1;
 }
 .modal-pwa .window {
     padding: 15px 15px 30px;
@@ -89,5 +90,24 @@
     }
     .modal-pwa .window .part-2 p {
         line-height: 10px;
+    }
+}
+@media (max-height: 600px) {
+    .modal-pwa{
+         padding-top: 3%;
+    }
+    .modal-pwa .window {
+        max-height: 97%;
+        max-width: 97%;
+        box-sizing: border-box;
+    }
+    .modal-pwa .part-2{
+        grid-auto-rows: 40px 20% 25px 20% 35px;
+    }
+}
+
+@media (max-width: 400px) {
+    .modal-pwa .window h2 {
+        font-size: 26px;
     }
 }

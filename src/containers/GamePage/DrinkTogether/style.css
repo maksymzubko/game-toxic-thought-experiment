@@ -57,7 +57,20 @@
     }
 }
 @media (max-height: 600px) {
+    .modal{
+        box-sizing: border-box;
+        height: 97%;
+        width: 97%;
+    }
     .modal h1{
         margin-top: 0 !important;
+    }
+    .container {
+        box-sizing: border-box;
+        width: 97%;
+        height: 97%;
+    }
+    .user .animal-img{
+        max-height: 65px;
     }
 }

@@ -227,6 +227,7 @@
 @media (max-height: 600px) {
     .container {
         padding: 10px 40px 100px 20px;
+        margin-top: 2%;
     }
     .question {
         font-size: 18px;
@@ -235,10 +236,15 @@
         padding-bottom: 100px;
     }
     .answer_bg{
-        top: 100px
+        top: 90px
     }
     .answers_block{
-        top: 120px;
+        top: 110px;
     }
-
+    .result_buttons{
+        flex-direction: row-reverse;
+    }
+    .result_buttons .btn{
+        border-radius: 15px !important;
+    }
 }

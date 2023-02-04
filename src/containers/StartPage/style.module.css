@@ -130,4 +130,9 @@
         font-size: 18px;
         line-height: 22px;
     }
+    .container {
+        box-sizing: border-box;
+        width: 97%;
+        height: 97%;
+    }
 }
