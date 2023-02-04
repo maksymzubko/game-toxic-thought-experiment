@@ -63,6 +63,7 @@
     transform: translateY(-50%);
     scrollbar-width: thin;
     font-size: 18px;
+    height: 100%;
 }
 .question .questionOwner{
     position: absolute;
@@ -102,6 +103,13 @@
     justify-content: center;
     gap: 10px;
     flex-direction: column;
+}
+.result_buttons_v2{
+    flex-direction: row-reverse;
+}
+
+.result_buttons_v2 .btn{
+    border-radius: 15px;
 }
 
 .drink_button{
@@ -198,6 +206,9 @@
 }
 
 @media (max-height: 800px) {
+    .container{
+        padding: 16px 20px 100px;
+    }
     .answer_bg{
         top: 120px
     }
@@ -214,6 +225,9 @@
     }
 }
 @media (max-height: 600px) {
+    .container {
+        padding: 10px 40px 100px 20px;
+    }
     .question {
         font-size: 18px;
     }

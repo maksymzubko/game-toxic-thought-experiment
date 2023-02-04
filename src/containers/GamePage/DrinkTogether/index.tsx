@@ -26,12 +26,12 @@ const DrinkTogether = (d: { players: { id: string, letter: string }[], listAnima
     return (
         <div className="modal">
             <h1>who drinks today?</h1>
-            <div className="users-list" style={{gridTemplateRows: `repeat(${Math.ceil(d.players.length / 2)}, ${80 / Math.ceil(d.players.length / 2)}%)`}}>
+            <div className="users-list" style={{gridTemplateRows: `repeat(${Math.ceil(d.players.length / 2)}, calc(${80 / Math.ceil(d.players.length / 2)}% - 20px)`}}>
                 {d.players.map(p => (
                     <div className="user">
                         <div className="user-name">{getAnimalNameByLetter(p.letter)}</div>
                         <img className="animal-img" src={getAnimalDrinkByLetter(p.letter)} alt=""/>
-                        {d.listAnimalsWithBeer.find(item => item.player === p.letter) && <img src={beerIcon} className="beer"/>}
+                        {d.listAnimalsWithBeer.find(item => item.player === p.letter) && <img src={beerIcon} className="beer" style={{bottom: `-${d.players.length  * 10}%`}}/>}
                     </div>
                 ))}
             </div>

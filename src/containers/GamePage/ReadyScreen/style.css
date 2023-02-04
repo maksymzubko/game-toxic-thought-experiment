@@ -22,7 +22,7 @@
     width: 90%;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    justify-content: center;
     gap: 35px;
 
 }
@@ -34,9 +34,12 @@
     justify-content: space-between;
 }
 .users-list-2 .user .user-name {
-    font-size: 32px;
+    font-size: 26px;
     line-height: 51px;
     color: #444E3F;
+}
+.users-list-2 .user img {
+    object-fit: contain;
 }
 .round-number{
     width: 100%;
@@ -50,14 +53,14 @@
 .modal .round-subtitle{
     margin: 20px auto;
 }
-@media (max-width: 400px) {
+@media (max-width: 630px) {
     .modal .users-list-2 {
         gap: 10px;
     }
 }
-@media (max-height: 600px) {
+@media (max-height: 720px) {
     .modal h1, .modal .round-subtitle {
-        margin: 0;
+        margin: 0 !important;
     }
     .round-number{
         line-height: 60px;
