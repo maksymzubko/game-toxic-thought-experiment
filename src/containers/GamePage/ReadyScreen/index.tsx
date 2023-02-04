@@ -33,7 +33,7 @@ const ReadyScreen = (d: { players: { id: string, letter: string }[], round: numb
                 <p className="round-number">{d.round + 1}</p>
                 <h1 className="round-subtitle">round</h1>
             </div>
-            <div className="users-list-2">
+            <div className="users-list-2" style={{gridTemplateColumns: 'repeat(4, 20%)'}}>
                 {d.players.map(p => (
                     <div className="user">
                         <div className="user-name">{getAnimalNameByLetter(p.letter)}</div>
@@ -41,9 +41,9 @@ const ReadyScreen = (d: { players: { id: string, letter: string }[], round: numb
                     </div>
                 ))}
             </div>
-            <Box className={style.result_buttons}>
-                {userRoom.isOwner && <Button onClick={handleGameStart}>continue</Button>}
-                <Button onClick={handleLeave}>leave</Button>
+            <Box className={[style.result_buttons, (d.players.length > 4 ?  style.result_buttons_v2 : '')].join(' ')}>
+                {userRoom.isOwner && <Button onClick={handleGameStart} style={{borderRadius: d.players.length > 4 ? 15 : 30}}>continue</Button>}
+                <Button onClick={handleLeave} style={{borderRadius: d.players.length > 4 ? 15 : 30}}>leave</Button>
             </Box>
 
         </div>
