@@ -36,14 +36,14 @@ const PageRoom = () => {
     const userRoom = useSelector(SelectUserRoom);
     const socket = useSelector(SelectSocket);
 
-    const {enqueueSnackbar} = useSnackbar();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const [loading, setLoading] = useState(true);
     const [players, setPlayers] = useState<{ id: string, letter: string }[]>([]);
     const [canStart, setCanStart] = useState(false);
 
     useEffect(() => {
         if (!userId || (!userLetter && !userRoom.single)) {
-            enqueueSnackbar(`Error when tried connect to ${!userId ? 'WebSocket' : 'Room'}`, {variant: "error"});
+            const key = enqueueSnackbar(`Error when tried connect to ${!userId ? 'WebSocket' : 'Room'}`, {variant: "error", onClick: () => closeSnackbar(key)});
             goto(links.start);
         }
 
@@ -62,7 +62,7 @@ const PageRoom = () => {
                     setPlayers(data.playersList.filter(p => p.id !== userId));
                 }
             } else {
-                enqueueSnackbar(`Error when tried connect to Room`, {variant: "error"});
+                const key = enqueueSnackbar(`Error when tried connect to Room`, {variant: "error", onClick: () => closeSnackbar(key)});
                 goto(links.start);
             }
         })

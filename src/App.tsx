@@ -21,7 +21,7 @@ import buttonSound from "./assets/sounds/button.mp3";
 const socket = io('https://project15.aestar.com.ua:5016/', {transports: ['websocket']});
 
 function App() {
-    const {enqueueSnackbar} = useSnackbar();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const routes = useRoutes(r);
     const dispatch = useDispatch();
@@ -30,10 +30,28 @@ function App() {
     const [isInstalled, setIsInstalled] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [defferedPrompt, setDefferedPrompt] = useState<Event | null>(null)
+    const [isOnline, setIsOnline] = useState(true);
+    const [isReconnecting, setIsReconnecting] = useState(false);
 
     useEffect(() => {
+        const popstateHandler = () => {
+            socket?.emit('leaveRoom')
+            return;
+        }
+
+        const getSize = () => document.body.style.setProperty('--app-height', window.innerHeight + "px");
+        const resizeHandler = () => {
+            getSize();
+        }
+
+        const installpromptHandler = (event: Event) => {
+            event.preventDefault();
+            setDefferedPrompt(event);
+        }
+
         if (!navigator.onLine) {
-            enqueueSnackbar('You offline!', {variant: "info"});
+            const key = enqueueSnackbar('You offline!', {variant: "info", onClick: () => closeSnackbar(key)});
+            setIsOnline(false);
             socket.close();
         }
 
@@ -41,31 +59,46 @@ function App() {
             setIsInstalled(true)
         }
 
-        window.addEventListener('beforeinstallprompt', event => {
-            event.preventDefault();
-            setDefferedPrompt(event);
-        });
-
-        const getSize = () => document.body.style.setProperty('--app-height', window.innerHeight + "px");
-
-        window.addEventListener('popstate', (e) => {
-            // @ts-ignore
-            socket.emit('leaveRoom')
-            return;
-        })
-
-        window.addEventListener('resize', () => {
-            getSize();
-        })
-
-        getSize();
-
-        dispatch(setSocket({socket: socket}));
+        window.addEventListener('beforeinstallprompt', installpromptHandler);
+        window.addEventListener('popstate', popstateHandler)
+        window.addEventListener('resize', resizeHandler)
 
         socket.on('connected', (data: { id: string }) => {
+            setIsOnline(true);
+            setIsReconnecting(false);
             dispatch(setUserId({user_id: data.id}));
         })
+
+        dispatch(setSocket({socket: socket}));
+        getSize();
+
+        return () => {
+            socket.off('connected');
+            socket.off('connect_error');
+            window.removeEventListener('resize', resizeHandler);
+            window.removeEventListener('beforeinstallprompt', installpromptHandler);
+            window.removeEventListener('popstate', popstateHandler);
+        }
     }, [])
+
+    useEffect(() => {
+        socket.on('connect_error', (err) => {
+            if (!navigator.onLine) {
+                if(isReconnecting)
+                {
+                    const key = enqueueSnackbar('You still offline!', {variant: "error", onClick: () => closeSnackbar(key)});
+                    setIsReconnecting(false);
+                }
+                console.log('You offline')
+                socket.close();
+                setIsOnline(false);
+            }
+        })
+
+        return () => {
+            socket.off('connect_error');
+        }
+    }, [isReconnecting])
 
     const onShowModal = () => {
         playButton();
@@ -82,10 +115,25 @@ function App() {
         setIsInstalled(true)
     }
 
+    const tryToReconnect = () => {
+        setIsReconnecting(true);
+        socket.connect();
+    }
+
     return (
         <>
             {showModal && <Modal onClose={() => setShowModal(false)}/>}
-            <Box className={styles.content}>
+            {!isOnline &&
+                <Box className={styles.offline_page}>
+                    <Box className={styles.offline_container}>
+                        <Box>
+                            Offline. Please check your internet connection and reload app.
+                        </Box>
+                        <Button className={styles.retry_button} onClick={tryToReconnect}>retry</Button>
+                    </Box>
+                </Box>
+            }
+            {isOnline && <Box className={styles.content}>
                 {routes}
                 {!isInstalled && <Box className={styles.install_modal}>
                     <Box className={styles.install_container}>
@@ -95,7 +143,7 @@ function App() {
                         <img src={crossIcon} alt="" onClick={closeModal} className={styles.closeIcon}/>
                     </Box>
                 </Box>}
-            </Box>
+            </Box>}
         </>
     )
 }

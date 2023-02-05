@@ -30,7 +30,7 @@ const LobbyPage = () => {
     const [playButton] = useSound(buttonSound);
 
     const [roomNumber, setRoomNumber] = useState('');
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const [loading, setLoading] = useState(true)
     const [playersCount, setPlayersCount] = useState(4);
     const [buttons, setButtons] = useState<{ number: number, active: number }[]>(
@@ -45,12 +45,10 @@ const LobbyPage = () => {
     const [isModalRoomOpened, setModalRoomOpened] = useState(false);
 
     useEffect(() => {
-        if(!userId)
-        {
-            enqueueSnackbar('Error when try connect to WebSocket.', {variant: 'error'});
+        if (!userId) {
+            const key = enqueueSnackbar('Error when try connect to WebSocket.', {variant: 'error', onClick: () => closeSnackbar(key)});
             goto(links.start);
-        }
-        else setLoading(false);
+        } else setLoading(false);
 
         socket?.on('initiatedStart', (data: { status: boolean }) => {
             if (data.status)
@@ -117,9 +115,7 @@ const LobbyPage = () => {
                 handleToggleModalPlayers()
                 setPlayersCount(4);
             }
-        }
-        else
-        {
+        } else {
             handleToggleModalRoom();
         }
     }
@@ -131,31 +127,36 @@ const LobbyPage = () => {
         socket?.emit('createRoom', {solo: single, playersCount: playersCount});
         setLoading(true);
 
-        socket?.once('createdRoomName', (data: {status: boolean, message?: string, data?: string}) => {
+        socket?.once('createdRoomName', (data: { status: boolean, message?: string, data?: string }) => {
             setLoading(false)
-            if(data.status)
-            {
+            if (data.status) {
                 dispatch(setRoom({roomNumber: data.data ?? "", isOwner: true, single: single}))
-                !single && enqueueSnackbar(`Connecting to created room #${data.data}...`, {variant: 'info'});
-            }
-            else if (data.message)
-            {
-                enqueueSnackbar(data.message, {variant: 'error'});
+                if (!single) {
+                    const key = enqueueSnackbar(`Connecting to created room #${data.data}...`, {
+                        variant: 'info',
+                        onClick: () => closeSnackbar(key)
+                    });
+                }
+            } else if (data.message) {
+                const key = enqueueSnackbar(data.message, {variant: 'error', onClick: () => closeSnackbar(key)});
             }
         })
 
-        socket?.once('joinedRoom', (data: {status: boolean, message?: string, client: string, letter?: string, canStart: boolean}) => {
+        socket?.once('joinedRoom', (data: { status: boolean, message?: string, client: string, letter?: string, canStart: boolean }) => {
             setLoading(false)
-            if(data.status)
-            {
+            if (data.status) {
                 dispatch(setUserLetter({user_letter: data.letter ?? ""}));
-                !single && enqueueSnackbar(`Connected to created room!`, {variant: 'success'});
-                if(!single)
+                if (!single) {
+                    const key = enqueueSnackbar(`Connected to created room!`, {
+                        variant: 'success',
+                        onClick: () => closeSnackbar(key)
+                    });
+                }
+                if (!single)
                     goto(links.room);
                 else socket?.emit('initStart');
-            }
-            else {
-                enqueueSnackbar(data.message, {variant: 'error'});
+            } else {
+                const key = enqueueSnackbar(data.message, {variant: 'error', onClick: () => closeSnackbar(key)});
             }
         })
     }
@@ -168,17 +169,18 @@ const LobbyPage = () => {
 
         socket?.emit('joinRoom', {room: roomNumber})
 
-        socket?.once('joinedRoom', (data: {status: boolean, message?: string, client: string, letter?: string, canStart: boolean}) => {
+        socket?.once('joinedRoom', (data: { status: boolean, message?: string, client: string, letter?: string, canStart: boolean }) => {
             setLoading(false)
-            if(data.status)
-            {
+            if (data.status) {
                 dispatch(setUserLetter({user_letter: data.letter ?? ""}));
                 dispatch(setRoom({roomNumber: roomNumber, single: false, isOwner: false}));
-                enqueueSnackbar(`Connected to room!`, {variant: 'success'});
+                const key = enqueueSnackbar(`Connected to room!`, {
+                    variant: 'success',
+                    onClick: () => closeSnackbar(key)
+                });
                 goto(links.room);
-            }
-            else {
-                enqueueSnackbar(data.message, {variant: 'error'});
+            } else {
+                const key = enqueueSnackbar(data.message, {variant: 'error', onClick: () => closeSnackbar(key)});
             }
         })
     }
@@ -206,24 +208,28 @@ const LobbyPage = () => {
             {isModalPlayersOpened && <Box className={style.modal__players}>
                 <h1>number of players</h1>
                 <Box className={style.nums}>
-                    {buttons.map(btn => <NumberItem key={btn.number} id={btn.number} onClick={handleClick} number={btn.number}
+                    {buttons.map(btn => <NumberItem key={btn.number} id={btn.number} onClick={handleClick}
+                                                    number={btn.number}
                                                     active={btn.active}/>)}
                 </Box>
                 <Box className={style.modal_buttons}>
                     <Button onClick={handleCreateLobby} className={style.drink}>create lobby</Button>
-                    <Button onClick={()=>handleCancel(0)} className={style.cancel}>cancel</Button>
+                    <Button onClick={() => handleCancel(0)} className={style.cancel}>cancel</Button>
                 </Box>
-                <img src={createLobbyImg} alt="" style={{maxWidth: '80%', maxHeight: '30%'}} className={style.createLobbyImg}/>
+                <img src={createLobbyImg} alt="" style={{maxWidth: '80%', maxHeight: '30%'}}
+                     className={style.createLobbyImg}/>
             </Box>}
             {isModalRoomOpened &&
                 <Box className={style.modal__join}>
                     <Box className={style.content}>
-                        <img src={joinLobbyImg} alt="" style={{maxWidth: '80%', maxHeight: '30%'}} />
-                        <input onChange={handleChangeRoomNumber} id='room-id-input' pattern="[0-9]*" inputMode="numeric" name="room-number" maxLength={4}
+                        <img src={joinLobbyImg} alt="" style={{maxWidth: '80%', maxHeight: '30%'}}/>
+                        <input onChange={handleChangeRoomNumber} id='room-id-input' pattern="[0-9]*" inputMode="numeric"
+                               name="room-number" maxLength={4}
                                placeholder="enter a room number"/>
                         <Box className={style.modal_buttons}>
                             <Button id='join-r' onClick={joinRoom} style={{color: '#0B997B'}}>join</Button>
-                            <Button id='cancel-r' onClick={() => handleCancel(1)} style={{color: '#FF0000'}}>cancel</Button>
+                            <Button id='cancel-r' onClick={() => handleCancel(1)}
+                                    style={{color: '#FF0000'}}>cancel</Button>
                         </Box>
                     </Box>
                 </Box>}

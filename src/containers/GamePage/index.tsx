@@ -123,7 +123,7 @@ const GamePage = () => {
 
     useEffect(() => {
         if (!userId || (!userLetter && !userRoom.single && gameStatus !== 'results')) {
-            enqueueSnackbar(`Error when tried connect to ${!userId ? 'WebSocket' : 'Room'}`, {variant: "error"});
+            const key = enqueueSnackbar(`Error when tried connect to ${!userId ? 'WebSocket' : 'Room'}`, {variant: "error", onClick: () => closeSnackbar(key)});
             goto(links.start);
         } else
             setLoading(false);
@@ -137,7 +137,7 @@ const GamePage = () => {
                 if (userRoom.isOwner)
                     setTime(3);
             } else {
-                enqueueSnackbar(`Error when tried connect to Room`, {variant: "error"});
+                const key = enqueueSnackbar(`Error when tried connect to Room`, {variant: "error", onClick: () => closeSnackbar(key)});
                 goto(links.start);
             }
         })
@@ -149,7 +149,7 @@ const GamePage = () => {
                 else if (gameStatus === 'running') {
                     dispatch(setRoom({roomNumber: null, single: null, isOwner: null}));
                     dispatch(setUserLetter({user_letter: null}));
-                    enqueueSnackbar(`One player leaves from a game before it gone`, {variant: "info"});
+                    const key = enqueueSnackbar(`One player leaves from a game before it gone`, {variant: "info", onClick: () => closeSnackbar(key)});
                     socket?.emit('leaveRoom');
                 } else {
                     dispatch(setRoom({roomNumber: null, single: null, isOwner: null}));
@@ -186,7 +186,9 @@ const GamePage = () => {
                 setCurrentStep(data?.data?.step ?? "");
                 setGameStatus('running');
             } else
-                enqueueSnackbar(data.message, {variant: "error"});
+            {
+                const key = enqueueSnackbar(data.message, {variant: "error", onClick: () => closeSnackbar(key)});
+            }
         })
 
         socket?.on('gameEnded', (data: GameEndedInterface) => {
@@ -211,7 +213,9 @@ const GamePage = () => {
                 else
                     setAnswered(true);
             } else
-                enqueueSnackbar(`Failed to send your answer. Try again.`, {variant: "error"});
+            {
+                const key = enqueueSnackbar(`Failed to send your answer. Try again.`, {variant: "error", onClick: () => closeSnackbar(key)});
+            }
         })
 
         return () => {
@@ -237,7 +241,9 @@ const GamePage = () => {
                 if (data.status) {
                     setAnswered(true);
                 } else
-                    enqueueSnackbar(`Failed skip. Try again.`, {variant: "error"});
+                {
+                    const key = enqueueSnackbar(`Failed skip. Try again.`, {variant: "error", onClick: () => closeSnackbar(key)});
+                }
             })
         }
     }
