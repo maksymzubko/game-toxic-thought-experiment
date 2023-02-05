@@ -103,6 +103,7 @@ const LobbyPage = () => {
     }
 
     const goBack = () => {
+        playButton();
         goto(links.start)
     }
 

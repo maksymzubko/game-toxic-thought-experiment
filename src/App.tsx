@@ -8,6 +8,11 @@ import {setSocket, setUserId} from "./redux/store/socket/slice";
 import {useDispatch} from "react-redux";
 import {useSnackbar} from "notistack";
 import Modal from "./containers/Modal";
+import Button from "./components/Button";
+import logo from '/144.png'
+import crossIcon from "./containers/Modal/assets/cross-icon.png";
+import useSound from "use-sound";
+import buttonSound from "./assets/sounds/button.mp3";
 
 // local
 // const socket = io('ws://localhost:3000', {transports: ['websocket']});
@@ -21,37 +26,25 @@ function App() {
     const routes = useRoutes(r);
     const dispatch = useDispatch();
 
+    const [playButton] = useSound(buttonSound);
     const [isInstalled, setIsInstalled] = useState(false)
-    const [firstInteractAllow, setFirstInteractAllow] = useState(true);
     const [showModal, setShowModal] = useState(false)
+    const [defferedPrompt, setDefferedPrompt] = useState<Event | null>(null)
 
     useEffect(() => {
-        if(!navigator.onLine)
-        {
+        if (!navigator.onLine) {
             enqueueSnackbar('You offline!', {variant: "info"});
             socket.close();
         }
 
-        let defferedPrompt: any;
         if (window.matchMedia('(display-mode: standalone)').matches) {
             setIsInstalled(true)
         }
 
         window.addEventListener('beforeinstallprompt', event => {
             event.preventDefault();
-            defferedPrompt = event
+            setDefferedPrompt(event);
         });
-
-        document.body.addEventListener('click', event => {
-            if(!isInstalled)
-            {
-                defferedPrompt?.prompt();
-
-                defferedPrompt?.userChoice.then((choice: any) => {
-                    defferedPrompt = null;
-                })
-            }
-        }, {once: true})
 
         const getSize = () => document.body.style.setProperty('--app-height', window.innerHeight + "px");
 
@@ -69,25 +62,39 @@ function App() {
 
         dispatch(setSocket({socket: socket}));
 
-        socket.on('connected', (data: {id: string}) => {
+        socket.on('connected', (data: { id: string }) => {
             dispatch(setUserId({user_id: data.id}));
         })
     }, [])
 
     const onShowModal = () => {
-        if (/iPhone|iPad|iPod/i.test(navigator.userAgent) && !isInstalled) {
-            if (firstInteractAllow) {
-                setFirstInteractAllow(false)
-                setShowModal(true);
-            }
+        playButton();
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            setShowModal(true);
+        } else {
+            // @ts-ignore
+            defferedPrompt?.prompt();
         }
+    }
+
+    const closeModal = () => {
+        playButton();
+        setIsInstalled(true)
     }
 
     return (
         <>
             {showModal && <Modal onClose={() => setShowModal(false)}/>}
-            <Box className={styles.content} onClick={onShowModal}>
+            <Box className={styles.content}>
                 {routes}
+                {!isInstalled && <Box className={styles.install_modal}>
+                    <Box className={styles.install_container}>
+                        <img src={logo} alt={''}/>
+                        <Box>try our app PWA</Box>
+                        <Button onClick={onShowModal} className={styles.button}>install</Button>
+                        <img src={crossIcon} alt="" onClick={closeModal} className={styles.closeIcon}/>
+                    </Box>
+                </Box>}
             </Box>
         </>
     )

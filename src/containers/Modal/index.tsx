@@ -12,7 +12,7 @@ import screen4 from './assets/screens/screen4.png'
 const Modal = (props: any) => {
 
     const [playButton] = useSound(buttonSound);
-    const [isShortVersion, setIsShortVersion] = useState(true)
+    const [isShortVersion, setIsShortVersion] = useState(false)
 
     return (
         <div className="modal-pwa">
@@ -39,7 +39,7 @@ const Modal = (props: any) => {
                             onClick={()=> {props.onClose(); playButton()}}
                             style={{width: 285, maxWidth: '80%', height: 60, fontSize: 32}}
 
-                        >to main page</Button>
+                        >understood</Button>
                     </div>
                 }
             </div>
