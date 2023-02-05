@@ -33,9 +33,9 @@ function App() {
         }
 
         let defferedPrompt: any;
-        window.addEventListener('appinstalled', () => {
-            setIsInstalled(true);
-        })
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            setIsInstalled(true)
+        }
 
         window.addEventListener('beforeinstallprompt', event => {
             event.preventDefault();
