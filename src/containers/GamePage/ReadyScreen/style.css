@@ -67,3 +67,16 @@
         font-size: 90px;
     }
 }
+@media (max-height: 600px) {
+    .container {
+        box-sizing: border-box;
+        width: 97%;
+        height: 97%;
+    }
+    .modal {
+        box-sizing: border-box;
+        width: 97%;
+        height: 97%;
+        padding: 6px;
+    }
+}

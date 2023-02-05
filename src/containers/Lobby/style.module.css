@@ -182,12 +182,19 @@ input[placeholder="enter a room number"] {
         width: 70px;
     }
     input[placeholder="enter a room number"] {
-        font-size: 18px !important;
+        font-size: 22px !important;
     }
 }
 @media (max-height: 720px) {
     .createLobbyImg {
         display: none;
+    }
+}
+@media (max-height: 600px) {
+    .container {
+        box-sizing: border-box;
+        width: 97%;
+        height: 97%;
     }
 }
 @media (max-height: 520px) {

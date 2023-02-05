@@ -7,23 +7,12 @@ import Button from "../../components/Button";
 import {useNavigate} from "react-router-dom";
 import buttonSound from '../../assets/sounds/button.mp3'
 import useSound from "use-sound";
-import Modal from "./Modal";
 
 const StartPage = () => {
     const [isModalOpened, setIsModalOpened] = useState(false)
     const goto = useNavigate()
     const [playButton] = useSound(buttonSound);
-    const [firstInteractAllow, setFirstInteractAllow] = useState(true);
-    const [showModal, setShowModal] = useState(false)
 
-    const onShowModal = () => {
-        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            if (firstInteractAllow) {
-                setFirstInteractAllow(false)
-                setShowModal(true);
-            }
-        }
-    }
 
     const handleToggleModal = () => {
         playButton();
@@ -44,8 +33,7 @@ const StartPage = () => {
     }
 
     return (
-        <Box className={style.container} onClick={onShowModal}>
-            {showModal && <Modal onClose={() => setShowModal(false)}/>}
+        <Box className={style.container}>
             <img src={logo} alt={'logo'}/>
             <Box className={`${style.buttons}`}>
                 <Button variant={'contained'} className={style.single} onClick={()=>goLobby(0)}>single device</Button>
