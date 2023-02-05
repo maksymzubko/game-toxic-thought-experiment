@@ -13,7 +13,6 @@ const StartPage = () => {
     const goto = useNavigate()
     const [playButton] = useSound(buttonSound);
 
-
     const handleToggleModal = () => {
         playButton();
         setIsModalOpened(!isModalOpened);
