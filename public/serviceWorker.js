@@ -1,4 +1,4 @@
-const CACHE_NAME = "ver-2"
+const CACHE_NAME = "ver-3"
 const self = this;
 
 self.addEventListener('install', (e) => {
