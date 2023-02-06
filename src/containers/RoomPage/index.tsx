@@ -123,7 +123,7 @@ const PageRoom = () => {
                         tell this code to your friends
                         <span>{userRoom.roomNumber}</span>
                     </Box>
-                    <Box className={style.players_list}>
+                    <Box className={[style.players_list, userRoom.isOwner ? style.players_list_for_owner : '' ].join(' ')}>
                         <PlayerList me={userLetter ?? ""} players={players}/>
                     </Box>
                     <Box className={style.buttons}>
