@@ -12,7 +12,9 @@ import screen4 from './assets/screens/screen4.png'
 const Modal = (props: any) => {
 
     const [playButton] = useSound(buttonSound);
-    const [isShortVersion, setIsShortVersion] = useState(false)
+    const [isShortVersion, setIsShortVersion] = useState(false);
+    const [zoomedImage, setZoomedImage] = useState('');
+
 
     return (
         <div className="modal-pwa">
@@ -27,12 +29,12 @@ const Modal = (props: any) => {
                     :
                     <div className="part-2">
                         <h2>how to save as PWA?</h2>
-                        <img src={screen1} alt="" className="screen"/>
-                        <img src={screen2} alt="" className="screen"/>
+                        <img src={screen1} alt="" className="screen" onClick={() => setZoomedImage(screen1)}/>
+                        <img src={screen2} alt="" className="screen" onClick={() => setZoomedImage(screen2)}/>
                         <p>1</p>
                         <p>2</p>
-                        <img src={screen3} alt="" className="screen"/>
-                        <img src={screen4} alt="" className="screen"/>
+                        <img src={screen3} alt="" className="screen" onClick={() => setZoomedImage(screen3)}/>
+                        <img src={screen4} alt="" className="screen" onClick={() => setZoomedImage(screen4)}/>
                         <p>3</p>
                         <p>4</p>
                         <Button
@@ -43,6 +45,11 @@ const Modal = (props: any) => {
                     </div>
                 }
             </div>
+            {zoomedImage &&
+                <div className="image-zoomed">
+                    <img src={zoomedImage} alt="" onClick={() => setZoomedImage('')} />
+                </div>
+            }
         </div>
     );
 };

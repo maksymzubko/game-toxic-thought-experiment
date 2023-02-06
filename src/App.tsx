@@ -120,6 +120,8 @@ function App() {
         socket.connect();
     }
 
+    console.log('routes', routes);
+
     return (
         <>
             {showModal && <Modal onClose={() => setShowModal(false)}/>}
@@ -135,10 +137,10 @@ function App() {
             }
             {isOnline && <Box className={styles.content}>
                 {routes}
-                {!isInstalled && <Box className={styles.install_modal}>
+                {!isInstalled && (routes?.props?.match.pathname === '/') &&<Box className={styles.install_modal}>
                     <Box className={styles.install_container}>
                         <img src={logo} alt={''}/>
-                        <Box>try our app PWA</Box>
+                        <Box className={styles.title}>try our app PWA</Box>
                         <Button onClick={onShowModal} className={styles.button}>install</Button>
                         <img src={crossIcon} alt="" onClick={closeModal} className={styles.closeIcon}/>
                     </Box>
