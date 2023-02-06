@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Box} from "@mui/material";
-import {useRoutes} from "react-router-dom";
+import {useLocation, useRoutes} from "react-router-dom";
 import {routes as r} from "./router";
 import styles from './app-style.module.css'
 import {io} from "socket.io-client";
@@ -23,6 +23,7 @@ const socket = io('https://project15.aestar.com.ua:5016/', {transports: ['websoc
 function App() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
+    const location = useLocation();
     const routes = useRoutes(r);
     const dispatch = useDispatch();
 
@@ -32,6 +33,7 @@ function App() {
     const [defferedPrompt, setDefferedPrompt] = useState<Event | null>(null)
     const [isOnline, setIsOnline] = useState(true);
     const [isReconnecting, setIsReconnecting] = useState(false);
+    const [isMainScreen, setIsMainScreen] = useState(false);
 
     useEffect(() => {
         const popstateHandler = () => {
@@ -82,14 +84,19 @@ function App() {
     }, [])
 
     useEffect(() => {
+        setIsMainScreen(location.pathname === '/')
+    }, [location])
+
+    useEffect(() => {
         socket.on('connect_error', (err) => {
             if (!navigator.onLine) {
-                if(isReconnecting)
-                {
-                    const key = enqueueSnackbar('You still offline!', {variant: "error", onClick: () => closeSnackbar(key)});
+                if (isReconnecting) {
+                    const key = enqueueSnackbar('You still offline!', {
+                        variant: "error",
+                        onClick: () => closeSnackbar(key)
+                    });
                     setIsReconnecting(false);
                 }
-                console.log('You offline')
                 socket.close();
                 setIsOnline(false);
             }
@@ -120,32 +127,34 @@ function App() {
         socket.connect();
     }
 
-    return (
-        <>
-            {showModal && <Modal onClose={() => setShowModal(false)}/>}
-            {!isOnline &&
-                <Box className={styles.offline_page}>
-                    <Box className={styles.offline_container}>
-                        <Box>
-                            Offline. Please check your internet connection and reload app.
+    if (isOnline)
+        return (
+            <>
+                {showModal && <Modal onClose={() => setShowModal(false)}/>}
+                <Box className={styles.content}>
+                    {routes}
+                    {!isInstalled && isMainScreen && <Box className={styles.install_modal}>
+                        <Box className={styles.install_container}>
+                            <img src={logo} alt={''}/>
+                            <Box className={styles.title}>try our app PWA</Box>
+                            <Button onClick={onShowModal} className={styles.button}>install</Button>
+                            <img src={crossIcon} alt="" onClick={closeModal} className={styles.closeIcon}/>
                         </Box>
-                        <Button className={styles.retry_button} onClick={tryToReconnect}>retry</Button>
-                    </Box>
+                    </Box>}
                 </Box>
-            }
-            {isOnline && <Box className={styles.content}>
-                {routes}
-                {!isInstalled && <Box className={styles.install_modal}>
-                    <Box className={styles.install_container}>
-                        <img src={logo} alt={''}/>
-                        <Box>try our app PWA</Box>
-                        <Button onClick={onShowModal} className={styles.button}>install</Button>
-                        <img src={crossIcon} alt="" onClick={closeModal} className={styles.closeIcon}/>
+            </>
+        )
+    else
+        return (
+            <Box className={styles.offline_page}>
+                <Box className={styles.offline_container}>
+                    <Box>
+                        Offline. Please check your internet connection and reload app.
                     </Box>
-                </Box>}
-            </Box>}
-        </>
-    )
+                    <Button className={styles.retry_button} onClick={tryToReconnect}>retry</Button>
+                </Box>
+            </Box>
+        )
 }
 
 export default App

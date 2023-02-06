@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 5px 10px;
     background: rgba(0,0,0,.5);
 }
 
@@ -18,25 +18,28 @@
     align-items: center;
     justify-content: center;
     gap: 15px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .install_modal .button{
     font-size: 24px;
     background-color: #0B997B;
     width: 40%;
+    max-width: 150px;
     height: auto;
     margin: 0;
 }
 
 .install_modal img{
     height: auto;
-    width: 30px;
+    width: 20px;
 }
 
 .install_modal .closeIcon{
     position: absolute;
     right: -2%;
-    bottom: 130%;
+    bottom: 120%;
     /*filter: invert(1);*/
 }
 
@@ -50,7 +53,6 @@
 }
 
 .offline_page{
-    border-radius: 15px;
     text-align: center;
 
     font-size: 24px;
@@ -62,7 +64,8 @@
 }
 
 .offline_page .offline_container{
-    padding: 2%;
+    border-radius: 15px;
+    padding: 5%;
     background: rgba(255, 255, 255);
 
     display: flex;
@@ -81,4 +84,14 @@
 .offline_container .retry_button:hover, .offline_container .retry_button:focus{
     background-color: #6966F8;
     color: white;
+}
+
+@media (max-width: 400px) {
+    .title {
+        font-size: 22px;
+    }
+    .install_modal .button{
+        width: 100px;
+        border-radius: 15px;
+    }
 }
