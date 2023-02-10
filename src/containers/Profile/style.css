@@ -163,6 +163,63 @@
     color: #0B997B;
 }
 
+.confirm-delete{
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.confirm-delete .modal{
+    padding: 0;
+    margin: 0;
+    border-radius: 30px;
+    background-color: #fff;
+    width: 340px;
+    height: 395px;
+    position: relative;
+}
+.confirm-delete .modal .close{
+    position: absolute;
+    top: 33px;
+    right: 25px;
+}
+.confirm-delete .modal .sad-dog{
+    position: absolute;
+    top: 16px;
+    left: 17px;
+}
+.confirm-delete .modal p{
+    position: absolute;
+    bottom: 126px ;
+    left: 27px;
+    width: 283px;
+    text-align: center;
+    font-size: 32px;
+    line-height: 38px;
+    letter-spacing: -0.01em;
+    color: #252525;
+    font-weight: bolder;
+}
+.confirm-delete .modal .delete-button{
+    position: absolute;
+    bottom: 42px;
+    left: 27px;
+    height: 54px;
+    width: 287px;
+    background-image: url("./assets/doneBg.png");
+    background-size: 100% 100%;
+    font-size: 32px;
+    line-height: 38px;
+    text-align: center;
+    font-weight: bolder;
+    color: #F84E93;
+}
+
 @media (max-height: 700px) {
     .profile {
         padding: 10px 27px;
