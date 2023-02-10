@@ -25,3 +25,8 @@ export const SelectUserRoom  = createSelector(
     [selectDomain],
     (socketState: SocketState) => socketState.room,
 );
+
+export const SelectIsSoundMuted  = createSelector(
+    [selectDomain],
+    (socketState: SocketState) => socketState.isSoundMuted,
+);

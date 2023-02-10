@@ -7,15 +7,20 @@ import Button from "../../../components/Button";
 import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
 import glassesSound from "../../../assets/sounds/glasses.mp3";
+import {useSelector} from "react-redux";
+import {SelectIsSoundMuted} from "../../../redux/store/socket/selector";
 
 const DrinkSolo = (d: {drinkStatus: string, drinkStatusBool: boolean, players: any[], userId: any, letDrink: any}) => {
 
+    const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [imageSource, setImageSource] = useState("");
-    const [playButton] = useSound(buttonSound);
+    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
+
 
     const [glassesSoundLoad, setGlassesSoundLoad] = useState(false)
     const [playGlasses] = useSound(glassesSound, {
-        onload: () => setGlassesSoundLoad(true)
+        onload: () => setGlassesSoundLoad(true),
+        volume: isSoundMuted ? 0 : 1
     });
     useEffect(() => {
         if (glassesSoundLoad) {
@@ -46,7 +51,7 @@ const DrinkSolo = (d: {drinkStatus: string, drinkStatusBool: boolean, players: a
             <div className="img-wrapper">
                 <img src={imageSource} alt="" className="animal-img-big"/>
             </div>
-            <img src={jugImg} alt="" className="jug-img"/>
+            {d.drinkStatusBool && <img src={jugImg} alt="" className="jug-img"/>}
             <Button onClick={() => {d.letDrink(); playButton()}} className="continue-button-2">Let's Drink!</Button>
         </>
     );

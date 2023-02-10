@@ -4,20 +4,28 @@ import {Result} from "../index";
 import style from "../style.module.css";
 import Button from "../../../components/Button";
 import {useSelector} from "react-redux";
-import {SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
+import {SelectIsSoundMuted, SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
 import {getAnimalByLetter} from "../../../helpers/animalHelp";
 import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
 import resultSound from "../../../assets/sounds/results.mp3";
 
+import likeOff from "../assets/like-off.png";
+import likeOn from "../assets/like-on.png";
+import dislikeOff from "../assets/dislike-off.png";
+import dislikeOn from "../assets/dislike-on.png";
+
 const GameResultItem = (d: { result: Result, question: { question: string; answers: string[] }, passDrinkAnimals: any, setUserDrinkStatus: any, leader: string }) => {
     const userLetter = useSelector(SelectUserLetter);
     const userRoom = useSelector(SelectUserRoom);
-    const [playButton] = useSound(buttonSound);
+    const isSoundMuted = useSelector(SelectIsSoundMuted);
+    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
     const [resultSoundLoad, setResultSoundLoad] = useState(false)
+    const [userReaction, setUserReaction] = useState('')
     const [playResult] = useSound(resultSound, {
-        onload: () => setResultSoundLoad(true)
+        onload: () => setResultSoundLoad(true),
+        volume: isSoundMuted ? 0 : 1
     });
     useEffect(() => {
         if (resultSoundLoad) {
@@ -61,6 +69,16 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
         )
     }
 
+    const switchUserReaction = (reaction: string) => {
+        playButton();
+        if (userReaction === reaction) {
+            setUserReaction('')
+        } else {
+            setUserReaction(reaction)
+        }
+    }
+
+
     if(d.result.results.length > 0)
     return (
         <Box className={style.results}>
@@ -101,6 +119,18 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
                 </Box>
             </Box>
             <Box className={style.result_buttons}>
+                <Box className={style.reaction_block}>
+                    <img
+                        src={userReaction === 'dislike' ? dislikeOn : dislikeOff}
+                        alt=""
+                        onClick={() => switchUserReaction('dislike')}
+                    />
+                    <img
+                        src={userReaction === 'like' ? likeOn : likeOff}
+                        alt=""
+                        onClick={() => switchUserReaction('like')}
+                    />
+                </Box>
                 <Button onClick={() => isDrinking()} className={style.drink_button}>Continue</Button>
             </Box>
         </Box>

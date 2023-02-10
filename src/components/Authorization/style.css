@@ -1,0 +1,74 @@
+.authorization .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0, 0.5);
+    z-index: 21;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.authorization .modal {
+    margin: 0;
+    position: relative;
+    width: 340px;
+    height: 410px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    flex-direction: column;
+    padding: 65px 32px 27px;
+    border-radius: 30px;
+    background: white;
+    box-sizing: border-box;
+    z-index: 22;
+}
+.authorization .modal .cocktails-img {
+    width: 140px;
+    max-width: unset;
+    max-height: unset;
+}
+.authorization .modal .login {
+    color: #0B997B;
+}
+.authorization .modal .login:hover {
+    background-color: #0B997B;
+    color: #fff;
+}
+.authorization .modal .register {
+    color: #6966F8;
+}
+.authorization .modal .register:hover {
+    background-color: #6966F8;
+    color: #fff;
+}
+.authorization .back-arrow{
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 50px;
+}
+.authorization .input-wrapper {
+    background-image: url("../../assets/inputBg.png");
+    width: 290px;
+    height: 55px;
+}
+.authorization .input-wrapper input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: 0 20px;
+    font-size: 32px;
+    line-height: 38px;
+    box-sizing: border-box;
+}
+.authorization .input-wrapper input::placeholder {
+    color: #333333;
+    opacity: 0.5;
+}

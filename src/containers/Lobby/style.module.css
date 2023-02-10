@@ -16,14 +16,35 @@
 
 .nums{
     display: flex;
-    gap: 15px;
+    gap: 5px;
     flex-wrap: wrap;
 
-    padding: 5%;
+    padding: 2%;
     box-sizing: border-box;
 
     align-items: center;
     justify-content: center;
+}
+.nums svg{
+    width: 70px;
+    height: 70px;
+}
+.flagsBlock{
+    display: flex;
+    width: 80%;
+    margin: 0 auto;
+    justify-content: space-between;
+    align-items: center;
+}
+.flagsBlock img{
+    width: 100px;
+}
+.customQuestionBlock{
+    display: flex;
+    width: 80%;
+    margin: 0 auto;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .hidden{
@@ -39,7 +60,7 @@
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
-    padding: 5%;
+    padding: 2%;
 
     border-radius: 15px;
     background: white;
@@ -133,6 +154,7 @@
 
 .modal__players h1{
     color: #FF0000;
+    margin: 0;
 }
 
 .cancel{
@@ -167,20 +189,15 @@ input[placeholder="enter a room number"] {
     max-width: 70%;
 }
 
-@media (max-width: 625px) {
-    .nums{
-        width: 320px;
-    }
-}
 @media (max-width: 480px) {
     input[placeholder="enter a room number"] {
         font-size: 24px !important;
     }
+    .nums{
+        width: 300px;
+    }
 }
 @media (max-width: 400px) {
-    .nums svg {
-        width: 70px;
-    }
     input[placeholder="enter a room number"] {
         font-size: 22px !important;
     }
@@ -189,16 +206,15 @@ input[placeholder="enter a room number"] {
     .createLobbyImg {
         display: none;
     }
+    .modal__players h1{
+        font-size: 28px;
+    }
+
 }
 @media (max-height: 600px) {
     .container {
         box-sizing: border-box;
         width: 97%;
         height: 97%;
-    }
-}
-@media (max-height: 520px) {
-    h1{
-        margin: 0;
     }
 }

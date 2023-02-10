@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box} from "@mui/material";
 import logo from './assets/toxic-logo.png'
 import style from './style.module.css'
@@ -7,11 +7,19 @@ import Button from "../../components/Button";
 import {useNavigate} from "react-router-dom";
 import buttonSound from '../../assets/sounds/button.mp3'
 import useSound from "use-sound";
+import {useSelector} from "react-redux";
+import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
+import Authorization from "../../components/Authorization";
 
 const StartPage = () => {
     const [isModalOpened, setIsModalOpened] = useState(false)
-    const goto = useNavigate()
-    const [playButton] = useSound(buttonSound);
+    const goto = useNavigate();
+
+    const isSoundMuted = useSelector(SelectIsSoundMuted);
+    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
+    const [showFirstButtonsList, setShowFirstButtonsList] = useState(true);
+    const [freezeScreen, setFreezeScreen] = useState(false)
+    const [showModalAuthorization, setShowModalAuthorization] = useState(false)
 
     const handleToggleModal = () => {
         playButton();
@@ -31,13 +39,44 @@ const StartPage = () => {
         }
     }
 
+    const showSecondScreen = () => {
+        playButton();
+        setShowFirstButtonsList(false);
+        setFreezeScreen(true)
+    }
+
+    useEffect(() => {
+        if (freezeScreen) setTimeout(() =>setFreezeScreen(false), 300 );
+    }, [freezeScreen]);
+
+    const tryGoToProfile = () => {
+        playButton();
+        if (true) { // check if user authorized
+            goto(links.profile)
+        } else {
+            setShowModalAuthorization(true)
+        }
+    }
+
+
     return (
         <Box className={style.container}>
             <img src={logo} alt={'logo'}/>
             <Box className={`${style.buttons}`}>
-                <Button variant={'contained'} className={style.single} onClick={()=>goLobby(0)}>single device</Button>
-                <Button variant={'contained'} className={style.multi} onClick={()=>goLobby(1)}>multi device</Button>
-                <Box className={style.help} onClick={handleToggleModal}>how to play</Box>
+                {showFirstButtonsList ?
+                    <>
+                        <Button variant={'contained'} className={style.single} onClick={() => showSecondScreen()}>play</Button>
+                        <Button variant={'contained'} className={style.multi} onClick={() => tryGoToProfile()}>profile</Button>
+                    </>
+                    :
+                    <>
+                        {freezeScreen && <div className={style.freezeScreen} />}
+                        <Button variant={'contained'} className={style.single} onClick={() => goLobby(0)}>single
+                            device</Button>
+                        <Button variant={'contained'} className={style.multi} onClick={() => goLobby(1)}>multi
+                            device</Button>
+                    </>
+                }
             </Box>
             {isModalOpened && <Box className={style.modal}>
                 <h1>how to play:</h1>
@@ -51,6 +90,7 @@ const StartPage = () => {
                 </ul>
                 <Button onClick={handleToggleModal} className={style.undrestood}>understood</Button>
             </Box>}
+            {showModalAuthorization && <Authorization onClose={() => setShowModalAuthorization(false)}/>}
         </Box>
     );
 };

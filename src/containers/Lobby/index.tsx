@@ -9,13 +9,16 @@ import {links} from "../../router";
 import {useSnackbar} from "notistack";
 import {useDispatch, useSelector} from "react-redux";
 import {setRoom, setUserLetter} from "../../redux/store/socket/slice";
-import {SelectSocket, SelectUserId} from "../../redux/store/socket/selector";
+import {SelectIsSoundMuted, SelectSocket, SelectUserId} from "../../redux/store/socket/selector";
 import lobbyImg from './assets/image1.png';
 import createLobbyImg from './assets/image2.png';
 import joinLobbyImg from './assets/image4.png';
 import useSound from "use-sound";
 import buttonSound from "../../assets/sounds/button.mp3";
-
+import flagUS from './assets/flagUS.png';
+import flagJP from './assets/flagJP.png';
+import checkboxOn from './assets/checkbox-on.png';
+import checkboxOff from './assets/checkbox-off.png';
 
 const LobbyPage = () => {
     const data = useLocation()
@@ -27,7 +30,8 @@ const LobbyPage = () => {
     const userId = useSelector(SelectUserId);
     const socket = useSelector(SelectSocket);
 
-    const [playButton] = useSound(buttonSound);
+    const isSoundMuted = useSelector(SelectIsSoundMuted);
+    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
     const [roomNumber, setRoomNumber] = useState('');
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
@@ -41,6 +45,8 @@ const LobbyPage = () => {
             {number: 7, active: 0},
             {number: 8, active: 0}
         ])
+    const [selectedFlag, setSelectedFlag] = useState('')
+    const [useCustomQuestions, setUseCustomQuestions] = useState(true)
     const [isModalPlayersOpened, setModalPlayersOpened] = useState(data.state.single);
     const [isModalRoomOpened, setModalRoomOpened] = useState(false);
 
@@ -185,6 +191,15 @@ const LobbyPage = () => {
         })
     }
 
+    const switchFlag = (flag: string) => {
+        playButton();
+        if (selectedFlag === flag) {
+            setSelectedFlag('')
+        } else {
+            setSelectedFlag(flag)
+        }
+    }
+
     return (
         <Box className={style.container}>
             <Backdrop open={loading}>
@@ -212,12 +227,21 @@ const LobbyPage = () => {
                                                     number={btn.number}
                                                     active={btn.active}/>)}
                 </Box>
+                <h1>preferable language</h1>
+                <Box className={style.flagsBlock}>
+                    <img src={flagUS} alt="" style={{opacity: selectedFlag === 'us' ? 1 : 0.5}} onClick={() => switchFlag('us')}/>
+                    <img src={flagJP} alt="" style={{opacity: selectedFlag === 'jp' ? 1 : 0.5}} onClick={() => switchFlag('jp')}/>
+                </Box>
+                <Box onClick={()=> { playButton(); setUseCustomQuestions(!useCustomQuestions) }} className={style.customQuestionBlock}>
+                    <h1>use custom questions</h1>
+                    {<img src={useCustomQuestions ? checkboxOn : checkboxOff} alt=""/>}
+                </Box>
                 <Box className={style.modal_buttons}>
                     <Button onClick={handleCreateLobby} className={style.drink}>create lobby</Button>
                     <Button onClick={() => handleCancel(0)} className={style.cancel}>cancel</Button>
                 </Box>
-                <img src={createLobbyImg} alt="" style={{maxWidth: '80%', maxHeight: '30%'}}
-                     className={style.createLobbyImg}/>
+                {/*<img src={createLobbyImg} alt="" style={{maxWidth: '80%', maxHeight: '30%'}}*/}
+                {/*     className={style.createLobbyImg}/>*/}
             </Box>}
             {isModalRoomOpened &&
                 <Box className={style.modal__join}>
