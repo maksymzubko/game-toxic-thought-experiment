@@ -42,6 +42,11 @@
 
 .players_list{
     height: 90%;
+    width: 75%;
+    max-height: calc(100% - 160px);
+}
+.players_list_for_owner {
+    max-height: calc(100% - 270px);
 }
 
 .leave{
