@@ -25,11 +25,20 @@
     max-height: calc(100% - 250px);
 }
 
+.freezeScreen{
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .single{
     color: #0B997B;
 }
 
-.single:hover, .single:focus{
+.single:hover{
     background-color: #0B997B;
     color: white;
 }

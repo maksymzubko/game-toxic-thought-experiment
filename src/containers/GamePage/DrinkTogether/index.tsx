@@ -7,14 +7,18 @@ import Button from "../../../components/Button";
 import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
 import glassesSound from "../../../assets/sounds/glasses.mp3";
+import {useSelector} from "react-redux";
+import {SelectIsSoundMuted} from "../../../redux/store/socket/selector";
 
 const DrinkTogether = (d: { players: { id: string, letter: string }[], listAnimalsWithBeer: {player?: string}[], letDrink: any},  ) => {
 
-    const [playButton] = useSound(buttonSound);
+    const isSoundMuted = useSelector(SelectIsSoundMuted);
+    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
     const [glassesSoundLoad, setGlassesSoundLoad] = useState(false)
     const [playGlasses] = useSound(glassesSound, {
-        onload: () => setGlassesSoundLoad(true)
+        onload: () => setGlassesSoundLoad(true),
+        volume: isSoundMuted ? 0 : 1
     });
     useEffect(() => {
         if (glassesSoundLoad) {

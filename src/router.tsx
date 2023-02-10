@@ -29,12 +29,17 @@ const Room = Loader(
     lazy(() => import('./containers/RoomPage/index'))
 );
 
+const Profile = Loader(
+    lazy(() => import('./containers/Profile/index'))
+);
+
 
 export const links = {
     lobby: '/lobby',
     start: '/',
     game: '/game',
-    room: '/room'
+    room: '/room',
+    profile: '/profile',
 }
 
 export const routes = [
@@ -53,6 +58,10 @@ export const routes = [
     {
         path: '/room',
         element: <Room/>
+    },
+    {
+        path: '/profile',
+        element: <Profile/>
     },
     {
         path: "*",

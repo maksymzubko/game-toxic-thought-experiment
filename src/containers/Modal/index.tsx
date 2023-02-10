@@ -8,10 +8,14 @@ import screen1 from './assets/screens/screen1.png'
 import screen2 from './assets/screens/screen2.png'
 import screen3 from './assets/screens/screen3.png'
 import screen4 from './assets/screens/screen4.png'
+import {useSelector} from "react-redux";
+import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
 
 const Modal = (props: any) => {
 
-    const [playButton] = useSound(buttonSound);
+    const isSoundMuted = useSelector(SelectIsSoundMuted);
+    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
+
     const [isShortVersion, setIsShortVersion] = useState(false);
     const [zoomedImage, setZoomedImage] = useState('');
 

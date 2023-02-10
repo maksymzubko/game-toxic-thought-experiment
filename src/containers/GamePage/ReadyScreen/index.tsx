@@ -6,14 +6,17 @@ import {Box} from "@mui/material";
 import style from "../style.module.css";
 import Button from "../../../components/Button";
 import {useSelector} from "react-redux";
-import {SelectSocket, SelectUserRoom} from "../../../redux/store/socket/selector";
+import {SelectIsSoundMuted, SelectSocket, SelectUserRoom} from "../../../redux/store/socket/selector";
 import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
 
 const ReadyScreen = (d: { players: { id: string, letter: string }[], round: number }  ) => {
     const socket = useSelector(SelectSocket);
     const userRoom = useSelector(SelectUserRoom);
-    const [playButton] = useSound(buttonSound);
+
+    const isSoundMuted = useSelector(SelectIsSoundMuted);
+    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
+
 
     const handleGameStart = () => {
         playButton();

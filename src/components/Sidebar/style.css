@@ -1,0 +1,156 @@
+.sidebar-button {
+    z-index: 20;
+    width: 151px;
+    height: 56px;
+    background-image: url("./assets/sidebar-border.png");
+    background-size: contain;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    right: -105px;
+    top: 10%;
+    padding: 0 15px 0 25px;
+    box-sizing: border-box;
+    transition: 2s;
+}
+
+.sidebar-button.opened {
+    right: 0
+}
+
+.sidebar .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0, 0.5);
+    z-index: 21;
+}
+
+.sidebar .modal {
+    margin: 0;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 48px 12px 23px;
+
+    border-radius: 30px;
+    background: white;
+    box-sizing: border-box;
+    width: 90%;
+    height: 90%;
+    z-index: 22;
+}
+
+.sidebar .rules{
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar h1{
+    color: #FF0000;
+    margin: 0 auto;
+}
+.sidebar li {
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 37px;
+}
+
+.sidebar li::marker {
+    font-size: 8px;
+}
+
+.sidebar  .understood-button {
+    color: #F84E93;
+    max-width: 400px;
+}
+
+.sidebar  .understood-button:hover{
+    background-color: #F84E93;
+    color: white;
+}
+
+.sidebar .modal.settings {
+    justify-content: space-between;
+}
+.sidebar .modal.settings p {
+    font-size: 32px;
+    line-height: 38px;
+    font-weight: bold;
+}
+.sidebar .modal.settings .title {
+    width: 80%;
+    text-align: center;
+    position: relative;
+}
+.sidebar .modal.settings .title img {
+    position: absolute;
+    left: 0;
+    top: 65%;
+    transform: translateY(-50%);
+}
+
+.switchers-wrapper {
+    width: 100%;
+}
+
+.sidebar .sound-block, .sidebar .hints-block {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+}
+.sidebar .sound-block p, .sidebar .hints-block p {
+    margin: 16px 0;
+}
+.sidebar .cocktails-img{
+    width: 220px;
+    margin-bottom: 70px;
+}
+
+
+@media (max-height: 800px) and (max-width: 560px), (max-height: 600px) {
+    .sidebar .modal {
+        padding-top: 24px;
+    }
+    .sidebar .modal li {
+        font-size: 22px;
+        line-height: 28px;
+    }
+    .sidebar .cocktails-img{
+        margin-bottom: 0;
+    }
+}
+
+@media (max-height: 600px) and (max-width: 560px) {
+    .sidebar .modal {
+        padding: 12px;
+    }
+    .sidebar .modal h1 {
+        font-size: 28px;
+    }
+    .sidebar .modal li {
+        font-size: 18px;
+        line-height: 22px;
+    }
+    .sidebar .cocktails-img{
+        width: 200px;
+    }
+}
+@media (max-height: 600px) {
+    .sidebar .cocktails-img{
+        width: 180px;
+    }
+}

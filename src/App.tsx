@@ -4,8 +4,8 @@ import {useLocation, useRoutes} from "react-router-dom";
 import {routes as r} from "./router";
 import styles from './app-style.module.css'
 import {io} from "socket.io-client";
-import {setSocket, setUserId} from "./redux/store/socket/slice";
-import {useDispatch} from "react-redux";
+import {setIsSoundMuted, setSocket, setUserId} from "./redux/store/socket/slice";
+import {useDispatch, useSelector} from "react-redux";
 import {useSnackbar} from "notistack";
 import Modal from "./containers/Modal";
 import Button from "./components/Button";
@@ -13,6 +13,8 @@ import logo from '/144.png'
 import crossIcon from "./containers/Modal/assets/cross-icon.png";
 import useSound from "use-sound";
 import buttonSound from "./assets/sounds/button.mp3";
+import Sidebar from "./components/Sidebar";
+import {SelectIsSoundMuted} from "./redux/store/socket/selector";
 
 // local
 // const socket = io('ws://localhost:3000', {transports: ['websocket']});
@@ -27,7 +29,8 @@ function App() {
     const routes = useRoutes(r);
     const dispatch = useDispatch();
 
-    const [playButton] = useSound(buttonSound);
+    const isSoundMuted = useSelector(SelectIsSoundMuted);
+    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
     const [isInstalled, setIsInstalled] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [defferedPrompt, setDefferedPrompt] = useState<Event | null>(null)
@@ -84,6 +87,18 @@ function App() {
     }, [])
 
     useEffect(() => {
+        const valueFromStorage = localStorage.getItem('isSoundMuted');
+        console.log('valueFromStorage', valueFromStorage)
+        if (valueFromStorage === null) {
+            localStorage.setItem('isSoundMuted', 'false');
+        } else {
+            dispatch(setIsSoundMuted({isSoundMuted: valueFromStorage === 'true'}));
+        }
+    }, []);
+
+
+
+    useEffect(() => {
         setIsMainScreen(location.pathname === '/')
     }, [location])
 
@@ -108,7 +123,10 @@ function App() {
     }, [isReconnecting])
 
     const onShowModal = () => {
-        playButton();
+        if (!isSoundMuted) {
+            playButton();
+        }
+
         if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
             setShowModal(true);
         } else {
@@ -118,7 +136,10 @@ function App() {
     }
 
     const closeModal = () => {
-        playButton();
+        if (!isSoundMuted) {
+            playButton();
+        }
+
         setIsInstalled(true)
     }
 
@@ -142,6 +163,7 @@ function App() {
                         </Box>
                     </Box>}
                 </Box>
+                <Sidebar />
             </>
         )
     else

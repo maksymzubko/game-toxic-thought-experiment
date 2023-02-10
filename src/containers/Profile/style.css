@@ -1,0 +1,237 @@
+.profile {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 600px;
+    padding: 35px 27px;
+    border-radius: 30px;
+    background: white;
+    box-sizing: border-box;
+    width: 90%;
+    height: 90%;
+}
+.profile .title{
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.profile .title {
+    width: 100%;
+    text-align: center;
+    position: relative;
+    font-size: 32px;
+    line-height: 38px;
+    color: #252525;
+    font-weight: bold;
+}
+.profile .title img {
+    position: absolute;
+    left: 0;
+    top: 65%;
+    transform: translateY(-50%);
+}
+.profile .user-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.profile .user-block .user-name {
+    margin: 0;
+    font-size: 32px;
+    line-height: 38px;
+    text-align: center;
+    color: #00C4FF;
+}
+.profile .questions-list{
+    margin-top: 28px;
+    overflow: auto;
+    max-height: calc(100% - 180px);
+}
+.profile .questions-list .list-item {
+    width: 100%;
+    height: 52px;
+    margin-bottom: 18px;
+    background-image: url("../../assets/btn.png");
+    background-size: 100% 100%;
+    font-size: 24px;
+    line-height: 38px;
+    color: #6966F8;
+    padding: 0 18px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.profile .edit-button{
+    width: 176px;
+    height: 52px;
+    background-image: url("./assets/editBg.png");
+    background-size: 100% 100%;
+    font-size: 32px;
+    line-height: 38px;
+    text-align: center;
+    font-weight: bolder;
+}
+.profile .details-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 100px);
+}
+.profile .details-title {
+    font-size: 32px;
+    line-height: 38px;
+    text-align: center;
+    font-weight: bolder;
+    color: #6966F8;
+    margin: 25px 0;
+}
+.profile .details-block li {
+    font-size: 32px;
+    line-height: 38px;
+    font-weight: bolder;
+    color: #9A2D26;
+    padding-inline-start: 20px;
+    padding: 10px;
+}
+.profile .details-block li::marker {
+    font-size: 12px;
+
+}
+
+.profile .details-buttons-block{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.profile .edit-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 100px);
+}
+
+.profile .edit-title-wrapper {
+    background-image: url("./assets/questionTitleBg.png") ;
+    width: 100%;
+    height: 96px;
+    background-size: 100% 100%;
+    padding: 11px 18px 11px 14px;
+    box-sizing: border-box;
+}
+.profile .edit-title-wrapper textarea {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    font-size: 24px;
+    line-height: 28px;
+    color: #6966F8;
+}
+.profile .edit-answer-wrapper {
+    background-image: url("./assets/questionAnswerBg.png") ;
+    width: 100%;
+    height: 55px;
+    background-size: 100% 100%;
+    padding: 6px 13px;
+    box-sizing: border-box;
+}
+.profile .edit-answer-wrapper input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    font-size: 24px;
+    line-height: 44px;
+    color: #9A2D26;
+}
+.profile .done-button {
+    width: 100%;
+    height: 54px;
+    background-image: url("./assets/doneBg.png");
+    background-size: 100% 100%;
+    font-size: 32px;
+    line-height: 38px;
+    text-align: center;
+    font-weight: bolder;
+    color: #0B997B;
+}
+
+.confirm-delete{
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.confirm-delete .modal{
+    padding: 0;
+    margin: 0;
+    border-radius: 30px;
+    background-color: #fff;
+    width: 340px;
+    height: 395px;
+    position: relative;
+}
+.confirm-delete .modal .close{
+    position: absolute;
+    top: 33px;
+    right: 25px;
+}
+.confirm-delete .modal .sad-dog{
+    position: absolute;
+    top: 16px;
+    left: 17px;
+}
+.confirm-delete .modal p{
+    position: absolute;
+    bottom: 126px ;
+    left: 27px;
+    width: 283px;
+    text-align: center;
+    font-size: 32px;
+    line-height: 38px;
+    letter-spacing: -0.01em;
+    color: #252525;
+    font-weight: bolder;
+}
+.confirm-delete .modal .delete-button{
+    position: absolute;
+    bottom: 42px;
+    left: 27px;
+    height: 54px;
+    width: 287px;
+    background-image: url("./assets/doneBg.png");
+    background-size: 100% 100%;
+    font-size: 32px;
+    line-height: 38px;
+    text-align: center;
+    font-weight: bolder;
+    color: #F84E93;
+}
+
+@media (max-height: 700px) {
+    .profile {
+        padding: 10px 27px;
+    }
+    .profile .details-title {
+        margin: 0;
+    }
+}
+
+
+
+
+
+
+

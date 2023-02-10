@@ -17,6 +17,7 @@ import AnimalBar from "../../components/Animals";
 import DrinkTogether from "./DrinkTogether";
 import ReadyScreen from "./ReadyScreen";
 import DrinkSolo from "./DrinkSolo";
+import LoginRequired from "../../components/LoginRequired";
 
 interface GameStageInterface {
     status: boolean;
@@ -91,6 +92,7 @@ const GamePage = () => {
     const [listDrinkAnimals, setListDrinkAnimals] = useState([]);
     const [gameStage, setGameStage] = useState(1);
     const [skipped, setSkipped] = useState(false)
+    const [showAlert, setShowAlert] = useState(false);
 
     const [results, setResults] = useState<Result>({correct: 0, results: []});
     // single
@@ -98,6 +100,8 @@ const GamePage = () => {
     const [leader, setLeader] = useState<string>('')
     // multi
     const [isAnswered, setAnswered] = useState(false);
+    const [activeLetter, setActiveLetter] = useState('')
+
 
     useEffect(() => {
         if (time === 3) {
@@ -119,6 +123,14 @@ const GamePage = () => {
             setTimeout(() => getDrinkAnimals(customList), 100);
         }
     }, [skipped]);
+
+    useEffect(() => {
+        if (showAlert) {
+            setTimeout(() => {
+                setShowAlert(false)
+            }, 3000)
+        }
+    }, [showAlert]);
 
 
     useEffect(() => {
@@ -272,6 +284,24 @@ const GamePage = () => {
         setDrinkStatusBool(statusBool);
     }
 
+    const getActiveAnimal = () => {
+
+    }
+    useEffect(() => {
+        if (!players || !userId) return
+        if (userRoom.single) {
+            if (gameStage === 1) setActiveLetter('')
+            else setActiveLetter(currentStep)
+        } else {
+            const playerTemp = players.find(player => player.id === userId);
+            if (playerTemp) {
+                setActiveLetter(playerTemp.letter)
+            }
+
+        }
+    }, [gameStage, currentStep]);
+
+
     return (
         <>
             {(gameStatus === 'running' || gameStatus === 'results') &&
@@ -286,29 +316,34 @@ const GamePage = () => {
                 </Box>
             }
 
-            {(gameStatus === 'running' && players) && <AnimalBar players={players.filter(p=> p.letter !== leader )} currentStep={gameStage === 1 ? '' : currentStep}/>}
-            <div className={style.answers_block}>
-                {gameStatus === 'running' &&
+            {(gameStatus === 'running' && players) && <AnimalBar players={players.filter(p=> p.letter !== leader )} currentStep={activeLetter}/>}
+            {gameStatus === 'running' &&
+                <div className={style.answers_block}>
                     <GameRunningItem
                         players={players}
                         question={data}
                         currentStep={currentStep}
                         handleAnswer={handleAnswer}
+                        gameStage={gameStage}
                         handleSkip={handleSkipQuestion}
                         isAnswered={isAnswered}
                         multiplayer={!userRoom.single}
                         timer={timer}
-                    />}
-                {gameStatus === 'results' &&
-                    <GameResultItem
-                        result={results}
-                        question={data}
-                        passDrinkAnimals={getDrinkAnimals}
-                        setUserDrinkStatus={getUserDrinkStatus}
-                        leader={leader}
+                        onShowAlert={() => setShowAlert(true)}
                     />
-                }
+                </div>
+            }
+            {gameStatus === 'results' &&
+            <div className={style.answers_block}>
+                <GameResultItem
+                    result={results}
+                    question={data}
+                    passDrinkAnimals={getDrinkAnimals}
+                    setUserDrinkStatus={getUserDrinkStatus}
+                    leader={leader}
+                />
             </div>
+            }
             {(gameStatus === 'drink' && !drinkStatus) &&
                 <DrinkTogether
                     players={players}
@@ -324,6 +359,9 @@ const GamePage = () => {
                 />}
 
             {gameStatus === 'ready' && <ReadyScreen players={players} round={round}/>}
+
+            {showAlert && <LoginRequired />}
+
             <Backdrop open={loading} style={{color: 'black', fontSize: 32}}>
                 {time < 0
                     ?
