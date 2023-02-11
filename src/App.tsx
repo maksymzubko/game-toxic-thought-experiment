@@ -15,13 +15,9 @@ import useSound from "use-sound";
 import buttonSound from "./assets/sounds/button.mp3";
 import Sidebar from "./components/Sidebar";
 import {SelectIsSoundMuted} from "./redux/store/socket/selector";
+import authApi from "./api/auth/auth.api";
 
-// local
-// const socket = io('ws://localhost:3000', {transports: ['websocket']});
-
-// server
-const socket = io('https://project15.aestar.com.ua:5016/', {transports: ['websocket']});
-
+const socket = io(process.env.VITE_WS, {transports: ['websocket']});
 function App() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
@@ -39,6 +35,8 @@ function App() {
     const [isMainScreen, setIsMainScreen] = useState(false);
 
     useEffect(() => {
+        authApi.login({username: 'makss', password: '123'}).then(res=>console.log(res)).catch(err=>console.log(err));
+
         const popstateHandler = () => {
             socket?.emit('leaveRoom')
             return;
