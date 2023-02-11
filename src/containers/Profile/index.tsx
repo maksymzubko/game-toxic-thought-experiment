@@ -14,6 +14,7 @@ import backArrow from "../../assets/back-arrow.png";
 import delIcon from "./assets/delIcon.png";
 import crossIcon from "./assets/cross-icon.png";
 import sadDogImg from './assets/dog-sad.png'
+import deerImg from '../../components/Animals/assets/color/deer-1.png'
 
 import { questionsExample } from './exampleData'
 
@@ -79,17 +80,26 @@ const Profile = () => {
                 {currentStage === 'list' &&
                     <>
                         <div className="user-block">
-                            <img src={addQuestionImg} alt="" onClick={() => editQuestion()}/>
+                            <img src={addQuestionImg} alt="" onClick={() => editQuestion()} style={{opacity: questionsExample.length ? 1 : 0}}/>
                             <p className="user-name">User Name</p>
                             <img src={logoutImg} alt="" onClick={() => logout()} />
                         </div>
-                        <div className="questions-list">
-                            {questionsExample.map(item =>
-                                <div className="list-item" onClick={() => showDetails(item)}>
-                                    {item.title}
-                                </div>
-                            )}
-                        </div>
+                        {questionsExample.length ?
+                            <div className="questions-list">
+                                {questionsExample.map(item =>
+                                    <div className="list-item" onClick={() => showDetails(item)}>
+                                        {item.title}
+                                    </div>
+                                )}
+                            </div>
+                            :
+                            <div className="empty-list">
+                                <img src={deerImg} alt="" className="empty-img"/>
+                                <p>you didn’t add any questions yet, go on and add some!</p>
+                                <img src={addQuestionImg} alt="" onClick={() => editQuestion()} className="empty-add"/>
+                            </div>
+                        }
+
                     </>
                 }
                 {currentStage === 'details' &&

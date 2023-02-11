@@ -64,6 +64,30 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+.profile .empty-list {
+    margin-top: 28px;
+    height: calc(100% - 180px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.profile .empty-list .empty-img{
+    height: 170px;
+}
+.profile .empty-list p{
+    font-size: 28px;
+    line-height: 33px;
+    text-align: center;
+    letter-spacing: -0.01em;
+    font-weight: bolder;
+    color: #252525;
+}
+.profile .empty-list .empty-add{
+    width: 70px;
+    height: 76px;
+}
+
 
 .profile .edit-button{
     width: 176px;
@@ -225,6 +249,18 @@
         padding: 10px 27px;
     }
     .profile .details-title {
+        margin: 0;
+    }
+
+    .profile .empty-list {
+        margin-top: 12px;
+    }
+    .profile .empty-list .empty-img{
+        height: 140px;
+    }
+    .profile .empty-list p{
+        font-size: 24px;
+        line-height: 28px;
         margin: 0;
     }
 }

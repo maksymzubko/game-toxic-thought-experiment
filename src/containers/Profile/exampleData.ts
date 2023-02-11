@@ -1,4 +1,5 @@
-export const questionsExample = [
+export const questionsExample = [];
+export const questionsExample1 = [
     {
         id: 0,
         title: 'What is your favourite color?',
