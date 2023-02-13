@@ -49,6 +49,16 @@
     overflow: auto;
     max-height: calc(100% - 180px);
 }
+
+.profile .questions-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.profile .questions-list::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.25);
+}
 .profile .questions-list .list-item {
     width: 100%;
     height: 52px;
@@ -64,6 +74,30 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+.profile .empty-list {
+    margin-top: 28px;
+    height: calc(100% - 180px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.profile .empty-list .empty-img{
+    height: 170px;
+}
+.profile .empty-list p{
+    font-size: 28px;
+    line-height: 33px;
+    text-align: center;
+    letter-spacing: -0.01em;
+    font-weight: bolder;
+    color: #252525;
+}
+.profile .empty-list .empty-add{
+    width: 70px;
+    height: 76px;
+}
+
 
 .profile .edit-button{
     width: 176px;
@@ -83,11 +117,12 @@
 }
 .profile .details-title {
     font-size: 32px;
-    line-height: 38px;
     text-align: center;
     font-weight: bolder;
     color: #6966F8;
     margin: 25px 0;
+    word-wrap: break-word;
+    overflow: auto;
 }
 .profile .details-block li {
     font-size: 32px;
@@ -227,11 +262,16 @@
     .profile .details-title {
         margin: 0;
     }
+
+    .profile .empty-list {
+        margin-top: 12px;
+    }
+    .profile .empty-list .empty-img{
+        height: 140px;
+    }
+    .profile .empty-list p{
+        font-size: 24px;
+        line-height: 28px;
+        margin: 0;
+    }
 }
-
-
-
-
-
-
-

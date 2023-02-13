@@ -12,6 +12,10 @@ import cocktailsImg from '../../assets/cocktails.png';
 import authApi from "../../api/auth/auth.api";
 import {Backdrop, CircularProgress} from "@mui/material";
 import {setAuthorized, setUser} from "../../redux/store/user/slice";
+import {links} from "../../router";
+import {useNavigate} from "react-router-dom";
+import crossIcon from "../../containers/Profile/assets/cross-icon.png";
+import sadDogImg from "../../containers/Profile/assets/dog-sad.png";
 import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 
 
@@ -23,10 +27,13 @@ const Authorization = (props: { onClose: any }) => {
     const socket = useSelector(SelectSocket);
 
     const dispatch = useDispatch();
+    const goto = useNavigate();
     const [isLoading, setIsLoading] = useState(false)
     const [email, setEmail] = useState("")
     const [name, setName] = useState("")
     const [password, setPassword] = useState("")
+    const [errorMessage, setErrorMessage] = useState('')
+
 
     const login = () => {
         playButton();
@@ -41,9 +48,11 @@ const Authorization = (props: { onClose: any }) => {
                 const {id, isBanned, username} = res;
                 dispatch(setUser({user: {id, isBanned, username}}))
                 dispatch(setAuthorized({isAuthorized: true}))
+                goto(links.profile)
             }).catch((err) => {
-            console.log('err', err.response.data)
-        }).finally(() => setIsLoading(false));
+                console.log('err', err.response.data)
+                setErrorMessage(err.response.data.message.join(', '))
+            }).finally(()=>setIsLoading(false));
     }
 
     const register = () => {
@@ -55,7 +64,8 @@ const Authorization = (props: { onClose: any }) => {
                 console.log('res', res)
             }).catch((err) => {
             console.log('err', err.response.data)
-        }).finally(() => setIsLoading(false));
+            setErrorMessage(err.response.data.message.join(', '))
+        }).finally(()=>setIsLoading(false));
     }
 
     const handleChangeName = (event: any) => {
@@ -85,17 +95,23 @@ const Authorization = (props: { onClose: any }) => {
         setCurrentStage(stage);
     }
 
+    const onBackArrowClick = () => {
+        if (currentStage === 'init') {
+            playButton()
+            props.onClose()
+        } else {
+            changeStage('init')
+        }
+    }
+
     return (
         <div className="authorization">
-            <Backdrop open={isLoading}>
+            <Backdrop open={isLoading} style={{zIndex: 30}}>
                 <CircularProgress/>
             </Backdrop>
             <div className="background">
                 <div className="modal">
-                    <img src={backArrow} alt="" className="back-arrow" onClick={() => {
-                        playButton();
-                        props.onClose()
-                    }}/>
+                    <img src={backArrow} alt="" className="back-arrow" onClick={() => onBackArrowClick()}/>
 
                     {currentStage === "init" &&
                         <>
@@ -116,7 +132,13 @@ const Authorization = (props: { onClose: any }) => {
                             <div className="input-wrapper">
                                 <input placeholder="password" type="password" onChange={handleChangePassword}/>
                             </div>
-                            <Button className="login" onClick={login}>login</Button>
+                            <Button
+                                className="login"
+                                onClick={() => {(name.trim() && password.trim()) && login()}}
+                                style={{opacity: (name.trim() && password.trim()) ? 1 : 0.7}}
+                            >
+                                login
+                            </Button>
                         </>
                     }
                     {currentStage === "registration" &&
@@ -130,8 +152,23 @@ const Authorization = (props: { onClose: any }) => {
                             <div className="input-wrapper">
                                 <input placeholder="password" type="password" onChange={handleChangePassword}/>
                             </div>
-                            <Button className="register" onClick={register}>register</Button>
+                            <Button
+                                className="register"
+                                onClick={() => {(name.trim() && password.trim()) && register()}}
+                                style={{opacity: (name.trim() && password.trim()) ? 1 : 0.7}}
+                            >
+                                register
+                            </Button>
                         </>
+                    }
+                    {errorMessage &&
+                        <div className="error-alert">
+                            <div className="modal">
+                                <img src={crossIcon} alt="" onClick={() => {playButton(); setErrorMessage('')}} className="close" />
+                                <img src={sadDogImg} alt="" className="sad-dog"/>
+                                <p>{errorMessage}</p>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>

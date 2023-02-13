@@ -1,7 +1,12 @@
-import React, {useState} from 'react';
-import {useSelector} from "react-redux";
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
 import {links} from "../../router";
 import {useNavigate} from "react-router-dom";
+import {Backdrop, CircularProgress} from "@mui/material";
+
+import profileApi from "../../api/profile/profile.api";
+import {setAuthorized} from "../../redux/store/user/slice";
 
 import useSound from "use-sound";
 import buttonSound from "../../assets/sounds/button.mp3";
@@ -13,6 +18,7 @@ import backArrow from "../../assets/back-arrow.png";
 import delIcon from "./assets/delIcon.png";
 import crossIcon from "./assets/cross-icon.png";
 import sadDogImg from './assets/dog-sad.png'
+import deerImg from '../../components/Animals/assets/color/deer-1.png'
 
 import { questionsExample } from './exampleData'
 import {SelectIsSoundMuted} from "../../redux/store/game/selector";
@@ -20,18 +26,22 @@ import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 const Profile = () => {
 
     const goto = useNavigate();
+    const dispatch = useDispatch();
     const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
     const [currentStage, setCurrentStage] = useState<'list' | 'details' | 'edit'>('list');
-    const [selectedQuestion, setSelectedQuestion] = useState({id: null, title: '', answers: ['', '', '','']});
+    const [selectedQuestion, setSelectedQuestion] = useState({id: null, question: '', answers: ['', '', '',''], language: 'en'});
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [questionList, setQuestionList] = useState([])
+    const [allFieldsAreFiled, setAllFieldsAreFiled] = useState(false)
 
 
     const logout = () => {
         playButton();
-        // log out from account
-
+        localStorage.removeItem('18plus_token');
+        dispatch(setAuthorized({isAuthorized: false}));
         goto(links.start);
     }
 
@@ -41,7 +51,7 @@ const Profile = () => {
             goto(links.start)
         } else {
             setCurrentStage('list')
-            setSelectedQuestion({id: null, title: '', answers: ['', '', '','']})
+            setSelectedQuestion({id: null, question: '', answers: ['', '', '',''], language: 'en'})
         }
 
     }
@@ -57,44 +67,124 @@ const Profile = () => {
         setSelectedQuestion(question)
     }
 
-    const saveQuestion = () => {
-        //send question to server
+    const checkLanguage = (question: string) => {
+        const english = /^[A-Za-z0-9]*$/;
+        // const japanese = /[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+/u; // does not work correct
 
-        goBack();
+        if (english.test(question)) {
+            return 'en'
+        } else {
+            return 'jp'
+        }
+    }
+
+    const saveQuestion = () => {
+
+        const language = checkLanguage(selectedQuestion.question);
+
+        if (selectedQuestion.id) {
+            profileApi.editQuestion(
+                selectedQuestion.id,
+            {
+                    question: selectedQuestion.question,
+                    answers: selectedQuestion.answers,
+                    language,
+                })
+                .then((res) => {
+                    console.log('res', res)
+                    goBack();
+                }).catch((err) => {
+                console.log('err', err.response.data)
+            }).finally(() => setIsLoading(false));
+        } else {
+            profileApi.createQuestion({
+                question: selectedQuestion.question,
+                answers: selectedQuestion.answers,
+                language,
+            })
+                .then((res) => {
+                    console.log('res', res)
+                    goBack();
+                }).catch((err) => {
+                console.log('err', err.response.data)
+            }).finally(() => setIsLoading(false));
+        }
     }
 
     const deleteQuestion = () => {
-        //send id of question to server for deleting
-        setConfirmDelete(false);
-        goBack();
+        profileApi.deleteQuestion(selectedQuestion.id)
+            .then((res) => {
+                console.log('res', res)
+                setConfirmDelete(false);
+                goBack();
+            }).catch((err) => {
+            console.log('err', err.response.data)
+        }).finally(() => setIsLoading(false));
     }
+
+    useEffect(() => {
+        if (currentStage === 'list') {
+            profileApi.getMineQuestionsList()
+                .then((res) => {
+                    console.log('res', res)
+                    setQuestionList(res);
+                }).catch((err) => {
+                console.log('err', err.response.data)
+            }).finally(()=> setIsLoading(false));
+        }
+    }, [currentStage]);
+
+    useEffect(() => {
+        if (selectedQuestion.question &&
+            selectedQuestion.answers[0] &&
+            selectedQuestion.answers[1] &&
+            selectedQuestion.answers[2] &&
+            selectedQuestion.answers[3]
+        ) { setAllFieldsAreFiled(true)}
+        else {setAllFieldsAreFiled(false)}
+
+    }, [selectedQuestion]);
+
+
 
     return (
         <>
+            <Backdrop open={isLoading} style={{zIndex: 30}}>
+                <CircularProgress/>
+            </Backdrop>
             <div className="profile">
                 <p className="title">
                     <img src={backArrow} alt="" onClick={() => goBack()} />
                     profile
                 </p>
                 {currentStage === 'list' &&
-                    <>
-                        <div className="user-block">
-                            <img src={addQuestionImg} alt="" onClick={() => editQuestion()}/>
-                            <p className="user-name">User Name</p>
-                            <img src={logoutImg} alt="" onClick={() => logout()} />
-                        </div>
+                <>
+                    <div className="user-block">
+                        <img src={addQuestionImg} alt="" onClick={() => editQuestion()} style={{opacity: questionList.length ? 1 : 0}}/>
+                        <p className="user-name">User Name</p>
+                        <img src={logoutImg} alt="" onClick={() => logout()} />
+                    </div>
+                    {questionList.length ?
                         <div className="questions-list">
-                            {questionsExample.map(item =>
+                            {questionList.map(item =>
                                 <div className="list-item" onClick={() => showDetails(item)}>
-                                    {item.title}
+                                    {item.question}
                                 </div>
                             )}
                         </div>
-                    </>
+                        :
+                        <div className="empty-list">
+                            <img src={deerImg} alt="" className="empty-img"/>
+                            <p>you didn’t add any questions yet, go on and add some!</p>
+                            <img src={addQuestionImg} alt="" onClick={() => editQuestion()} className="empty-add"/>
+                        </div>
+                    }
+
+                </>
                 }
                 {currentStage === 'details' &&
                     <div className="details-block">
-                        <p className="details-title">{selectedQuestion && selectedQuestion.title}</p>
+                        <p className="details-title">{selectedQuestion && selectedQuestion.question}</p>
                         <ul>
                             {selectedQuestion && selectedQuestion.answers.map(answer => <li>{answer}</li>)}
                         </ul>
@@ -109,8 +199,8 @@ const Profile = () => {
                     <div className="edit-block">
                         <div className="edit-title-wrapper">
                             <textarea
-                                value={selectedQuestion ? selectedQuestion.title : ''} placeholder="Your question"
-                                onChange={e => setSelectedQuestion({...selectedQuestion, title: e.target.value})}
+                                value={selectedQuestion ? selectedQuestion.question : ''} placeholder="Your question"
+                                onChange={e => setSelectedQuestion({...selectedQuestion, question: e.target.value})}
                             />
                         </div>
                         {selectedQuestion.answers.map((answer, index) =>
@@ -127,7 +217,11 @@ const Profile = () => {
                             </div>
                         )}
 
-                        <div className="done-button" onClick={() => saveQuestion()}>done</div>
+                        <div
+                            className="done-button"
+                            onClick={() => {allFieldsAreFiled && saveQuestion()}}
+                            style={{ opacity: allFieldsAreFiled ? 1 : 0.7 }}
+                        >done</div>
                     </div>
                 }
             </div>
