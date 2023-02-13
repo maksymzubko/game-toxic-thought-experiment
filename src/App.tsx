@@ -22,8 +22,10 @@ import {setError, setMuted, setTips} from "./redux/store/game/slice";
 import {SelectError, SelectIsSoundMuted} from "./redux/store/game/selector";
 import {getAnimalByLetter} from "./helpers/animalHelp";
 import ModalHints from "./components/ModalHints";
+import {SelectIsAuthorized} from "./redux/store/user/selector";
 
 const socket = io(process.env.VITE_WS, {transports: ['websocket']});
+
 function App() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
@@ -33,33 +35,23 @@ function App() {
 
     const error = useSelector(SelectError);
     const isSoundMuted = useSelector(SelectIsSoundMuted);
-    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
+    const [playButton] = useSound(buttonSound, {volume: isSoundMuted ? 0 : 1});
     const [isInstalled, setIsInstalled] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [defferedPrompt, setDefferedPrompt] = useState<Event | null>(null)
     const [isOnline, setIsOnline] = useState(true);
     const [isReconnecting, setIsReconnecting] = useState(false);
     const [isMainScreen, setIsMainScreen] = useState(false);
+    const isAuthorized = useSelector(SelectIsAuthorized);
 
     useEffect(() => {
         const token = localStorage.getItem('18plus_token');
-        if (token)
-        {
+        if (token) {
             dispatch(setAuthorized({isAuthorized: true}));
-            try{
+            try {
                 const {id, username, isBanned} = JSON.parse(localStorage.getItem('18plus_token'));
                 dispatch(setUser({user: {id, username, isBanned}}));
-
-                votesApi.getUserVotes()
-                    .then(res => {
-                        console.log('voted', res)
-                        dispatch(setUserVotes({userVotes: res}))
-                    }).catch(err => {
-                        console.log(err)
-                    }).finally(() => {})
-            }
-            catch (e)
-            {
+            } catch (e) {
                 console.log(e)
             }
 
@@ -113,6 +105,19 @@ function App() {
     }, [])
 
     useEffect(() => {
+        if (isAuthorized) {
+            votesApi.getUserVotes()
+                .then(res => {
+                    console.log('voted', res)
+                    dispatch(setUserVotes({userVotes: res}))
+                }).catch(err => {
+                console.log(err)
+            }).finally(() => {
+            })
+        }
+    }, [isAuthorized])
+
+    useEffect(() => {
         const volumeFromStorage = localStorage.getItem('isSoundMuted');
         const tipsFromStorage = localStorage.getItem('isEnabledTips');
         if (volumeFromStorage === null) {
@@ -127,7 +132,6 @@ function App() {
             dispatch(setTips(tipsFromStorage === 'true'));
         }
     }, []);
-
 
 
     useEffect(() => {
@@ -183,7 +187,9 @@ function App() {
     if (isOnline)
         return (
             <>
-                {error.length > 0 && <MessageModal message={error} onClose={()=>{dispatch(setError(""))}}/>}
+                {error.length > 0 && <MessageModal message={error} onClose={() => {
+                    dispatch(setError(""))
+                }}/>}
                 {showModal && <Modal onClose={() => setShowModal(false)}/>}
                 <Box className={styles.content}>
                     {routes}
@@ -196,7 +202,7 @@ function App() {
                         </Box>
                     </Box>}
                 </Box>
-                <Sidebar />
+                <Sidebar/>
             </>
         )
     else

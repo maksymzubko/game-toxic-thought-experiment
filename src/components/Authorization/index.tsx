@@ -34,7 +34,6 @@ const Authorization = (props: { onClose: any }) => {
     const [password, setPassword] = useState("")
     const [errorMessage, setErrorMessage] = useState('')
 
-
     const login = () => {
         playButton();
 
