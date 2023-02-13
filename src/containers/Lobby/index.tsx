@@ -9,7 +9,7 @@ import {links} from "../../router";
 import {useSnackbar} from "notistack";
 import {useDispatch, useSelector} from "react-redux";
 import {setRoom, setUserLetter} from "../../redux/store/socket/slice";
-import {SelectIsSoundMuted, SelectSocket, SelectUserId} from "../../redux/store/socket/selector";
+import {SelectSocket, SelectUserId} from "../../redux/store/socket/selector";
 import lobbyImg from './assets/image1.png';
 import createLobbyImg from './assets/image2.png';
 import joinLobbyImg from './assets/image4.png';
@@ -19,19 +19,27 @@ import flagUS from './assets/flagUS.png';
 import flagJP from './assets/flagJP.png';
 import checkboxOn from './assets/checkbox-on.png';
 import checkboxOff from './assets/checkbox-off.png';
+import {Question} from "../../api/questions/types";
+import questionsApi from "../../api/questions/questions.api";
+import LoginRequired from "../../components/LoginRequired";
+import {SelectIsAuthorized, SelectUser} from "../../redux/store/user/selector";
+import {SelectIsSoundMuted} from "../../redux/store/game/selector";
+import {setError} from "../../redux/store/game/slice";
 
 const LobbyPage = () => {
     const data = useLocation()
     const goto = useNavigate()
 
-    const single = data.state.single ?? false;
+    const single = data ? data?.state?.single : false;
 
     const dispatch = useDispatch();
     const userId = useSelector(SelectUserId);
     const socket = useSelector(SelectSocket);
 
     const isSoundMuted = useSelector(SelectIsSoundMuted);
-    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
+    const [playButton] = useSound(buttonSound, {volume: isSoundMuted ? 0 : 1});
+    const isAuthorized = useSelector(SelectIsAuthorized);
+    const user = useSelector(SelectUser);
 
     const [roomNumber, setRoomNumber] = useState('');
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
@@ -46,13 +54,18 @@ const LobbyPage = () => {
             {number: 8, active: 0}
         ])
     const [selectedFlag, setSelectedFlag] = useState('')
-    const [useCustomQuestions, setUseCustomQuestions] = useState(true)
-    const [isModalPlayersOpened, setModalPlayersOpened] = useState(data.state.single);
+    const [useCustomQuestions, setUseCustomQuestions] = useState(false)
+    const [isModalPlayersOpened, setModalPlayersOpened] = useState(single);
     const [isModalRoomOpened, setModalRoomOpened] = useState(false);
+    const [userQuestions, setUserQuestions] = useState<Question[]>(null);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         if (!userId) {
-            const key = enqueueSnackbar('Error when try connect to WebSocket.', {variant: 'error', onClick: () => closeSnackbar(key)});
+            const key = enqueueSnackbar('Error when try connect to WebSocket.', {
+                variant: 'error',
+                onClick: () => closeSnackbar(key)
+            });
             goto(links.start);
         } else setLoading(false);
 
@@ -127,10 +140,26 @@ const LobbyPage = () => {
     }
 
 
-    const handleCreateLobby = () => {
+    const handleCreateLobby = async () => {
         playButton();
 
-        socket?.emit('createRoom', {solo: single, playersCount: playersCount});
+        const roomSettings = {
+            solo: single,
+            playersCount: playersCount
+        } as { solo: boolean, playersCount: number, language?: string, packIds?: number[], questionIds?: number[], userId?: number };
+
+        if (selectedFlag.length)
+            roomSettings.language = selectedFlag;
+
+        if (useCustomQuestions) {
+            roomSettings.questionIds = userQuestions.map(q => {
+                return q.id
+            })
+        }
+
+        if(isAuthorized) roomSettings.userId = user.id;
+
+        socket?.emit('createRoom', roomSettings);
         setLoading(true);
 
         socket?.once('createdRoomName', (data: { status: boolean, message?: string, data?: string }) => {
@@ -200,11 +229,33 @@ const LobbyPage = () => {
         }
     }
 
+    const handleChangeCustomQuestions = async () => {
+        playButton();
+        if(!useCustomQuestions)
+        {
+            setLoading(true);
+            await questionsApi.getUserQuestions()
+                .then(res => {
+                    console.log(res)
+                    setUserQuestions(res.length > 0 ? res : null);
+                    setUseCustomQuestions(res.length > 0 ? !useCustomQuestions : false);
+                    dispatch(setError("Your questions list is empty!"))
+                }).catch(err => {
+                    console.log(err)
+                    let _err = err.response.data
+                        .message
+                        .join(', ');
+                    dispatch(setError(_err));
+                }).finally(() => setLoading(false))
+        }
+    }
+
     return (
         <Box className={style.container}>
             <Backdrop open={loading}>
                 <CircularProgress/>
             </Backdrop>
+            {/*{showModal && <LoginRequired onClose={() => setShowModal(false)}/>}*/}
             <Box className={style.back} onClick={goBack}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="svg-icon"
                      viewBox="0 0 1024 1024" version="1.1">
@@ -229,13 +280,15 @@ const LobbyPage = () => {
                 </Box>
                 <h1>preferable language</h1>
                 <Box className={style.flagsBlock}>
-                    <img src={flagUS} alt="" style={{opacity: selectedFlag === 'us' ? 1 : 0.5}} onClick={() => switchFlag('us')}/>
-                    <img src={flagJP} alt="" style={{opacity: selectedFlag === 'jp' ? 1 : 0.5}} onClick={() => switchFlag('jp')}/>
+                    <img src={flagUS} alt="" style={{opacity: selectedFlag === 'en' ? 1 : 0.5}}
+                         onClick={() => switchFlag('en')}/>
+                    <img src={flagJP} alt="" style={{opacity: selectedFlag === 'jp' ? 1 : 0.5}}
+                         onClick={() => switchFlag('jp')}/>
                 </Box>
-                <Box onClick={()=> { playButton(); setUseCustomQuestions(!useCustomQuestions) }} className={style.customQuestionBlock}>
+                {isAuthorized && <Box onClick={handleChangeCustomQuestions} className={style.customQuestionBlock}>
                     <h1>use custom questions</h1>
                     {<img src={useCustomQuestions ? checkboxOn : checkboxOff} alt=""/>}
-                </Box>
+                </Box>}
                 <Box className={style.modal_buttons}>
                     <Button onClick={handleCreateLobby} className={style.drink}>create lobby</Button>
                     <Button onClick={() => handleCancel(0)} className={style.cancel}>cancel</Button>

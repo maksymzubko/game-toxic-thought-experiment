@@ -18,6 +18,12 @@ import DrinkTogether from "./DrinkTogether";
 import ReadyScreen from "./ReadyScreen";
 import DrinkSolo from "./DrinkSolo";
 import LoginRequired from "../../components/LoginRequired";
+import votesApi from "../../api/votes/votes.api";
+import {setUserVotes} from "../../redux/store/user/slice";
+import {SelectUser} from "../../redux/store/user/selector";
+import MessageModal from "../../components/MessageModal";
+import {SelectError} from "../../redux/store/game/selector";
+import {setError} from "../../redux/store/game/slice";
 
 interface GameStageInterface {
     status: boolean;
@@ -28,6 +34,7 @@ interface GameSetCorrectInterface {
     status: boolean;
     message?: string;
     skipped?: boolean;
+    step?: string;
 }
 
 interface GameStartedInterface {
@@ -35,7 +42,7 @@ interface GameStartedInterface {
     message?: string,
     data: {
         step?: string,
-        question: { question: string; answers: string[] },
+        question: { question_id: number; question: string; answers: string[] },
         round: number,
         leader: string
     }
@@ -77,13 +84,14 @@ const GamePage = () => {
     const userLetter = useSelector(SelectUserLetter);
     const userRoom = useSelector(SelectUserRoom);
     const socket = useSelector(SelectSocket);
+    const userVotes = useSelector(SelectUser);
 
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const [loading, setLoading] = useState(true);
     const [loadingRequest, setLoadingRequest] = useState(false);
     const [players, setPlayers] = useState<{ id: string, letter: string }[]>([]);
     const [gameStatus, setGameStatus] = useState<"waiting" | "running" | "results" | "drink" | "ready">("waiting");
-    const [data, setData] = useState<{ question: string; answers: string[] }>({question: "", answers: []})
+    const [data, setData] = useState<{ question_id: number; question: string; answers: string[] }>({question_id: null, question: "", answers: []})
     const [time, setTime] = useState<number>(-1);
     const [timer, setTimer] = useState<number>(60);
     const [round, setRound] = useState(1);
@@ -93,6 +101,7 @@ const GamePage = () => {
     const [gameStage, setGameStage] = useState(1);
     const [skipped, setSkipped] = useState(false)
     const [showAlert, setShowAlert] = useState(false);
+    const [reported, setReported] = useState(false);
 
     const [results, setResults] = useState<Result>({correct: 0, results: []});
     // single
@@ -101,7 +110,8 @@ const GamePage = () => {
     // multi
     const [isAnswered, setAnswered] = useState(false);
     const [activeLetter, setActiveLetter] = useState('')
-
+    const [showTimer, setShowTimer] = useState(true);
+    const [voted, setVoted] = useState<"none" | "report" | "like" | "dislike">("none");
 
     useEffect(() => {
         if (time === 3) {
@@ -123,15 +133,6 @@ const GamePage = () => {
             setTimeout(() => getDrinkAnimals(customList), 100);
         }
     }, [skipped]);
-
-    useEffect(() => {
-        if (showAlert) {
-            setTimeout(() => {
-                setShowAlert(false)
-            }, 3000)
-        }
-    }, [showAlert]);
-
 
     useEffect(() => {
         if (!userId || (!userLetter && !userRoom.single && gameStatus !== 'results')) {
@@ -171,16 +172,6 @@ const GamePage = () => {
             }
         })
 
-        socket?.on('setCorrect', (data: GameSetCorrectInterface) => {
-            if (!data.status) {
-                setLoadingRequest(false);
-            }
-            else if(data.skipped)
-            {
-                setSkipped(true)
-            }
-        })
-
         socket?.on('gameStage', (data: GameStageInterface) => {
             setLoadingRequest(false);
             setGameStage(data.stage);
@@ -194,28 +185,23 @@ const GamePage = () => {
                 setAnswered(false);
                 setLeader(data.data.leader);
                 setData(data?.data?.question);
+                const _vote = userVotes?.voteList.filter(v=>v.questionsid === data.data.question.question_id);
+                if(_vote.length)
+                    setVoted(_vote[0].variant);
                 setRound(data?.data?.round);
+                userRoom.single && setShowTimer(true);
                 setCurrentStep(data?.data?.step ?? "");
                 setGameStatus('running');
             } else
             {
-                const key = enqueueSnackbar(data.message, {variant: "error", onClick: () => closeSnackbar(key)});
+                const single = userRoom.single;
+                goto(single ? links.lobby : links.room,{state: {single}});
+                single && socket.emit('leaveRoom');
+                dispatch(setError(data.message));
             }
         })
 
-        socket?.on('gameEnded', (data: GameEndedInterface) => {
-            setLoadingRequest(false);
-            if (data.status) {
-                setResults({correct: data.correct, results: data.results});
-                setGameStatus('results');
-            }
-        })
 
-        socket?.on('time', (data: { status: boolean, data: { time: number } }) => {
-            if (data.status) {
-                setTimer(data.data.time);
-            }
-        })
 
         socket?.on('answer', (data: AnswerInterface) => {
             setLoadingRequest(false);
@@ -232,21 +218,94 @@ const GamePage = () => {
 
         return () => {
             socket?.off('gameStage');
-            socket?.off('setCorrect');
-            socket?.off('time');
-            socket?.off('gameEnded');
             socket?.off('answer');
             socket?.off('gameStarted');
             socket?.off('leavedRoom');
         }
     }, [])
 
-    const handleSkipQuestion = () => {
+    useEffect(() => {
+        socket?.on('gameEnded', (data: GameEndedInterface) => {
+            setLoadingRequest(false);
+            if (data.status) {
+                setResults({correct: data.correct, results: data.results});
+                setGameStatus(reported ? 'ready' : 'results');
+            }
+        })
+
+        return () => {
+            socket?.off('gameEnded');
+        }
+    }, [reported])
+
+    useEffect(() => {
+        console.log(data)
+
+    }, [data])
+
+    useEffect(() => {
+        socket?.on('time', (data: { status: boolean, data: { time: number, onlyForLeader: boolean } }) => {
+            if (data.status) {
+                if(!userRoom.single && (userLetter === leader || gameStage === 2))
+                    setShowTimer(true);
+                else if(!userRoom.single) setShowTimer(false);
+
+                setTimer(data.data.time);
+            }
+        })
+
+        socket?.on('setCorrect', (data: GameSetCorrectInterface) => {
+            if (!data.status) {
+                setLoadingRequest(false);
+            }
+            else
+            {
+                setTimer(60);
+                if(data.skipped)
+                    setSkipped(true)
+                else if(leader === userLetter) setAnswered(true);
+
+                if(userRoom.single)
+                    setCurrentStep(data.step);
+            }
+
+        })
+
+        return () => {
+            socket?.off('time');
+            socket?.off('setCorrect');
+        }
+    }, [leader, gameStage])
+
+    const handleReport = async () => {
         setLoadingRequest(true);
-        if (gameStage === 1) {
+        votesApi.vote({question_id: data.question_id, vote_type: "report"})
+            .then(res => {
+                handleSkipQuestion(true);
+                let votes = Array.from(userVotes.voteList);
+                const vote = votes.findIndex(v=>v.questionsid === data.question_id);
+                if(vote !== -1)
+                {
+                    votes[vote] = res;
+                    dispatch(setUserVotes({userVotes: votes}));
+                }
+                else
+                    dispatch(setUserVotes({userVotes: [...votes, res]}));
+
+            }).catch(err => {
+                console.log(err)
+                setError(err.response.data.message.join(", "));
+            }).finally(() => setLoadingRequest(false));
+    }
+
+    const handleSkipQuestion = (reported = false) => {
+        setLoadingRequest(true);
+        if (gameStage === 1 && !reported) {
             handleSetCorrect(-1, true);
         } else {
-            socket?.emit('skip-question');
+            if(reported) setReported(true);
+
+            socket?.emit('skip-question', {report: reported});
 
             socket?.once('skip-question', (data: SkipInterface) => {
                 setLoadingRequest(false);
@@ -287,6 +346,7 @@ const GamePage = () => {
     const getActiveAnimal = () => {
 
     }
+
     useEffect(() => {
         if (!players || !userId) return
         if (userRoom.single) {
@@ -300,7 +360,6 @@ const GamePage = () => {
 
         }
     }, [gameStage, currentStep]);
-
 
     return (
         <>
@@ -326,9 +385,14 @@ const GamePage = () => {
                         handleAnswer={handleAnswer}
                         gameStage={gameStage}
                         handleSkip={handleSkipQuestion}
+                        handleReport={handleReport}
                         isAnswered={isAnswered}
+                        leader={leader}
                         multiplayer={!userRoom.single}
+                        setReported={setReported}
                         timer={timer}
+                        voted={voted}
+                        showTimer={showTimer}
                         onShowAlert={() => setShowAlert(true)}
                     />
                 </div>
@@ -338,6 +402,7 @@ const GamePage = () => {
                 <GameResultItem
                     result={results}
                     question={data}
+                    voted={voted}
                     passDrinkAnimals={getDrinkAnimals}
                     setUserDrinkStatus={getUserDrinkStatus}
                     leader={leader}
@@ -358,9 +423,9 @@ const GamePage = () => {
                     letDrink={() => setGameStatus('ready')}
                 />}
 
-            {gameStatus === 'ready' && <ReadyScreen players={players} round={round}/>}
+            {gameStatus === 'ready' && <ReadyScreen players={players} round={reported ? round - 1 : round}/>}
 
-            {showAlert && <LoginRequired />}
+            {showAlert && <LoginRequired onClose={() => setShowAlert(false)}/>}
 
             <Backdrop open={loading} style={{color: 'black', fontSize: 32}}>
                 {time < 0

@@ -20,8 +20,8 @@ import crossIcon from "./assets/cross-icon.png";
 import sadDogImg from './assets/dog-sad.png'
 import deerImg from '../../components/Animals/assets/color/deer-1.png'
 
-
-
+import { questionsExample } from './exampleData'
+import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 
 const Profile = () => {
 

@@ -5,8 +5,8 @@ export interface SendVote {
 
 export interface Vote {
     id: number,
-    questionId: number,
-    userId: number,
+    questionsid: number,
+    userid: number,
     variant: "like" | "dislike" | "report",
     date: number
 }

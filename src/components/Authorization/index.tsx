@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
+import {SelectSocket} from "../../redux/store/socket/selector";
 import Button from "../Button";
 
 import useSound from "use-sound";
@@ -16,13 +16,15 @@ import {links} from "../../router";
 import {useNavigate} from "react-router-dom";
 import crossIcon from "../../containers/Profile/assets/cross-icon.png";
 import sadDogImg from "../../containers/Profile/assets/dog-sad.png";
+import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 
 
-const Authorization = (props: {onClose: any}) => {
+const Authorization = (props: { onClose: any }) => {
 
     const isSoundMuted = useSelector(SelectIsSoundMuted);
-    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
+    const [playButton] = useSound(buttonSound, {volume: isSoundMuted ? 0 : 1});
     const [currentStage, setCurrentStage] = useState<"init" | "authorization" | "registration">("init");
+    const socket = useSelector(SelectSocket);
 
     const dispatch = useDispatch();
     const goto = useNavigate();
@@ -114,8 +116,12 @@ const Authorization = (props: {onClose: any}) => {
                     {currentStage === "init" &&
                         <>
                             <img src={cocktailsImg} alt="" className="cocktails-img"/>
-                            <Button className="login" onClick={() => {changeStage("authorization")}}>login</Button>
-                            <Button className="register" onClick={() => {changeStage("registration")}}>register</Button>
+                            <Button className="login" onClick={() => {
+                                changeStage("authorization")
+                            }}>login</Button>
+                            <Button className="register" onClick={() => {
+                                changeStage("registration")
+                            }}>register</Button>
                         </>
                     }
                     {currentStage === "authorization" &&

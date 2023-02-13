@@ -9,7 +9,7 @@ import screen2 from './assets/screens/screen2.png'
 import screen3 from './assets/screens/screen3.png'
 import screen4 from './assets/screens/screen4.png'
 import {useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
+import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 
 const Modal = (props: any) => {
 
