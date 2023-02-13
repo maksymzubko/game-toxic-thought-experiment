@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
 import {links} from "../../router";
 import {useNavigate} from "react-router-dom";
 import {Backdrop, CircularProgress} from "@mui/material";
 
 import profileApi from "../../api/profile/profile.api";
-import {setAuthorized} from "../../redux/store/user/slice";
+import {setAuthorized, setUser} from "../../redux/store/user/slice";
 
 import useSound from "use-sound";
 import buttonSound from "../../assets/sounds/button.mp3";
@@ -19,9 +18,9 @@ import delIcon from "./assets/delIcon.png";
 import crossIcon from "./assets/cross-icon.png";
 import sadDogImg from './assets/dog-sad.png'
 import deerImg from '../../components/Animals/assets/color/deer-1.png'
-
-import { questionsExample } from './exampleData'
 import {SelectIsSoundMuted} from "../../redux/store/game/selector";
+import {SelectUser} from "../../redux/store/user/selector";
+
 
 const Profile = () => {
 
@@ -30,6 +29,7 @@ const Profile = () => {
     const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
+    const user = useSelector(SelectUser);
     const [currentStage, setCurrentStage] = useState<'list' | 'details' | 'edit'>('list');
     const [selectedQuestion, setSelectedQuestion] = useState({id: null, question: '', answers: ['', '', '',''], language: 'en'});
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -42,6 +42,7 @@ const Profile = () => {
         playButton();
         localStorage.removeItem('18plus_token');
         dispatch(setAuthorized({isAuthorized: false}));
+        dispatch(setUser({user: null}));
         goto(links.start);
     }
 
@@ -161,7 +162,7 @@ const Profile = () => {
                 <>
                     <div className="user-block">
                         <img src={addQuestionImg} alt="" onClick={() => editQuestion()} style={{opacity: questionList.length ? 1 : 0}}/>
-                        <p className="user-name">User Name</p>
+                        <p className="user-name">{user.username}</p>
                         <img src={logoutImg} alt="" onClick={() => logout()} />
                     </div>
                     {questionList.length ?

@@ -15,10 +15,11 @@ import likeOn from "../assets/like-on.png";
 import dislikeOff from "../assets/dislike-off.png";
 import dislikeOn from "../assets/dislike-on.png";
 import votesApi from "../../../api/votes/votes.api";
-import {SelectUser} from "../../../redux/store/user/selector";
+import {SelectIsAuthorized, SelectUser} from "../../../redux/store/user/selector";
 import {setUserVotes} from "../../../redux/store/user/slice";
 import {SelectIsSoundMuted} from "../../../redux/store/game/selector";
 import {setError} from "../../../redux/store/game/slice";
+import LoginRequired from "../../../components/LoginRequired";
 
 const GameResultItem = (d: { result: Result, question: { question_id: number; question: string; answers: string[] }, passDrinkAnimals: any, setUserDrinkStatus: any, leader: string; voted: any; }) => {
     const dispatch = useDispatch();
@@ -28,6 +29,8 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
     const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
+    const [isModalOpened, setModalOpened] = useState(false);
+    const isAuthorized = useSelector(SelectIsAuthorized);
     const [isLoading, setIsLoading] = useState(false);
     const [resultSoundLoad, setResultSoundLoad] = useState(false)
     const [userReaction, setUserReaction] = useState('')
@@ -75,25 +78,32 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
     }
 
     const handleLikeDislike = async (type: "like" | "dislike") => {
-        setIsLoading(true);
-        votesApi.vote({question_id: d.question.question_id, vote_type: type})
-            .then(res => {
-                let votes = Array.from(user.voteList);
-                const vote = votes.findIndex(v=>v.questionsid === d.question.question_id);
-                if(vote !== -1)
-                {
-                    votes[vote] = res;
-                    dispatch(setUserVotes({userVotes: votes}));
-                }
-                else
-                    dispatch(setUserVotes({userVotes: [...votes, res]}));
+        if(isAuthorized)
+        {
+            setIsLoading(true);
+            votesApi.vote({question_id: d.question.question_id, vote_type: type})
+                .then(res => {
+                    let votes = Array.from(user.voteList);
+                    const vote = votes.findIndex(v=>v.questionsid === d.question.question_id);
+                    if(vote !== -1)
+                    {
+                        votes[vote] = res;
+                        dispatch(setUserVotes({userVotes: votes}));
+                    }
+                    else
+                        dispatch(setUserVotes({userVotes: [...votes, res]}));
 
-                setUserReaction(type);
-            })
-            .catch(err => {
-                console.log(err)
-                dispatch(setError(err.response.data.message.join(", ")));
-            }).finally(() => setIsLoading(false));
+                    setUserReaction(type);
+                })
+                .catch(err => {
+                    console.log(err)
+                    dispatch(setError(err.response.data.message.join(", ")));
+                }).finally(() => setIsLoading(false));
+        }
+        else
+        {
+            setModalOpened(true)
+        }
     }
 
     const getListVoted = (variant: number, size: number) => {
@@ -123,6 +133,7 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
             <Backdrop open={isLoading}>
                 <CircularProgress/>
             </Backdrop>
+            {isModalOpened && <LoginRequired onClose={()=>setModalOpened(false)}/>}
             <Box className={style.players_list}>
                 <Box className={style.answers}>
                     <Box className={style.content}>

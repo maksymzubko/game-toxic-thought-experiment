@@ -20,9 +20,7 @@ import DrinkSolo from "./DrinkSolo";
 import LoginRequired from "../../components/LoginRequired";
 import votesApi from "../../api/votes/votes.api";
 import {setUserVotes} from "../../redux/store/user/slice";
-import {SelectUser} from "../../redux/store/user/selector";
-import MessageModal from "../../components/MessageModal";
-import {SelectError} from "../../redux/store/game/selector";
+import {SelectIsAuthorized, SelectUser} from "../../redux/store/user/selector";
 import {setError} from "../../redux/store/game/slice";
 
 interface GameStageInterface {
@@ -112,6 +110,7 @@ const GamePage = () => {
     const [activeLetter, setActiveLetter] = useState('')
     const [showTimer, setShowTimer] = useState(true);
     const [voted, setVoted] = useState<"none" | "report" | "like" | "dislike">("none");
+    const isAuthorized = useSelector(SelectIsAuthorized);
 
     useEffect(() => {
         if (time === 3) {
@@ -185,9 +184,7 @@ const GamePage = () => {
                 setAnswered(false);
                 setLeader(data.data.leader);
                 setData(data?.data?.question);
-                const _vote = userVotes?.voteList.filter(v=>v.questionsid === data.data.question.question_id);
-                if(_vote.length)
-                    setVoted(_vote[0].variant);
+                console.log(data?.data)
                 setRound(data?.data?.round);
                 userRoom.single && setShowTimer(true);
                 setCurrentStep(data?.data?.step ?? "");
@@ -240,7 +237,9 @@ const GamePage = () => {
 
     useEffect(() => {
         console.log(data)
-
+        const _vote = userVotes?.voteList.filter(v=>v.questionsid === data.question_id);
+        if(isAuthorized && _vote.length)
+            setVoted(_vote[0].variant);
     }, [data])
 
     useEffect(() => {

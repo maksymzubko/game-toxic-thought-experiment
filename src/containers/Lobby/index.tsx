@@ -231,7 +231,7 @@ const LobbyPage = () => {
 
     const handleChangeCustomQuestions = async () => {
         playButton();
-        if(!useCustomQuestions)
+        if(!useCustomQuestions && !userQuestions)
         {
             setLoading(true);
             await questionsApi.getUserQuestions()
@@ -239,7 +239,7 @@ const LobbyPage = () => {
                     console.log(res)
                     setUserQuestions(res.length > 0 ? res : null);
                     setUseCustomQuestions(res.length > 0 ? !useCustomQuestions : false);
-                    dispatch(setError("Your questions list is empty!"))
+                    res.length === 0 && dispatch(setError("Your questions list is empty!"))
                 }).catch(err => {
                     console.log(err)
                     let _err = err.response.data
@@ -247,6 +247,10 @@ const LobbyPage = () => {
                         .join(', ');
                     dispatch(setError(_err));
                 }).finally(() => setLoading(false))
+        }
+        else
+        {
+            setUseCustomQuestions(!useCustomQuestions);
         }
     }
 
