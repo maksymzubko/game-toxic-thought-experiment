@@ -10,6 +10,7 @@ import useSound from "use-sound";
 import {useSelector} from "react-redux";
 import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
 import Authorization from "../../components/Authorization";
+import {SelectIsAuthorized} from "../../redux/store/user/selector";
 
 const StartPage = () => {
     const [isModalOpened, setIsModalOpened] = useState(false)
@@ -20,6 +21,7 @@ const StartPage = () => {
     const [showFirstButtonsList, setShowFirstButtonsList] = useState(true);
     const [freezeScreen, setFreezeScreen] = useState(false)
     const [showModalAuthorization, setShowModalAuthorization] = useState(false)
+    const isAuthorized = useSelector(SelectIsAuthorized);
 
     const handleToggleModal = () => {
         playButton();
@@ -51,7 +53,7 @@ const StartPage = () => {
 
     const tryGoToProfile = () => {
         playButton();
-        if (true) { // check if user authorized
+        if (isAuthorized) { // check if user authorized
             goto(links.profile)
         } else {
             setShowModalAuthorization(true)

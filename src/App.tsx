@@ -16,6 +16,7 @@ import buttonSound from "./assets/sounds/button.mp3";
 import Sidebar from "./components/Sidebar";
 import {SelectIsSoundMuted} from "./redux/store/socket/selector";
 import authApi from "./api/auth/auth.api";
+import {setAuthorized} from "./redux/store/user/slice";
 
 const socket = io(process.env.VITE_WS, {transports: ['websocket']});
 function App() {
@@ -35,7 +36,9 @@ function App() {
     const [isMainScreen, setIsMainScreen] = useState(false);
 
     useEffect(() => {
-        authApi.login({username: 'makss', password: '123'}).then(res=>console.log(res)).catch(err=>console.log(err));
+        const token = localStorage.getItem('18plus_token');
+        if (token)
+            dispatch(setAuthorized({isAuthorized: true}));
 
         const popstateHandler = () => {
             socket?.emit('leaveRoom')

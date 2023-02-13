@@ -6,7 +6,7 @@ const agent = axios.create({
 
 agent.interceptors.request.use(
   async (config: any) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('18plus_token');
     if (token) {
       config.headers!.Authorization = `Bearer ${token.toString()}`;
     }
@@ -26,7 +26,7 @@ agent.interceptors.response.use(
   },
   function (error) {
     if (error.response.status === 401) {
-      localStorage.removeItem('token');
+      localStorage.removeItem('18plus_token');
     }
     return Promise.reject(error);
   }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "ver-7"
+const CACHE_NAME = "ver-8"
 const self = this;
 
 self.addEventListener('install', (e) => {
@@ -23,12 +23,12 @@ self.addEventListener('fetch', (event) => {
         (async () => {
             const r = await caches.match(event.request);
             console.log(`[Service Worker] Fetching resource: ${event.request.url}`);
-            if (r) return r;
-            const response = await fetch(event.request);
-            const cache = await caches.open(CACHE_NAME);
-            console.log(`[Service Worker] Caching new resource: ${event.request.url}`);
-            await cache.put(event.request, response.clone());
-            return response;
+            return r || requestBackend(event);
+            // const response = await fetch(event.request);
+            // const cache = await caches.open(CACHE_NAME);
+            //
+            // await cache.put(event.request, response.clone());
+            // return response;
         })()
     );
 })
@@ -47,3 +47,22 @@ self.addEventListener('activate', (event) => {
         ))
     )
 })
+
+function requestBackend(event){
+    console.log(`[Service Worker] Caching new resource: ${event.request.url}`);
+    var url = event.request.clone();
+    return fetch(url).then(function(res){
+        //if not a valid response send the error
+        if(!res || res.status !== 200 || res.type !== 'basic'){
+            return res;
+        }
+
+        var response = res.clone();
+
+        caches.open(CACHE_NAME).then(function(cache){
+            cache.put(event.request, response);
+        });
+
+        return res;
+    })
+}
