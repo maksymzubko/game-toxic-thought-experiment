@@ -8,7 +8,13 @@ agent.interceptors.request.use(
   async (config: any) => {
     const token = localStorage.getItem('18plus_token');
     if (token) {
-      config.headers!.Authorization = `Bearer ${token.toString()}`;
+        try{
+            const data = JSON.parse(token);
+            config.headers!.Authorization = `Bearer ${data.access_token.toString()}`;
+        }
+        catch (e){
+            localStorage.removeItem('18plus_token');
+        }
     }
 
     config.headers!['Access-Control-Allow-Origin'] = '*';

@@ -4,7 +4,7 @@ import {Vote} from "../../../api/votes/types";
 export interface UserState {
     isAuthorized: boolean | null,
     user: {
-        username: number | null,
+        username: string | null,
         id: number | null,
         voteList?: Vote[],
         isBanned: boolean | null,
@@ -20,7 +20,7 @@ const userSlice = createSlice({
     name: "user",
     initialState: INITIAL_STATE,
     reducers: {
-        setUser: (state, action: PayloadAction<{user: { username: number | null, id: number | null, isBanned: boolean | null, }}>) => {
+        setUser: (state, action: PayloadAction<{user: { username: string | null, id: number | null, isBanned: boolean | null, }}>) => {
             state.user = action.payload.user;
         },
         setAuthorized: (state, action: PayloadAction<{isAuthorized: boolean}>) => {

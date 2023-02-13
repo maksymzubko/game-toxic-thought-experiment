@@ -10,6 +10,8 @@ class AuthApi {
             );
 
             if (response.status === 200 || response.status === 201) {
+                const {id, username, access_token, isBanned} = response.data;
+                localStorage.setItem('18plus_token', JSON.stringify({id, username, access_token, isBanned}))
                 return response.data;
             }
 
