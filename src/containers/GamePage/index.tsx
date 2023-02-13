@@ -236,10 +236,12 @@ const GamePage = () => {
     }, [reported])
 
     useEffect(() => {
-        console.log(data)
-        const _vote = userVotes?.voteList.filter(v=>v.questionsid === data.question_id);
-        if(isAuthorized && _vote.length)
-            setVoted(_vote[0].variant);
+        if(isAuthorized)
+        {
+            const _vote = userVotes?.voteList?.filter(v=>v.questionsid === data.question_id) ?? [];
+            if(_vote.length)
+                setVoted(_vote[0].variant);
+        }
     }, [data])
 
     useEffect(() => {
@@ -277,24 +279,30 @@ const GamePage = () => {
     }, [leader, gameStage])
 
     const handleReport = async () => {
-        setLoadingRequest(true);
-        votesApi.vote({question_id: data.question_id, vote_type: "report"})
-            .then(res => {
-                handleSkipQuestion(true);
-                let votes = Array.from(userVotes.voteList);
-                const vote = votes.findIndex(v=>v.questionsid === data.question_id);
-                if(vote !== -1)
-                {
-                    votes[vote] = res;
-                    dispatch(setUserVotes({userVotes: votes}));
-                }
-                else
-                    dispatch(setUserVotes({userVotes: [...votes, res]}));
+        if(isAuthorized)
+        {
+            setLoadingRequest(true);
+            votesApi.vote({question_id: data.question_id, vote_type: "report"})
+                .then(res => {
+                    handleSkipQuestion(true);
+                    let votes = Array.from(userVotes?.voteList ?? []);
+                    const vote = votes.findIndex(v=>v.questionsid === data.question_id);
+                    if(vote !== -1)
+                    {
+                        votes[vote] = res;
+                        dispatch(setUserVotes({userVotes: votes}));
+                    }
+                    else
+                        dispatch(setUserVotes({userVotes: [...votes, res]}));
 
-            }).catch(err => {
+                }).catch(err => {
                 console.log(err)
                 setError(err.response.data.message.join(", "));
             }).finally(() => setLoadingRequest(false));
+        }
+        else
+            setShowAlert(true)
+
     }
 
     const handleSkipQuestion = (reported = false) => {
