@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
 import {links} from "../../router";
 import {useNavigate} from "react-router-dom";
 
@@ -16,6 +15,7 @@ import crossIcon from "./assets/cross-icon.png";
 import sadDogImg from './assets/dog-sad.png'
 
 import { questionsExample } from './exampleData'
+import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 
 const Profile = () => {
 

@@ -8,9 +8,9 @@ import {useNavigate} from "react-router-dom";
 import buttonSound from '../../assets/sounds/button.mp3'
 import useSound from "use-sound";
 import {useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
 import Authorization from "../../components/Authorization";
 import {SelectIsAuthorized} from "../../redux/store/user/selector";
+import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 
 const StartPage = () => {
     const [isModalOpened, setIsModalOpened] = useState(false)

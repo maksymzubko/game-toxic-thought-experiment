@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
-import {setIsSoundMuted} from "../../redux/store/socket/slice";
 
 import {Box} from "@mui/material";
 import Button from "../Button";
@@ -17,12 +15,15 @@ import backArrow from '../../assets/back-arrow.png';
 import switchOn from '../../assets/radiobutton-on.png';
 import switchOff from '../../assets/radiobutton-off.png';
 import cocktailsImg from '../../assets/cocktails.png';
+import {SelectIsSoundMuted, SelectTips} from "../../redux/store/game/selector";
+import {setMuted, setTips} from "../../redux/store/game/slice";
 
 const Sidebar = () => {
 
     const dispatch = useDispatch();
 
     const isSoundMuted = useSelector(SelectIsSoundMuted);
+    const isEnabledTips = useSelector(SelectTips);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
     const [isSidebarOpened, setIsSidebarOpened] = useState(false);
@@ -34,16 +35,28 @@ const Sidebar = () => {
 
     useEffect(() => {
         setIsSoundOn(!isSoundMuted)
-    }, [isSoundMuted]);
+        setIsHintOn(isEnabledTips)
+    }, [isSoundMuted, isEnabledTips]);
 
     const switchSound = (flag: boolean) => {
         setIsSoundOn(flag)
         if (flag) {
-            dispatch(setIsSoundMuted({isSoundMuted: false}));
+            dispatch(setMuted(false));
             localStorage.setItem('isSoundMuted', 'false');
         } else {
-            dispatch(setIsSoundMuted({isSoundMuted: true}));
+            dispatch(setMuted(true));
             localStorage.setItem('isSoundMuted', 'true');
+        }
+    }
+
+    const switchTips = (flag: boolean) => {
+        setIsHintOn(flag)
+        if (flag) {
+            dispatch(setTips(true));
+            localStorage.setItem('isEnabledTips', 'true');
+        } else {
+            dispatch(setTips(false));
+            localStorage.setItem('isEnabledTips', 'false');
         }
     }
 
@@ -85,7 +98,7 @@ const Sidebar = () => {
                         </div>
                         <div className="hints-block">
                             <p>hints</p>
-                            <img src={isHintOn ? switchOn : switchOff} alt=""  onClick={() => {if (isSoundOn) playButton(); setIsHintOn(!isHintOn)}} />
+                            <img src={isHintOn ? switchOn : switchOff} alt=""  onClick={() => {if (isSoundOn) playButton(); switchTips(!isHintOn)}} />
                         </div>
                     </div>
                     <img src={cocktailsImg} alt="" className="cocktails-img"/>

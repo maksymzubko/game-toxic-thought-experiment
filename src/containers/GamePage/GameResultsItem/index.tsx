@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, AvatarGroup, Badge, Box} from "@mui/material";
+import {Avatar, AvatarGroup, Backdrop, Badge, Box, CircularProgress} from "@mui/material";
 import {Result} from "../index";
 import style from "../style.module.css";
 import Button from "../../../components/Button";
-import {useSelector} from "react-redux";
-import {SelectIsSoundMuted, SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
+import {useDispatch, useSelector} from "react-redux";
+import {SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
 import {getAnimalByLetter} from "../../../helpers/animalHelp";
 import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
@@ -14,13 +14,21 @@ import likeOff from "../assets/like-off.png";
 import likeOn from "../assets/like-on.png";
 import dislikeOff from "../assets/dislike-off.png";
 import dislikeOn from "../assets/dislike-on.png";
+import votesApi from "../../../api/votes/votes.api";
+import {SelectUser} from "../../../redux/store/user/selector";
+import {setUserVotes} from "../../../redux/store/user/slice";
+import {SelectIsSoundMuted} from "../../../redux/store/game/selector";
+import {setError} from "../../../redux/store/game/slice";
 
-const GameResultItem = (d: { result: Result, question: { question: string; answers: string[] }, passDrinkAnimals: any, setUserDrinkStatus: any, leader: string }) => {
+const GameResultItem = (d: { result: Result, question: { question_id: number; question: string; answers: string[] }, passDrinkAnimals: any, setUserDrinkStatus: any, leader: string; voted: any; }) => {
+    const dispatch = useDispatch();
+    const user = useSelector(SelectUser);
     const userLetter = useSelector(SelectUserLetter);
     const userRoom = useSelector(SelectUserRoom);
     const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
+    const [isLoading, setIsLoading] = useState(false);
     const [resultSoundLoad, setResultSoundLoad] = useState(false)
     const [userReaction, setUserReaction] = useState('')
     const [playResult] = useSound(resultSound, {
@@ -33,6 +41,14 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
         }
     }, [resultSoundLoad])
 
+
+    useEffect(() => {
+        if(['like', 'dislike'].includes(d.voted))
+        {
+            console.log(d.voted)
+            setUserReaction(d.voted);
+        }
+    }, [d.voted])
 
     const [correct, setCorrect] = useState(-1);
     useEffect(() => {
@@ -56,6 +72,28 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
 
         }
 
+    }
+
+    const handleLikeDislike = async (type: "like" | "dislike") => {
+        setIsLoading(true);
+        votesApi.vote({question_id: d.question.question_id, vote_type: type})
+            .then(res => {
+                let votes = Array.from(user.voteList);
+                const vote = votes.findIndex(v=>v.questionsid === d.question.question_id);
+                if(vote !== -1)
+                {
+                    votes[vote] = res;
+                    dispatch(setUserVotes({userVotes: votes}));
+                }
+                else
+                    dispatch(setUserVotes({userVotes: [...votes, res]}));
+
+                setUserReaction(type);
+            })
+            .catch(err => {
+                console.log(err)
+                dispatch(setError(err.response.data.message.join(", ")));
+            }).finally(() => setIsLoading(false));
     }
 
     const getListVoted = (variant: number, size: number) => {
@@ -82,6 +120,9 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
     if(d.result.results.length > 0)
     return (
         <Box className={style.results}>
+            <Backdrop open={isLoading}>
+                <CircularProgress/>
+            </Backdrop>
             <Box className={style.players_list}>
                 <Box className={style.answers}>
                     <Box className={style.content}>
@@ -119,18 +160,18 @@ const GameResultItem = (d: { result: Result, question: { question: string; answe
                 </Box>
             </Box>
             <Box className={style.result_buttons}>
-                <Box className={style.reaction_block}>
+                {d.voted !== 'report' && <Box className={style.reaction_block}>
                     <img
                         src={userReaction === 'dislike' ? dislikeOn : dislikeOff}
                         alt=""
-                        onClick={() => switchUserReaction('dislike')}
+                        onClick={() => handleLikeDislike('dislike')}
                     />
                     <img
                         src={userReaction === 'like' ? likeOn : likeOff}
                         alt=""
-                        onClick={() => switchUserReaction('like')}
+                        onClick={() => handleLikeDislike('like')}
                     />
-                </Box>
+                </Box>}
                 <Button onClick={() => isDrinking()} className={style.drink_button}>Continue</Button>
             </Box>
         </Box>

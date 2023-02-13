@@ -4,7 +4,7 @@ import {useLocation, useRoutes} from "react-router-dom";
 import {routes as r} from "./router";
 import styles from './app-style.module.css'
 import {io} from "socket.io-client";
-import {setIsSoundMuted, setSocket, setUserId} from "./redux/store/socket/slice";
+import {setSocket, setUserId} from "./redux/store/socket/slice";
 import {useDispatch, useSelector} from "react-redux";
 import {useSnackbar} from "notistack";
 import Modal from "./containers/Modal";
@@ -14,9 +14,14 @@ import crossIcon from "./containers/Modal/assets/cross-icon.png";
 import useSound from "use-sound";
 import buttonSound from "./assets/sounds/button.mp3";
 import Sidebar from "./components/Sidebar";
-import {SelectIsSoundMuted} from "./redux/store/socket/selector";
 import authApi from "./api/auth/auth.api";
-import {setAuthorized} from "./redux/store/user/slice";
+import {setAuthorized, setUser, setUserVotes} from "./redux/store/user/slice";
+import votesApi from "./api/votes/votes.api";
+import MessageModal from "./components/MessageModal";
+import {setError, setMuted, setTips} from "./redux/store/game/slice";
+import {SelectError, SelectIsSoundMuted} from "./redux/store/game/selector";
+import {getAnimalByLetter} from "./helpers/animalHelp";
+import ModalHints from "./components/ModalHints";
 
 const socket = io(process.env.VITE_WS, {transports: ['websocket']});
 function App() {
@@ -26,6 +31,7 @@ function App() {
     const routes = useRoutes(r);
     const dispatch = useDispatch();
 
+    const error = useSelector(SelectError);
     const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
     const [isInstalled, setIsInstalled] = useState(false)
@@ -38,7 +44,26 @@ function App() {
     useEffect(() => {
         const token = localStorage.getItem('18plus_token');
         if (token)
+        {
             dispatch(setAuthorized({isAuthorized: true}));
+            try{
+                const {id, username, isBanned} = JSON.parse(localStorage.getItem('18plus_token'));
+                dispatch(setUser({user: {id, username, isBanned}}));
+
+                votesApi.getUserVotes()
+                    .then(res => {
+                        console.log('voted', res)
+                        dispatch(setUserVotes({userVotes: res}))
+                    }).catch(err => {
+                        console.log(err)
+                    }).finally(() => {})
+            }
+            catch (e)
+            {
+                console.log(e)
+            }
+
+        }
 
         const popstateHandler = () => {
             socket?.emit('leaveRoom')
@@ -88,12 +113,18 @@ function App() {
     }, [])
 
     useEffect(() => {
-        const valueFromStorage = localStorage.getItem('isSoundMuted');
-        console.log('valueFromStorage', valueFromStorage)
-        if (valueFromStorage === null) {
+        const volumeFromStorage = localStorage.getItem('isSoundMuted');
+        const tipsFromStorage = localStorage.getItem('isEnabledTips');
+        if (volumeFromStorage === null) {
             localStorage.setItem('isSoundMuted', 'false');
         } else {
-            dispatch(setIsSoundMuted({isSoundMuted: valueFromStorage === 'true'}));
+            dispatch(setMuted(volumeFromStorage === 'true'));
+        }
+
+        if (tipsFromStorage === null) {
+            localStorage.setItem('isEnabledTips', 'true');
+        } else {
+            dispatch(setTips(tipsFromStorage === 'true'));
         }
     }, []);
 
@@ -152,6 +183,7 @@ function App() {
     if (isOnline)
         return (
             <>
+                {error.length > 0 && <MessageModal message={error} onClose={()=>{dispatch(setError(""))}}/>}
                 {showModal && <Modal onClose={() => setShowModal(false)}/>}
                 <Box className={styles.content}>
                     {routes}

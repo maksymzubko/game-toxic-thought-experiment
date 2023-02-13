@@ -10,7 +10,6 @@ export interface SocketState {
         single: boolean | null
     }
     socket: Socket | null,
-    isSoundMuted: boolean,
 }
 
 const INITIAL_STATE: SocketState = {
@@ -18,7 +17,6 @@ const INITIAL_STATE: SocketState = {
     room: {isOwner: null, single: null, roomNumber: null},
     user_id: null,
     socket: null,
-    isSoundMuted: false,
 };
 
 const socketSlice = createSlice({
@@ -38,11 +36,8 @@ const socketSlice = createSlice({
             const {isOwner, roomNumber, single} = action.payload;
             state.room = {isOwner, roomNumber, single};
         },
-        setIsSoundMuted: (state, action: PayloadAction<{isSoundMuted: boolean}>) => {
-            state.isSoundMuted = action.payload.isSoundMuted;
-        },
     }
 })
 
 export default socketSlice.reducer;
-export const { setSocket, setUserId, setUserLetter, setRoom, setIsSoundMuted } = socketSlice.actions;
+export const { setSocket, setUserId, setUserLetter, setRoom } = socketSlice.actions;

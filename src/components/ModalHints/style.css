@@ -1,0 +1,70 @@
+.info-modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 25;
+}
+.info-modal .modal{
+    border-radius: 30px;
+    background-color: #fff;
+    width: 340px;
+    max-height: 75vh;
+    height: auto;
+    position: relative;
+    margin: 0;
+    padding: 2%;
+
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.info-modal .modal img.img{
+    width: 40%;
+}
+/*.info-modal .modal .wtd{*/
+/*    margin-top: 15px;*/
+/*}*/
+.info-modal .modal .top{
+    margin-top: 10px;
+    display: flex;
+    width: 80%;
+    align-items: center;
+    justify-content: center;
+}
+.info-modal .modal img.close{
+    position: absolute;
+    top: 10px;
+    right: 10px
+}
+.info-modal .modal h1{
+    position: relative;
+    text-align: center;
+    line-height: 30px;
+    top: 0;
+    left: 0;
+    font-size: 32px;
+    color: #F84E93;
+    font-weight: bolder;
+    margin: 0;
+}
+.info-modal .modal p{
+    width: 80%;
+    text-align: center;
+    font-size: 32px;
+    line-height: 32px;
+    color: #333333;
+    font-weight: 500;
+    margin-top: 0;
+    box-sizing: border-box;
+    height: auto;
+    margin-bottom: 20px;
+}
+
