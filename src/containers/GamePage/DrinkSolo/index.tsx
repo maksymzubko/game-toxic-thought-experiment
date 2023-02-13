@@ -8,7 +8,7 @@ import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
 import glassesSound from "../../../assets/sounds/glasses.mp3";
 import {useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../../redux/store/socket/selector";
+import {SelectIsSoundMuted} from "../../../redux/store/game/selector";
 
 const DrinkSolo = (d: {drinkStatus: string, drinkStatusBool: boolean, players: any[], userId: any, letDrink: any}) => {
 

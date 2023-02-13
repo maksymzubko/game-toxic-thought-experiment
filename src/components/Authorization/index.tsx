@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../redux/store/socket/selector";
+import {SelectSocket} from "../../redux/store/socket/selector";
 import Button from "../Button";
 
 import useSound from "use-sound";
@@ -12,13 +12,15 @@ import cocktailsImg from '../../assets/cocktails.png';
 import authApi from "../../api/auth/auth.api";
 import {Backdrop, CircularProgress} from "@mui/material";
 import {setAuthorized, setUser} from "../../redux/store/user/slice";
+import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 
 
-const Authorization = (props: {onClose: any}) => {
+const Authorization = (props: { onClose: any }) => {
 
     const isSoundMuted = useSelector(SelectIsSoundMuted);
-    const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
+    const [playButton] = useSound(buttonSound, {volume: isSoundMuted ? 0 : 1});
     const [currentStage, setCurrentStage] = useState<"init" | "authorization" | "registration">("init");
+    const socket = useSelector(SelectSocket);
 
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false)
@@ -40,8 +42,8 @@ const Authorization = (props: {onClose: any}) => {
                 dispatch(setUser({user: {id, isBanned, username}}))
                 dispatch(setAuthorized({isAuthorized: true}))
             }).catch((err) => {
-                console.log('err', err.response.data)
-            }).finally(()=>setIsLoading(false));
+            console.log('err', err.response.data)
+        }).finally(() => setIsLoading(false));
     }
 
     const register = () => {
@@ -53,7 +55,7 @@ const Authorization = (props: {onClose: any}) => {
                 console.log('res', res)
             }).catch((err) => {
             console.log('err', err.response.data)
-        }).finally(()=>setIsLoading(false));
+        }).finally(() => setIsLoading(false));
     }
 
     const handleChangeName = (event: any) => {
@@ -90,13 +92,20 @@ const Authorization = (props: {onClose: any}) => {
             </Backdrop>
             <div className="background">
                 <div className="modal">
-                    <img src={backArrow} alt="" className="back-arrow" onClick={() => {playButton();props.onClose()}}/>
+                    <img src={backArrow} alt="" className="back-arrow" onClick={() => {
+                        playButton();
+                        props.onClose()
+                    }}/>
 
                     {currentStage === "init" &&
                         <>
                             <img src={cocktailsImg} alt="" className="cocktails-img"/>
-                            <Button className="login" onClick={() => {changeStage("authorization")}}>login</Button>
-                            <Button className="register" onClick={() => {changeStage("registration")}}>register</Button>
+                            <Button className="login" onClick={() => {
+                                changeStage("authorization")
+                            }}>login</Button>
+                            <Button className="register" onClick={() => {
+                                changeStage("registration")
+                            }}>register</Button>
                         </>
                     }
                     {currentStage === "authorization" &&

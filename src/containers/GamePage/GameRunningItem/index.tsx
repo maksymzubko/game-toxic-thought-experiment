@@ -7,9 +7,13 @@ import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
 import questionSound from "../../../assets/sounds/question.mp3";
 import {useSelector} from "react-redux";
-import {SelectIsSoundMuted} from "../../../redux/store/socket/selector";
+import {SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
 import complainImg from "../assets/complain.png";
 import LoginRequired from "../../../components/LoginRequired";
+import {SelectIsAuthorized} from "../../../redux/store/user/selector";
+import {SelectIsSoundMuted, SelectTips} from "../../../redux/store/game/selector";
+import ModalHints from "../../../components/ModalHints";
+import {getAnimalByLetter} from "../../../helpers/animalHelp";
 
 const GameRunningItem = (d: {
     players: { id: string, letter: string }[],
@@ -21,11 +25,21 @@ const GameRunningItem = (d: {
     isAnswered: boolean,
     gameStage: number,
     onShowAlert: any,
+    setReported: any,
+    showTimer: boolean,
+    handleReport: any,
+    voted: any,
+    leader: string
 }) => {
 
     const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
+    const userLetter = useSelector(SelectUserLetter);
+    const [showModal, setShowModal] = useState(false);
+    const tipsEnabled = useSelector(SelectTips);
+    const userRoom = useSelector(SelectUserRoom);
+    const isAuthorized = useSelector(SelectIsAuthorized)
     const [questionSoundLoad, setQuestionSoundLoad] = useState(false);
     const [playQuestion] = useSound(questionSound, {
         onload: () => setQuestionSoundLoad(true),
@@ -47,8 +61,14 @@ const GameRunningItem = (d: {
         }
     }
 
+    useEffect(() => {
+        console.log(d.currentStep)
+        setShowModal(true);
+    }, [d.currentStep])
+
     return (
         <Box className={style.gameRunningScreen}>
+            {showModal && tipsEnabled && <ModalHints img={getAnimalByLetter(userRoom.single ? d.currentStep : userLetter)} leader={userRoom.single ? d.currentStep === d.leader : userLetter === d.leader} onClose={() => setShowModal(false)}/>}
             {!d.isAnswered && <Box className={style.answers}>
                 <Box className={style.content}>
                     {d.question.answers.map((a, i) =>
@@ -60,11 +80,10 @@ const GameRunningItem = (d: {
             </Box>}
             {d.isAnswered && <h1 className={style.waiting}>Waiting while other players answering..</h1>}
 
-            {d.gameStage !== 1 &&
-                <Box className={style.timer}>
-                    {d.timer}
-                </Box>
-            }
+            {d.showTimer && <Box className={style.timer}>
+                {d.timer}
+            </Box>}
+
             {!d.isAnswered &&
             <>
                 <Typography className={style.timer_subtitle}>answer secretly!</Typography>
@@ -74,7 +93,7 @@ const GameRunningItem = (d: {
                         skip
                     </Button>
 
-                    <img onClick={() => {playButton(); d.onShowAlert()}} src={complainImg} alt="" />
+                    {d.voted !== 'report' && <img onClick={() => {playButton(); !isAuthorized ? d.onShowAlert() : d.handleReport();}} src={complainImg} alt="" />}
 
                     <Button onClick={() => submitAnswer()} className={style.submit_buttons}>Ок</Button>
                 </Box>
