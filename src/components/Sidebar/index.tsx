@@ -8,9 +8,9 @@ import useSound from "use-sound";
 import buttonSound from "../../assets/sounds/button.mp3";
 
 import './style.css';
-import sidebarArrow from './assets/sidebar-arrow.png';
-import sidebarQuestion from './assets/sidebar-question.png';
-import sidebarSettings from './assets/sidebar-settings.png';
+import sidebarArrow from './assets/sidebar-arrow.svg';
+import sidebarQuestion from './assets/sidebar-question.svg';
+import sidebarSettings from './assets/sidebar-settings.svg';
 import backArrow from '../../assets/back-arrow.png';
 import switchOn from '../../assets/radiobutton-on.png';
 import switchOff from '../../assets/radiobutton-off.png';
