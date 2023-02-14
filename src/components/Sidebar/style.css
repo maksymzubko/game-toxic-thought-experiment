@@ -2,7 +2,7 @@
     z-index: 20;
     width: 151px;
     height: 56px;
-    background-image: url("./assets/sidebar-border.png");
+    background-image: url("./assets/sidebar-border.svg");
     background-size: contain;
     display: flex;
     justify-content: space-between;
@@ -12,7 +12,7 @@
     top: 10%;
     padding: 0 15px 0 25px;
     box-sizing: border-box;
-    transition: 2s;
+    transition: 1s;
 }
 
 .sidebar-button.opened {
