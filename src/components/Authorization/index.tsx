@@ -35,7 +35,6 @@ const Authorization = (props: { onClose: any }) => {
     const [errorMessage, setErrorMessage] = useState('')
 
     const login = () => {
-        playButton();
 
         if (!name.length || !password.length)
             return;
@@ -61,6 +60,7 @@ const Authorization = (props: { onClose: any }) => {
         authApi.register({username: name, email, password})
             .then((res) => {
                 console.log('res', res)
+                login();
             }).catch((err) => {
             console.log('err', err.response.data)
             setErrorMessage(err.response.data.message.join(', '))
@@ -133,7 +133,7 @@ const Authorization = (props: { onClose: any }) => {
                             </div>
                             <Button
                                 className="login"
-                                onClick={() => {(name.trim() && password.trim()) && login()}}
+                                onClick={() => {if (name.trim() && password.trim()) {login(); playButton()}}}
                                 style={{opacity: (name.trim() && password.trim()) ? 1 : 0.7}}
                             >
                                 login
