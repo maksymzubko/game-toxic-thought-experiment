@@ -22,18 +22,20 @@
 }
 .btn.cloud {
     width: 248px;
-    height: 10vh;
+    height: 65px;
     font-size: 20px;
     background: url("../../assets/cloud/cloud.png") no-repeat;
     background-size: 100% 100%;
     background-position: center;
+    margin-bottom: 5px;
 }
 .btn.unselected_answer {
     font-size: 20px;
     background: none;
     width: 248px;
-    height: 10vh;
+    height: 65px;
     color: #9A2D26;
+    margin-bottom: 5px;
 }
 .btn.correct{
     color: white;
@@ -78,4 +80,12 @@
     .size-big {display: none}
     .size-med {display: none}
     .size-small {display: block}
+}
+@media (max-width: 375px) {
+    .btn.cloud {
+        height: 55px;
+    }
+    .btn.unselected_answer {
+        height: 55px;
+    }
 }

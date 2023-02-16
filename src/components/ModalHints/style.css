@@ -67,4 +67,8 @@
     height: auto;
     margin-bottom: 20px;
 }
-
+@media (max-width: 375px) {
+    .info-modal .modal img.img{
+        width: 25%;
+    }
+}

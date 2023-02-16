@@ -36,6 +36,7 @@ const Profile = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [questionList, setQuestionList] = useState([])
     const [allFieldsAreFiled, setAllFieldsAreFiled] = useState(false)
+    const [freezeScreen, setFreezeScreen] = useState(true);
 
 
     const logout = () => {
@@ -147,12 +148,19 @@ const Profile = () => {
     }, [selectedQuestion]);
 
 
+    useEffect(() => {
+        setTimeout(()=> {
+            setFreezeScreen(false);
+        }, 300)
+    }, []);
+
 
     return (
         <>
             <Backdrop open={isLoading} style={{zIndex: 30}}>
                 <CircularProgress/>
             </Backdrop>
+            {freezeScreen && <div className="freezeScreen"/>}
             <div className="profile">
                 <p className="title">
                     <img src={backArrow} alt="" onClick={() => goBack()} />
