@@ -131,6 +131,13 @@ function App() {
         } else {
             dispatch(setTips(tipsFromStorage === 'true'));
         }
+
+        addEventListener('popstate', (event) => { });
+        onpopstate = (event) => {
+            console.log('popstate')
+            event.preventDefault()
+            return false
+        };
     }, []);
 
 
