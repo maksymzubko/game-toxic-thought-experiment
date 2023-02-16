@@ -23,13 +23,14 @@
 html{
   font-family: ALSScriptus, sans-serif !important;
   height: 100%;
+  width: 100%;
 }
 
 body{
   padding: 0;
   margin: 0;
   overflow: hidden;
-  width: 100vw;
+  width: 100%;
   height: var(--app-height);
 
   background: url("./assets/back.png") no-repeat;
