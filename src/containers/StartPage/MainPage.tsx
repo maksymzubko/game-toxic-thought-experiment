@@ -18,8 +18,6 @@ const StartPage = () => {
 
     const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
-    const [showFirstButtonsList, setShowFirstButtonsList] = useState(true);
-    const [freezeScreen, setFreezeScreen] = useState(false)
     const [showModalAuthorization, setShowModalAuthorization] = useState(false)
     const isAuthorized = useSelector(SelectIsAuthorized);
 
@@ -28,28 +26,10 @@ const StartPage = () => {
         setIsModalOpened(!isModalOpened);
     }
 
-    const goLobby = (variant: number) => {
-        // goto(links.game);
-        playButton();
-        switch (variant){
-            case 0:
-                goto(links.lobby, {state: {single: true}})
-                break;
-            default:
-                goto(links.lobby, {state: {single: false}})
-                break;
-        }
-    }
-
     const showSecondScreen = () => {
         playButton();
-        setShowFirstButtonsList(false);
-        setFreezeScreen(true)
+        goto(links.mode)
     }
-
-    useEffect(() => {
-        if (freezeScreen) setTimeout(() =>setFreezeScreen(false), 300 );
-    }, [freezeScreen]);
 
     const tryGoToProfile = () => {
         playButton();
@@ -65,20 +45,8 @@ const StartPage = () => {
         <Box className={style.container}>
             <img src={logo} alt={'logo'}/>
             <Box className={`${style.buttons}`}>
-                {showFirstButtonsList ?
-                    <>
-                        <Button variant={'contained'} className={style.single} onClick={() => showSecondScreen()}>play</Button>
-                        <Button variant={'contained'} className={style.multi} onClick={() => tryGoToProfile()}>profile</Button>
-                    </>
-                    :
-                    <>
-                        {freezeScreen && <div className={style.freezeScreen} />}
-                        <Button variant={'contained'} className={style.single} onClick={() => goLobby(0)}>single
-                            device</Button>
-                        <Button variant={'contained'} className={style.multi} onClick={() => goLobby(1)}>multi
-                            device</Button>
-                    </>
-                }
+                <Button variant={'contained'} className={style.single} onClick={() => showSecondScreen()}>play</Button>
+                <Button variant={'contained'} className={style.multi} onClick={() => tryGoToProfile()}>profile</Button>
             </Box>
             {isModalOpened && <Box className={style.modal}>
                 <h1>how to play:</h1>

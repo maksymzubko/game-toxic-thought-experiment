@@ -129,7 +129,7 @@ const Authorization = (props: { onClose: any }) => {
                                 <input placeholder="login" type="text" onChange={handleChangeName}/>
                             </div>
                             <div className="input-wrapper">
-                                <input placeholder="password" type="password" onChange={handleChangePassword}/>
+                                <input placeholder="password" type="password" onChange={handleChangePassword} autoComplete="off"/>
                             </div>
                             <Button
                                 className="login"
@@ -149,7 +149,7 @@ const Authorization = (props: { onClose: any }) => {
                                 <input placeholder="email" type="email" onChange={handleChangeEmail}/>
                             </div>
                             <div className="input-wrapper">
-                                <input placeholder="password" type="password" onChange={handleChangePassword}/>
+                                <input placeholder="password" type="password" onChange={handleChangePassword} autoComplete="off"/>
                             </div>
                             <Button
                                 className="register"

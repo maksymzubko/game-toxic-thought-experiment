@@ -9,7 +9,10 @@ const Loader = (Component: any) => (props: any) =>
     );
 
 const StartPage = Loader(
-    lazy(() => import('./containers/StartPage/index'))
+    lazy(() => import('./containers/StartPage/MainPage'))
+);
+const ModePage = Loader(
+    lazy(() => import('./containers/StartPage/ModePage'))
 );
 
 const GamePage = Loader(
@@ -37,6 +40,7 @@ const Profile = Loader(
 export const links = {
     lobby: '/lobby',
     start: '/',
+    mode: '/mode',
     game: '/game',
     room: '/room',
     profile: '/profile',
@@ -46,6 +50,10 @@ export const routes = [
     {
         path: '/',
         element: <StartPage/>,
+    },
+    {
+        path: '/mode',
+        element: <ModePage/>,
     },
     {
         path: '/game',
