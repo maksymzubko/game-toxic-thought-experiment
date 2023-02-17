@@ -339,7 +339,7 @@ const GamePage = () => {
             socket?.emit('answer', {answer: variant});
     }
 
-    const getDrinkAnimals = (list: any, shouldEvaluate: boolean) => {
+    const getDrinkAnimals = (list: any, shouldEvaluate: boolean = false) => {
         if (shouldEvaluate) {
             setGameStatus("evaluate");
         } else {
