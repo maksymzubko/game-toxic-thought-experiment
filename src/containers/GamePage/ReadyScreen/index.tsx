@@ -39,7 +39,7 @@ const ReadyScreen = (d: { players: { id: string, letter: string }[], round: numb
             <div className="users-list-2" style={{gridTemplateColumns: 'repeat(4, 20%)'}}>
                 {d.players.map(p => (
                     <div key={p.letter} className="user">
-                        <div className="user-name">{getAnimalNameByLetter(p.letter)}</div>
+                        {/*<div className="user-name">{getAnimalNameByLetter(p.letter)}</div>*/}
                         <img className="animal-img" src={getAnimalDrinkByLetter(p.letter)} alt=""/>
                     </div>
                 ))}

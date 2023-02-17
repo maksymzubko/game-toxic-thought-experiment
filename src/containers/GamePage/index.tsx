@@ -22,6 +22,7 @@ import votesApi from "../../api/votes/votes.api";
 import {setUserVotes} from "../../redux/store/user/slice";
 import {SelectIsAuthorized, SelectUser} from "../../redux/store/user/selector";
 import {setError} from "../../redux/store/game/slice";
+import Evaluate from "./EvaluateItem";
 
 interface GameStageInterface {
     status: boolean;
@@ -88,7 +89,7 @@ const GamePage = () => {
     const [loading, setLoading] = useState(true);
     const [loadingRequest, setLoadingRequest] = useState(false);
     const [players, setPlayers] = useState<{ id: string, letter: string }[]>([]);
-    const [gameStatus, setGameStatus] = useState<"waiting" | "running" | "results" | "drink" | "ready">("waiting");
+    const [gameStatus, setGameStatus] = useState<"waiting" | "running" | "results" | "drink" | "ready" | "evaluate">("waiting");
     const [data, setData] = useState<{ question_id: number; question: string; answers: string[] }>({question_id: null, question: "", answers: []})
     const [time, setTime] = useState<number>(-1);
     const [timer, setTimer] = useState<number>(60);
@@ -338,14 +339,22 @@ const GamePage = () => {
             socket?.emit('answer', {answer: variant});
     }
 
-    const getDrinkAnimals = (list: any) => {
-        setGameStatus('drink');
+    const getDrinkAnimals = (list: any, shouldEvaluate: boolean) => {
+        if (shouldEvaluate) {
+            setGameStatus("evaluate");
+        } else {
+            setGameStatus('drink');
+        }
         setListDrinkAnimals(list);
         setDrinkStatus('');
     }
 
-    const getUserDrinkStatus = (status: string, statusBool: boolean) => {
-        setGameStatus('drink');
+    const getUserDrinkStatus = (status: string, statusBool: boolean, shouldEvaluate: boolean) => {
+        if (shouldEvaluate) {
+            setGameStatus("evaluate");
+        } else {
+            setGameStatus('drink');
+        }
         setDrinkStatus(status);
         setDrinkStatusBool(statusBool);
     }
@@ -370,7 +379,7 @@ const GamePage = () => {
 
     return (
         <>
-            {(gameStatus === 'running' || gameStatus === 'results') &&
+            {(gameStatus === 'running' || gameStatus === 'results' || gameStatus === 'evaluate') &&
                 <Box className={style.container}>
                     <img className={style.answer_bg} src={answerBg}/>
                     <Box className={style.question}>
@@ -415,6 +424,13 @@ const GamePage = () => {
                     leader={leader}
                 />
             </div>
+            }
+            {gameStatus === 'evaluate' &&
+                <Evaluate
+                    question={data}
+                    changeGameStatus={() =>  setGameStatus('drink')}
+                    voted={voted}
+                />
             }
             {(gameStatus === 'drink' && !drinkStatus) &&
                 <DrinkTogether

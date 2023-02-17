@@ -31,9 +31,7 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
 
     const [isModalOpened, setModalOpened] = useState(false);
     const isAuthorized = useSelector(SelectIsAuthorized);
-    const [isLoading, setIsLoading] = useState(false);
     const [resultSoundLoad, setResultSoundLoad] = useState(false)
-    const [userReaction, setUserReaction] = useState('')
     const [playResult] = useSound(resultSound, {
         onload: () => setResultSoundLoad(true),
         volume: isSoundMuted ? 0 : 1
@@ -45,14 +43,6 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
     }, [resultSoundLoad])
 
 
-    useEffect(() => {
-        if(['like', 'dislike'].includes(d.voted))
-        {
-            console.log(d.voted)
-            setUserReaction(d.voted);
-        }
-    }, [d.voted])
-
     const [correct, setCorrect] = useState(-1);
     useEffect(() => {
         setCorrect(d.result.correct);
@@ -60,50 +50,25 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
 
     const isDrinking = () => {
         playButton();
+
+        let shouldEvaluate = false;
+        if (isAuthorized && d.voted !== 'report') shouldEvaluate = true
+
         if(userRoom.single)
         {
             const whoDrinking = d.result.results.filter(r=>!r.answer.isCorrect);
-            d.passDrinkAnimals(whoDrinking);
+            d.passDrinkAnimals(whoDrinking, shouldEvaluate);
         }
         else {
             const status = d.result.results.filter(p=>p.player === userLetter)[0].answer.isCorrect;
             if (status) {
-                d.setUserDrinkStatus('You not drinking!', false);
+                d.setUserDrinkStatus('You not drinking!', false, shouldEvaluate);
             } else {
-                d.setUserDrinkStatus('You drinking!', true);
+                d.setUserDrinkStatus('You drinking!', true, shouldEvaluate);
             }
 
         }
 
-    }
-
-    const handleLikeDislike = async (type: "like" | "dislike") => {
-        if(isAuthorized)
-        {
-            setIsLoading(true);
-            votesApi.vote({question_id: d.question.question_id, vote_type: type})
-                .then(res => {
-                    let votes = Array.from(user.voteList);
-                    const vote = votes.findIndex(v=>v.questionsid === d.question.question_id);
-                    if(vote !== -1)
-                    {
-                        votes[vote] = res;
-                        dispatch(setUserVotes({userVotes: votes}));
-                    }
-                    else
-                        dispatch(setUserVotes({userVotes: [...votes, res]}));
-
-                    setUserReaction(type);
-                })
-                .catch(err => {
-                    console.log(err)
-                    dispatch(setError(err.response.data.message.join(", ")));
-                }).finally(() => setIsLoading(false));
-        }
-        else
-        {
-            setModalOpened(true)
-        }
     }
 
     const getListVoted = (variant: number, size: number) => {
@@ -117,22 +82,11 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
         )
     }
 
-    const switchUserReaction = (reaction: string) => {
-        playButton();
-        if (userReaction === reaction) {
-            setUserReaction('')
-        } else {
-            setUserReaction(reaction)
-        }
-    }
 
 
     if(d.result.results.length > 0)
     return (
         <Box className={style.results}>
-            <Backdrop open={isLoading}>
-                <CircularProgress/>
-            </Backdrop>
             {isModalOpened && <LoginRequired onClose={()=>setModalOpened(false)}/>}
             <Box className={style.players_list}>
                 <Box className={style.answers}>
@@ -171,18 +125,6 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
                 </Box>
             </Box>
             <Box className={style.result_buttons}>
-                {d.voted !== 'report' && <Box className={style.reaction_block}>
-                    <img
-                        src={userReaction === 'dislike' ? dislikeOn : dislikeOff}
-                        alt=""
-                        onClick={() => handleLikeDislike('dislike')}
-                    />
-                    <img
-                        src={userReaction === 'like' ? likeOn : likeOff}
-                        alt=""
-                        onClick={() => handleLikeDislike('like')}
-                    />
-                </Box>}
                 <Button onClick={() => isDrinking()} className={style.drink_button}>Continue</Button>
             </Box>
         </Box>

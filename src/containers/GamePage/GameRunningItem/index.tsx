@@ -93,7 +93,7 @@ const GameRunningItem = (d: {
                         skip
                     </Button>
 
-                    {d.voted !== 'report' && <img onClick={() => {playButton(); !isAuthorized ? d.onShowAlert() : d.handleReport();}} src={complainImg} alt="" />}
+                    {d.voted !== 'report' && <img onClick={() => {playButton(); !isAuthorized ? d.onShowAlert() : d.handleReport();}} src={complainImg} alt=""  className={style.report_button} />}
 
                     <Button onClick={() => submitAnswer()} className={style.submit_buttons}>Ок</Button>
                 </Box>

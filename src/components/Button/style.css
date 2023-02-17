@@ -74,18 +74,11 @@
 }
 @media (max-height: 600px) {
     .btn.cloud, .btn.unselected_answer {
-        height: 8vh;
+        height: 55px;
         width: 220px;
     }
     .size-big {display: none}
     .size-med {display: none}
     .size-small {display: block}
 }
-@media (max-width: 375px) {
-    .btn.cloud {
-        height: 55px;
-    }
-    .btn.unselected_answer {
-        height: 55px;
-    }
-}
+

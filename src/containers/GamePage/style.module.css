@@ -61,7 +61,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .question .content{
@@ -119,18 +119,6 @@
 .result_buttons_v2 .btn{
     border-radius: 15px;
 }
-.result_buttons .reaction_block {
-    margin-top: 5px !important;
-    display: flex;
-    width: 90%;
-    max-width: 400px;
-    justify-content: space-around;
-    height: 50px;
-    align-items: center;
-}
-.result_buttons .reaction_block img {
-    height: 50px;
-}
 
 .drink_button{
     text-transform: uppercase;
@@ -146,7 +134,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .round{
@@ -193,7 +181,7 @@
     top: 200px;
     width: 100%;
     left: 0;
-    height: calc(100% - 220px);
+    height: calc(100% - 200px);
 }
 
 .control_buttons{
@@ -209,7 +197,7 @@
     background: url("../../assets/btn_small.png") no-repeat !important;
     color: #17A085;
     position: relative;
-    padding-left: 10px;
+    padding-left: 20px;
     box-sizing: border-box;
 }
 .beer_icon{
@@ -241,7 +229,7 @@
     }
     .answers_block{
         top: 150px;
-        height: calc(100% - 170px);
+        height: calc(100% - 150px);
     }
     .timer {
         font-size: 70px;
@@ -268,12 +256,22 @@
     }
     .answers_block{
         top: 110px;
-        height: calc(100% - 120px);
+        height: calc(100% - 100px);
     }
     .result_buttons{
         /*flex-direction: row-reverse;*/
     }
     .result_buttons .btn{
         border-radius: 15px !important;
+    }
+}
+
+@media (max-width: 374px) {
+    .control_buttons{
+        width: 315px;
+    }
+    .control_buttons .skip_buttons, .control_buttons .submit_buttons, .control_buttons .report_button{
+        height: 50px;
+        background-size: 100% 100% !important;
     }
 }

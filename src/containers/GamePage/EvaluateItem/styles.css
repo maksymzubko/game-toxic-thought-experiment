@@ -1,0 +1,76 @@
+.evaluate {
+    position: fixed;
+    width: 90%;
+    transform: translateX(-50%);
+    left: 50%;
+    top: 200px;
+    height: calc(100% - 200px);
+}
+.evaluate h1{
+    font-size: 32px;
+    line-height: 60px;
+    text-align: center;
+    color: #9A2D26;
+    width: 200px;
+    margin: 0 auto 35px;
+}
+
+.evaluate .animal-img-big{
+    height: 350px;
+}
+
+.evaluate .img-wrapper{
+    height: 30vh;
+    position: fixed;
+    bottom: calc(5% + 55px);
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+}
+.evaluate .continue-button-2{
+    position: fixed;
+    bottom: 5%;
+    transform: translateX(-50%);
+    left: 50%;
+    background-color: #ffffff;
+}
+
+.evaluate .reaction_block {
+    margin: 5px auto;
+    display: flex;
+    width: 90%;
+    max-width: 400px;
+    justify-content: space-around;
+    height: 50px;
+    align-items: center;
+}
+.evaluate .reaction_block img {
+    width: 78px;
+    height: 85px;
+}
+
+@media (max-height: 750px) {
+    .evaluate {
+        top: 170px;
+        height: calc(100% - 170px);
+    }
+    .evaluate h1{
+        line-height: 38px;
+    }
+}
+
+@media (max-height: 720px) {
+    .evaluate {
+        top: 150px;
+        height: calc(100% - 150px);
+    }
+}
+@media (max-height: 600px) {
+    .evaluate {
+        top: 120px;
+        height: calc(100% - 120px);
+    }
+    .evaluate h1{
+        line-height: 32px;
+    }
+}
