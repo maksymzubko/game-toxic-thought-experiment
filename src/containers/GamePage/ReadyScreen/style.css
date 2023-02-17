@@ -37,6 +37,7 @@
     font-size: 26px;
     line-height: 51px;
     color: #444E3F;
+    height: 40px;
 }
 .users-list-2 .user img {
     object-fit: contain;

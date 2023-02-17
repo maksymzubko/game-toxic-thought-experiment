@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './style.css';
 import {getAnimalNameByLetter} from "../../../helpers/animalHelp";
 import {getAnimalDrinkByLetter} from "../../../helpers/animalHelp2";
@@ -20,7 +20,7 @@ const ReadyScreen = (d: { players: { id: string, letter: string }[], round: numb
 
 
     const handleGameStart = () => {
-        playButton();
+        // playButton();
         socket?.emit('startGame');
     }
 
@@ -28,6 +28,13 @@ const ReadyScreen = (d: { players: { id: string, letter: string }[], round: numb
         playButton();
         socket?.emit('leaveRoom');
     }
+
+    useEffect(() => {
+        setTimeout(() => {
+            handleGameStart()
+        }, 3000);
+    }, []);
+
 
     return (
         <div className="modal">
@@ -39,15 +46,16 @@ const ReadyScreen = (d: { players: { id: string, letter: string }[], round: numb
             <div className="users-list-2" style={{gridTemplateColumns: 'repeat(4, 20%)'}}>
                 {d.players.map(p => (
                     <div key={p.letter} className="user">
-                        {/*<div className="user-name">{getAnimalNameByLetter(p.letter)}</div>*/}
+                        <div className="user-name">{getAnimalNameByLetter(p.letter)}</div>
                         <img className="animal-img" src={getAnimalDrinkByLetter(p.letter)} alt=""/>
                     </div>
                 ))}
             </div>
-            <Box className={[style.result_buttons, (d.players.length > 4 ?  style.result_buttons_v2 : '')].join(' ')}>
-                {userRoom.isOwner && <Button onClick={handleGameStart} style={{borderRadius: d.players.length > 4 ? 15 : 30}}>continue</Button>}
-                <Button onClick={handleLeave} style={{borderRadius: d.players.length > 4 ? 15 : 30}}>leave</Button>
-            </Box>
+            <br/>
+            {/*<Box className={[style.result_buttons, (d.players.length > 4 ?  style.result_buttons_v2 : '')].join(' ')}>*/}
+            {/*    {userRoom.isOwner && <Button onClick={handleGameStart} style={{borderRadius: d.players.length > 4 ? 15 : 30}}>continue</Button>}*/}
+            {/*    <Button onClick={handleLeave} style={{borderRadius: d.players.length > 4 ? 15 : 30}}>leave</Button>*/}
+            {/*</Box>*/}
 
         </div>
     );
