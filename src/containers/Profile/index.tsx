@@ -17,6 +17,7 @@ import backArrow from "../../assets/back-arrow.png";
 import delIcon from "./assets/delIcon.png";
 import crossIcon from "./assets/cross-icon.png";
 import sadDogImg from './assets/dog-sad.png'
+import cupImg from './assets/cup.svg'
 import deerImg from '../../components/Animals/assets/color/deer-1.png'
 import {SelectIsSoundMuted} from "../../redux/store/game/selector";
 import {SelectUser} from "../../redux/store/user/selector";
@@ -33,6 +34,7 @@ const Profile = () => {
     const [currentStage, setCurrentStage] = useState<'list' | 'details' | 'edit'>('list');
     const [selectedQuestion, setSelectedQuestion] = useState({id: null, question: '', answers: ['', '', '',''], language: 'en'});
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [confirmLogout, setConfirmLogout] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [questionList, setQuestionList] = useState([])
     const [allFieldsAreFiled, setAllFieldsAreFiled] = useState(false)
@@ -171,7 +173,7 @@ const Profile = () => {
                     <div className="user-block">
                         <img src={addQuestionImg} alt="" onClick={() => editQuestion()} style={{opacity: questionList.length ? 1 : 0}}/>
                         <p className="user-name">{user.username}</p>
-                        <img src={logoutImg} alt="" onClick={() => logout()} />
+                        <img src={logoutImg} alt="" onClick={() => {playButton(); setConfirmLogout(true)}} />
                     </div>
                     {questionList.length ?
                         <div className="questions-list">
@@ -241,6 +243,16 @@ const Profile = () => {
                     <img src={sadDogImg} alt="" className="sad-dog"/>
                     <p>are you sure you want to delete this question</p>
                     <div className="delete-button" onClick={() => deleteQuestion()}>delete</div>
+                </div>
+            </div>
+            }
+            {confirmLogout &&
+            <div className="confirm-logout">
+                <div className="modal">
+                    <img src={cupImg} alt="" className="cup-img"/>
+                    <p>are you sure <br/> you want to exit?</p>
+                    <div className="logout-no" onClick={() => {playButton();setConfirmLogout(false)}}>NO!</div>
+                    <div className="logout-yes" onClick={() => logout()}>yes</div>
                 </div>
             </div>
             }
