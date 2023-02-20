@@ -39,6 +39,7 @@ const Profile = () => {
     const [questionList, setQuestionList] = useState([])
     const [allFieldsAreFiled, setAllFieldsAreFiled] = useState(false)
     const [freezeScreen, setFreezeScreen] = useState(true);
+    const [questionListIsLoaded, setQuestionListIsLoaded] = useState(false);
 
 
     const logout = () => {
@@ -54,6 +55,7 @@ const Profile = () => {
         if (currentStage === 'list') {
             goto(links.start)
         } else {
+            setQuestionListIsLoaded(false)
             setCurrentStage('list')
             setSelectedQuestion({id: null, question: '', answers: ['', '', '',''], language: 'en'})
         }
@@ -83,7 +85,7 @@ const Profile = () => {
     }
 
     const saveQuestion = () => {
-
+        setIsLoading(true);
         const language = checkLanguage(selectedQuestion.question);
 
         if (selectedQuestion.id) {
@@ -96,6 +98,7 @@ const Profile = () => {
                 })
                 .then((res) => {
                     console.log('res', res)
+                    setIsLoading(false);
                     goBack();
                 }).catch((err) => {
                 console.log('err', err.response.data)
@@ -108,6 +111,7 @@ const Profile = () => {
             })
                 .then((res) => {
                     console.log('res', res)
+                    setIsLoading(false);
                     goBack();
                 }).catch((err) => {
                 console.log('err', err.response.data)
@@ -116,10 +120,12 @@ const Profile = () => {
     }
 
     const deleteQuestion = () => {
+        setIsLoading(true);
         profileApi.deleteQuestion(selectedQuestion.id)
             .then((res) => {
                 console.log('res', res)
                 setConfirmDelete(false);
+                setIsLoading(false);
                 goBack();
             }).catch((err) => {
             console.log('err', err.response.data)
@@ -128,10 +134,13 @@ const Profile = () => {
 
     useEffect(() => {
         if (currentStage === 'list') {
+            setIsLoading(true);
             profileApi.getMineQuestionsList()
                 .then((res) => {
                     console.log('res', res)
                     setQuestionList(res);
+                    setIsLoading(false);
+                    setQuestionListIsLoaded(true)
                 }).catch((err) => {
                 console.log('err', err.response.data)
             }).finally(()=> setIsLoading(false));
@@ -175,7 +184,7 @@ const Profile = () => {
                         <p className="user-name">{user.username}</p>
                         <img src={logoutImg} alt="" onClick={() => {playButton(); setConfirmLogout(true)}} />
                     </div>
-                    {questionList.length ?
+                    {questionListIsLoaded && (questionList.length ?
                         <div className="questions-list">
                             {questionList.map(item =>
                                 <div className="list-item" onClick={() => showDetails(item)}>
@@ -189,8 +198,7 @@ const Profile = () => {
                             <p>you didn’t add any questions yet, go on and add some!</p>
                             <img src={addQuestionImg} alt="" onClick={() => editQuestion()} className="empty-add"/>
                         </div>
-                    }
-
+                    )}
                 </>
                 }
                 {currentStage === 'details' &&
@@ -230,7 +238,7 @@ const Profile = () => {
 
                         <div
                             className="done-button"
-                            onClick={() => {allFieldsAreFiled && saveQuestion()}}
+                            onClick={() => {allFieldsAreFiled && !isLoading && saveQuestion()}}
                             style={{ opacity: allFieldsAreFiled ? 1 : 0.7 }}
                         >done</div>
                     </div>
@@ -242,7 +250,7 @@ const Profile = () => {
                     <img src={crossIcon} alt="" onClick={() => {playButton(); setConfirmDelete(false)}} className="close" />
                     <img src={sadDogImg} alt="" className="sad-dog"/>
                     <p>are you sure you want to delete this question</p>
-                    <div className="delete-button" onClick={() => deleteQuestion()}>delete</div>
+                    <div className="delete-button" onClick={() => {!isLoading && deleteQuestion()}}>delete</div>
                 </div>
             </div>
             }
