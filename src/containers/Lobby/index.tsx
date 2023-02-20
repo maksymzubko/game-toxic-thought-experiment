@@ -74,6 +74,8 @@ const LobbyPage = () => {
                 goto(links.game);
         })
 
+        getQuestionList(true)
+
         return () => {
             socket?.off('initiatedStart');
         }
@@ -146,18 +148,20 @@ const LobbyPage = () => {
         const roomSettings = {
             solo: single,
             playersCount: playersCount
-        } as { solo: boolean, playersCount: number, language?: string, packIds?: number[], questionIds?: number[], userId?: number };
+        } as { solo: boolean, playersCount: number, language?: string, onlyMy?: boolean, packIds?: number[], questionIds?: number[], userId?: number };
 
         if (selectedFlag.length)
             roomSettings.language = selectedFlag;
 
-        if (useCustomQuestions) {
-            roomSettings.questionIds = userQuestions.map(q => {
-                return q.id
-            })
-        }
+        roomSettings.onlyMy = useCustomQuestions;
 
-        if(isAuthorized) roomSettings.userId = user.id;
+        roomSettings.questionIds = userQuestions ? userQuestions.map(q => {
+            return q.id
+        }) : []
+
+        if(isAuthorized) {
+            roomSettings.userId = user.id;
+        }
 
         socket?.emit('createRoom', roomSettings);
         setLoading(true);
@@ -229,29 +233,29 @@ const LobbyPage = () => {
         }
     }
 
+    const getQuestionList = async  (init = false) => {
+        setLoading(true);
+        await questionsApi.getUserQuestions()
+            .then(res => {
+                setUserQuestions(res.length > 0 ? res : null);
+                !init && setUseCustomQuestions(res.length > 0 ? !useCustomQuestions : false);
+                res.length === 0 && dispatch(setError("Your questions list is empty!"))
+            }).catch(err => {
+                console.log(err)
+                let _err = err.response.data
+                    .message
+                    .join(', ');
+                dispatch(setError(_err));
+            }).finally(() => setLoading(false))
+    }
+
     const handleChangeCustomQuestions = async () => {
         playButton();
-        if(!useCustomQuestions && !userQuestions)
-        {
-            setLoading(true);
-            await questionsApi.getUserQuestions()
-                .then(res => {
-                    console.log(res)
-                    setUserQuestions(res.length > 0 ? res : null);
-                    setUseCustomQuestions(res.length > 0 ? !useCustomQuestions : false);
-                    res.length === 0 && dispatch(setError("Your questions list is empty!"))
-                }).catch(err => {
-                    console.log(err)
-                    let _err = err.response.data
-                        .message
-                        .join(', ');
-                    dispatch(setError(_err));
-                }).finally(() => setLoading(false))
-        }
+        if(!userQuestions)
+            await getQuestionList()
         else
-        {
             setUseCustomQuestions(!useCustomQuestions);
-        }
+
     }
 
     return (

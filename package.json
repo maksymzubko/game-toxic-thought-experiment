@@ -2,7 +2,7 @@
   "homepage": ".",
   "name": "game-toxic-thought-experiment",
   "private": true,
-  "version": "9.1.7",
+  "version": "9.1.9",
   "type": "module",
   "scripts": {
     "dev": "env-cmd -f ./.env.dev vite",
