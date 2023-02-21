@@ -32,9 +32,27 @@
     top: 65%;
     transform: translateY(-50%);
 }
+.add-question-button {
+    position: fixed;
+    bottom: 20px;
+    right: 8px;
+}
+.profile-title-img{
+    position: fixed;
+    left: 0;
+    top: 175px;
+}
+.profile .title-questions {
+    font-size: 32px;
+    line-height: 38px;
+    text-align: right;
+    color: #252525;
+    margin: 36px 0;
+    font-weight: 700;
+}
 .profile .user-block {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 .profile .user-block .user-name {
@@ -43,11 +61,12 @@
     line-height: 38px;
     text-align: center;
     color: #00C4FF;
+    font-weight: bolder;
 }
 .profile .questions-list{
     margin-top: 28px;
     overflow: auto;
-    max-height: calc(100% - 180px);
+    max-height: calc(100% - 280px);
 }
 
 .profile .questions-list::-webkit-scrollbar {
@@ -67,13 +86,14 @@
     background-image: url("../../assets/btn.png");
     background-size: 100% 100%;
     font-size: 24px;
-    line-height: 38px;
+    line-height: 52px;
     color: #6966F8;
     padding: 0 18px;
     box-sizing: border-box;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-weight: bolder;
 }
 .profile .empty-list {
     margin-top: 28px;
@@ -106,7 +126,7 @@
     background-image: url("./assets/editBg.png");
     background-size: 100% 100%;
     font-size: 32px;
-    line-height: 38px;
+    line-height: 46px;
     text-align: center;
     font-weight: bolder;
 }
@@ -193,7 +213,7 @@
     background-image: url("./assets/doneBg.png");
     background-size: 100% 100%;
     font-size: 32px;
-    line-height: 38px;
+    line-height: 46px;
     text-align: center;
     font-weight: bolder;
     color: #0B997B;
@@ -250,7 +270,7 @@
     background-image: url("./assets/doneBg.png");
     background-size: 100% 100%;
     font-size: 32px;
-    line-height: 38px;
+    line-height: 46px;
     text-align: center;
     font-weight: bolder;
     color: #F84E93;
@@ -341,6 +361,9 @@
         font-size: 24px;
         line-height: 28px;
         margin: 0;
+    }
+    .profile-title-img{
+        top: 150px;
     }
 }
 @media (max-width: 360px) {

@@ -273,5 +273,6 @@
     .control_buttons .skip_buttons, .control_buttons .submit_buttons, .control_buttons .report_button{
         height: 50px;
         background-size: 100% 100% !important;
+        line-height: 40px;
     }
 }

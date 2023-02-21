@@ -24,6 +24,7 @@
 
 .install_modal .button{
     font-size: 24px;
+    line-height: normal;
     background-color: #0B997B;
     width: 40%;
     max-width: 150px;
