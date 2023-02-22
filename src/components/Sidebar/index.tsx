@@ -8,7 +8,8 @@ import useSound from "use-sound";
 import buttonSound from "../../assets/sounds/button.mp3";
 
 import './style.css';
-import sidebarArrow from './assets/sidebar-arrow.svg';
+import iconSidebarOpen from './assets/i-menu-open.svg';
+import iconSidebarClose from './assets/i-menu-close.svg';
 import sidebarQuestion from './assets/sidebar-question.svg';
 import sidebarSettings from './assets/sidebar-settings.svg';
 import backArrow from '../../assets/back-arrow.png';
@@ -63,7 +64,7 @@ const Sidebar = () => {
     return (
         <div className="sidebar">
             <div className={`sidebar-button ${isSidebarOpened ? 'opened':''}`}  onTouchMove={() => setIsSidebarOpened(!isSidebarOpened)}>
-                <img src={sidebarArrow} alt="" onClick={() => setIsSidebarOpened(!isSidebarOpened)}/>
+                <img src={isSidebarOpened ? iconSidebarOpen : iconSidebarClose} alt="" onClick={() => setIsSidebarOpened(!isSidebarOpened)}/>
                 <img src={sidebarQuestion} alt="" onClick={() => {if (isSoundOn) playButton(); setIsModalHelpOpened(true)}} />
                 <img src={sidebarSettings} alt="" onClick={() => {if (isSoundOn) playButton(); setIsModalSettingsOpened(true)}} />
             </div>
