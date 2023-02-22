@@ -8,9 +8,8 @@
     width: 90%;
     height: 58px;
 
-    display: grid;
-    place-items: center;
     font-size: 32px;
+    line-height: 58px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
@@ -19,6 +18,11 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    display: table-cell;
+    vertical-align: center;
+    text-align: center;
+
 }
 .btn.cloud {
     width: 248px;
@@ -28,6 +32,8 @@
     background-size: 100% 100%;
     background-position: center;
     margin-bottom: 5px;
+    display: grid;
+    place-content: center;
 }
 .btn.unselected_answer {
     font-size: 20px;
@@ -36,12 +42,16 @@
     height: 65px;
     color: #9A2D26;
     margin-bottom: 5px;
+    display: grid;
+    place-content: center;
 }
 .btn.correct{
     color: white;
     background: url("../../assets/cloud/cloud_blue.png") no-repeat;
     background-size: 100% 100%;
     background-position: center;
+    display: grid;
+    place-content: center;
 }
 
 .btn.incorrect{

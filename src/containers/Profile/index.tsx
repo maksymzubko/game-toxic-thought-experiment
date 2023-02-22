@@ -11,8 +11,9 @@ import useSound from "use-sound";
 import buttonSound from "../../assets/sounds/button.mp3";
 
 import './style.css'
-import addQuestionImg from './assets/addQuestion.png';
-import logoutImg from './assets/logout.png';
+import addQuestionImg from './assets/addQuestion2.svg';
+import logoutImg from './assets/logout2.svg';
+import halDeer from './assets/half-deer.png';
 import backArrow from "../../assets/back-arrow.png";
 import delIcon from "./assets/delIcon.png";
 import crossIcon from "./assets/cross-icon.png";
@@ -173,25 +174,32 @@ const Profile = () => {
             </Backdrop>
             {freezeScreen && <div className="freezeScreen"/>}
             <div className="profile">
+                {currentStage === 'list' && questionListIsLoaded && !!questionList.length && <img src={halDeer} alt="" className="profile-title-img"/>}
                 <p className="title">
                     <img src={backArrow} alt="" onClick={() => goBack()} />
                     profile
                 </p>
                 {currentStage === 'list' &&
                 <>
+                    {questionListIsLoaded && !!questionList.length &&
+                        <img src={addQuestionImg} alt="" onClick={() => editQuestion()} className="add-question-button"/>
+                    }
                     <div className="user-block">
-                        <img src={addQuestionImg} alt="" onClick={() => editQuestion()} style={{opacity: questionList.length ? 1 : 0}}/>
                         <p className="user-name">{user.username}</p>
                         <img src={logoutImg} alt="" onClick={() => {playButton(); setConfirmLogout(true)}} />
                     </div>
                     {questionListIsLoaded && (questionList.length ?
-                        <div className="questions-list">
-                            {questionList.map(item =>
-                                <div className="list-item" onClick={() => showDetails(item)}>
-                                    {item.question}
-                                </div>
-                            )}
-                        </div>
+                        <>
+
+                            <p className="title-questions">my questions</p>
+                            <div className="questions-list">
+                                {questionList.map(item =>
+                                    <div className="list-item" onClick={() => showDetails(item)}>
+                                        {item.question}
+                                    </div>
+                                )}
+                            </div>
+                        </>
                         :
                         <div className="empty-list">
                             <img src={deerImg} alt="" className="empty-img"/>
