@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useSnackbar} from "notistack";
 import Modal from "./containers/Modal";
 import Button from "./components/Button";
-import logo from '/144.png'
+import logo from './assets/144.png';
 import crossIcon from "./containers/Modal/assets/cross-icon.png";
 import useSound from "use-sound";
 import buttonSound from "./assets/sounds/button.mp3";
