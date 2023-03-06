@@ -1,0 +1,105 @@
+.multi-select {
+    width: 250px;
+    margin:  0 auto;
+}
+.multi-select .title{
+    font-size: 24px;
+    line-height: 28px;
+    text-align: center;
+    color: #FF0000;
+    font-weight: bolder;
+    margin: 0;
+    margin-bottom: 50px;
+}
+
+.multi-select .list-container {
+    height: 200px;
+    width: 250px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+.multi-select .answer-container {
+    width: 250px;
+    height: 100px;
+    position: relative;
+    perspective: 1000px;
+}
+
+.multi-select .answer {
+    width: 250px;
+    height: 75px;
+    /*background-color: red;*/
+    position: absolute;
+    transition: all 500ms;
+    opacity: 0;
+    padding: 10px 0 10px 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.multi-select .answer img {
+    width: 50px;
+    height: 43px;
+}
+.multi-select .answer p {
+    width: 160px;
+    font-size: 22px;
+    line-height: 22px;
+    color: #9A2D26;
+    margin: 0;
+}
+
+.multi-select .prev {
+    opacity: 0.5;
+    transform: rotateX(25deg) translateY(-80px);
+}
+.multi-select .prev2 {
+    opacity: 0;
+    transform: translateY(-150px)
+}
+.multi-select .next {
+    opacity: 0.5;
+    transform: rotateX(-25deg) translateY(80px);
+}
+.multi-select .next2 {
+    opacity: 0;
+    transform: translateY(150px)
+}
+.multi-select .show {
+    opacity: 1;
+    transform: none;
+    z-index: 1;
+}
+.multi-select .custom-answer{
+    width: 250px;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+.multi-select .custom-answer-wrapper{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.multi-select .answer-field-wrapper {
+    background: url("./assets/answer-field.svg") 0 0 repeat;
+    background-size: 100% 100%;
+    width: 180px;
+    height: 72px;
+    padding: 11px 18px 11px 14px;
+    box-sizing: border-box;
+}
+.multi-select .answer-field-wrapper textarea {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    font-size: 22px;
+    line-height: 22px;
+    color: #9A2D26;
+}
