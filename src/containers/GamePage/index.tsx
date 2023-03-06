@@ -74,6 +74,11 @@ interface AnswerInterface {
     message?: string,
     data?: { step?: string }
 }
+interface AnswersListInterface {
+    status: boolean,
+    message?: string,
+    data: { question_id: number; question: string; answers: string[] },
+}
 
 const GamePage = () => {
     const goto = useNavigate();
@@ -199,8 +204,6 @@ const GamePage = () => {
             }
         })
 
-
-
         socket?.on('answer', (data: AnswerInterface) => {
             setLoadingRequest(false);
             if (data.status) {
@@ -248,7 +251,7 @@ const GamePage = () => {
     useEffect(() => {
         socket?.on('time', (data: { status: boolean, data: { time: number, onlyForLeader: boolean } }) => {
             if (data.status) {
-                if(!userRoom.single && (userLetter === leader || gameStage === 2))
+                if(!userRoom.single && (userLetter === leader || gameStage === 3))
                     setShowTimer(true);
                 else if(!userRoom.single) setShowTimer(false);
 
@@ -279,6 +282,24 @@ const GamePage = () => {
         }
     }, [leader, gameStage])
 
+    useEffect(() => {
+
+        socket?.on('setAnswersList', (data: AnswersListInterface) => {
+            setLoading(false);
+            if (data.status) {
+                setData(data?.data);
+                console.log('socketData', data);
+            } else
+            {
+                dispatch(setError(data.message));
+            }
+        })
+
+        return () => {
+            socket?.off('setAnswersList');
+        }
+    }, [round])
+
     const handleReport = async () => {
         if(isAuthorized)
         {
@@ -308,7 +329,7 @@ const GamePage = () => {
 
     const handleSkipQuestion = (reported = false) => {
         setLoadingRequest(true);
-        if (gameStage === 1 && !reported) {
+        if (gameStage === 2 && !reported) {
             handleSetCorrect(-1, true);
         } else {
             if(reported) setReported(true);
@@ -333,7 +354,7 @@ const GamePage = () => {
 
     const handleAnswer = (variant: number) => {
         setLoadingRequest(true);
-        if (gameStage === 1)
+        if (gameStage === 2)
             handleSetCorrect(variant)
         else
             socket?.emit('answer', {answer: variant});
@@ -359,14 +380,11 @@ const GamePage = () => {
         setDrinkStatusBool(statusBool);
     }
 
-    const getActiveAnimal = () => {
-
-    }
 
     useEffect(() => {
         if (!players || !userId) return
         if (userRoom.single) {
-            if (gameStage === 1) setActiveLetter('')
+            if (gameStage === 2) setActiveLetter('')
             else setActiveLetter(currentStep)
         } else {
             const playerTemp = players.find(player => player.id === userId);

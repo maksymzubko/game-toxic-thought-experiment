@@ -7,13 +7,19 @@ import useSound from "use-sound";
 import buttonSound from "../../../assets/sounds/button.mp3";
 import questionSound from "../../../assets/sounds/question.mp3";
 import {useSelector} from "react-redux";
-import {SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
+import {SelectSocket, SelectUserLetter, SelectUserRoom} from "../../../redux/store/socket/selector";
 import complainImg from "../assets/complain.png";
-import LoginRequired from "../../../components/LoginRequired";
 import {SelectIsAuthorized} from "../../../redux/store/user/selector";
 import {SelectIsSoundMuted, SelectTips} from "../../../redux/store/game/selector";
 import ModalHints from "../../../components/ModalHints";
 import {getAnimalByLetter} from "../../../helpers/animalHelp";
+import MultiSelect from "../../../components/MultiSelect";
+
+interface AnswerInterface {
+    status: boolean,
+    message?: string,
+    data?: { step?: string }
+}
 
 const GameRunningItem = (d: {
     players: { id: string, letter: string }[],
@@ -32,6 +38,8 @@ const GameRunningItem = (d: {
     leader: string
 }) => {
 
+    const socket = useSelector(SelectSocket);
+
     const isSoundMuted = useSelector(SelectIsSoundMuted);
     const [playButton] = useSound(buttonSound,  { volume: isSoundMuted ? 0 : 1 });
 
@@ -41,6 +49,8 @@ const GameRunningItem = (d: {
     const userRoom = useSelector(SelectUserRoom);
     const isAuthorized = useSelector(SelectIsAuthorized)
     const [questionSoundLoad, setQuestionSoundLoad] = useState(false);
+    const [isMultiSelectStage, setIsMultiSelectStage] = useState(true);
+    const [selectedAnswers, setSelectedAnswers] = useState([]);
     const [playQuestion] = useSound(questionSound, {
         onload: () => setQuestionSoundLoad(true),
         volume: isSoundMuted ? 0 : 1
@@ -54,10 +64,27 @@ const GameRunningItem = (d: {
     const [selectedIndex, setSelectedIndex] = useState<number>();
 
     const submitAnswer = () => {
+
+
+        if (isMultiSelectStage) {
+            if (!selectedAnswers.length) return
+            playButton();
+            socket.emit('setAnswersList', { answers: selectedAnswers})
+            return;
+        }
+
         if (selectedIndex !== undefined) {
             playButton();
             d.handleAnswer(selectedIndex)
             setSelectedIndex(undefined);
+        }
+    }
+
+    const passActiveQuestions = (questions: string[]) => {
+        if (questions.length > 1 && questions.length < 5) {
+            setSelectedAnswers(questions);
+        } else {
+            setSelectedAnswers([])
         }
     }
 
@@ -66,10 +93,32 @@ const GameRunningItem = (d: {
         setShowModal(true);
     }, [d.currentStep])
 
+    useEffect(() => {
+        socket?.on('setAnswersList', (data: AnswerInterface) => {
+            if (data.status) {
+                setIsMultiSelectStage(false);
+            }
+        })
+        return () => {
+            socket?.off('setAnswersList');
+        }
+    }, [])
+
+    console.log('userLetter',userRoom, userLetter, d.leader, d.multiplayer)
+
     return (
         <Box className={style.gameRunningScreen}>
+            {isMultiSelectStage && (!d.multiplayer || userLetter == d.leader) &&
+                <MultiSelect
+                    answersList={d?.question?.answers}
+                    passActiveQuestions={passActiveQuestions}
+                />
+            }
+            {d.multiplayer && userLetter !== d.leader && isMultiSelectStage &&
+                 <h1 className={style.waiting}>Waiting for<br/>the leader...</h1>
+            }
             {showModal && tipsEnabled && <ModalHints img={getAnimalByLetter(userRoom.single ? d.currentStep : userLetter)} leader={userRoom.single ? d.currentStep === d.leader : userLetter === d.leader} onClose={() => setShowModal(false)}/>}
-            {!d.isAnswered && <Box className={style.answers}>
+            {!d.isAnswered && !isMultiSelectStage && <Box className={style.answers}>
                 <Box className={style.content}>
                     {d.question.answers.map((a, i) =>
                         <Button key={i} onClick={() => {setSelectedIndex(i); playButton()}} className={selectedIndex === i ? 'cloud' : 'unselected_answer' }>
@@ -80,13 +129,13 @@ const GameRunningItem = (d: {
             </Box>}
             {d.isAnswered && <h1 className={style.waiting}>Waiting while other players answering..</h1>}
 
-            {d.showTimer && <Box className={style.timer}>
+            {d.showTimer && !isMultiSelectStage && <Box className={style.timer}>
                 {d.timer}
             </Box>}
 
             {!d.isAnswered &&
             <>
-                <Typography className={style.timer_subtitle}>answer secretly!</Typography>
+                {!isMultiSelectStage && <Typography className={style.timer_subtitle}>answer secretly!</Typography>}
                 <Box className={style.control_buttons}>
                     <Button onClick={() => {d.handleSkip(); playButton()}} className={style.skip_buttons}>
                         <img src={beerIcon} alt="" className={style.beer_icon}/>
@@ -95,7 +144,12 @@ const GameRunningItem = (d: {
 
                     {d.voted !== 'report' && <img onClick={() => {playButton(); !isAuthorized ? d.onShowAlert() : d.handleReport();}} src={complainImg} alt=""  className={style.report_button} />}
 
-                    <Button onClick={() => submitAnswer()} className={style.submit_buttons}>Ок</Button>
+                    <Button
+                        style={{ opacity: selectedAnswers.length || !isMultiSelectStage? 1 : 0.5 }}
+                        onClick={() => submitAnswer()} className={style.submit_buttons}
+                    >
+                        Ок
+                    </Button>
                 </Box>
             </>
             }
