@@ -81,6 +81,7 @@ const GameRunningItem = (d: {
     }
 
     const passActiveQuestions = (questions: string[]) => {
+        console.log('questions', questions);
         if (questions.length > 1 && questions.length < 5) {
             setSelectedAnswers(questions);
         } else {

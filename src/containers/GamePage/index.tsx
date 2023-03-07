@@ -329,7 +329,7 @@ const GamePage = () => {
 
     const handleSkipQuestion = (reported = false) => {
         setLoadingRequest(true);
-        if (gameStage === 2 && !reported) {
+        if ((gameStage === 1 || gameStage === 2) && !reported) {
             handleSetCorrect(-1, true);
         } else {
             if(reported) setReported(true);

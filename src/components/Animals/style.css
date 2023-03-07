@@ -1,6 +1,6 @@
 .animal-bar{
     position: fixed;
-    right: 0;
+    right: -60px;
     top: 25%;
     height: 400px;
     width: 100px;
@@ -11,15 +11,15 @@
 }
 .animal-bar-left{
     right: unset;
-    left: 0;
+    left: -60px;
 }
 .animal-bar img {
-    transform: rotate(-90deg) scale(1.4) translateY(50%);
+    transform: rotate(-90deg) scale(1.4);
     height: 22%;
     object-fit: contain;
 }
 .animal-bar-left img {
-    transform: rotate(90deg) scale(1.4) translateY(50%);
+    transform: rotate(90deg) scale(1.4);
 }
 @media (max-height: 800px) {
     .animal-bar {
