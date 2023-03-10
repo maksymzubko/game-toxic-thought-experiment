@@ -110,7 +110,7 @@ const MultiSelect = (
                                     onChange={e => handleTextareaChange(e.target.value)}
                                 />
                         </div>
-                        <img src={customQuestionIsActive  ? checkboxOn : checkboxOff} alt="" onClick={handleCheckboxClick} />
+                        <img src={(customQuestionIsActive && customQuestionText.length)  ? checkboxOn : checkboxOff} alt="" onClick={handleCheckboxClick} />
                     </div>
                     :
                     <img src={plusButton} alt="" onClick={() => setShowCustomField(true)} />
