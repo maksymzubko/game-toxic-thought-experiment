@@ -24,6 +24,7 @@
     display: grid;
     justify-content: center;
     gap: 35px;
+    align-items: flex-end;
 
 }
 .users-list-2 .user{

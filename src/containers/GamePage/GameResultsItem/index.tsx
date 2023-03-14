@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Avatar, AvatarGroup, Backdrop, Badge, Box, CircularProgress} from "@mui/material";
-import {Result} from "../index";
+import {AnswerItemInterface, Result} from "../index";
 import style from "../style.module.css";
 import Button from "../../../components/Button";
 import {useDispatch, useSelector} from "react-redux";
@@ -21,7 +21,7 @@ import {SelectIsSoundMuted} from "../../../redux/store/game/selector";
 import {setError} from "../../../redux/store/game/slice";
 import LoginRequired from "../../../components/LoginRequired";
 
-const GameResultItem = (d: { result: Result, question: { question_id: number; question: string; answers: string[] }, passDrinkAnimals: any, setUserDrinkStatus: any, leader: string; voted: any; }) => {
+const GameResultItem = (d: { result: Result, question: { question_id: number; question: string; answers: AnswerItemInterface[] }, passDrinkAnimals: any, setUserDrinkStatus: any, leader: string; voted: any; }) => {
     const dispatch = useDispatch();
     const user = useSelector(SelectUser);
     const userLetter = useSelector(SelectUserLetter);
@@ -94,16 +94,16 @@ const GameResultItem = (d: { result: Result, question: { question_id: number; qu
                         {d.question.answers.map((a, i) =>
                             <div key={i} className="button-wrapper" style={{ width: '100%' }}>
                                 <div className="avatars-wrapper size-big">
-                                    {getListVoted(i, 40)}
+                                    {getListVoted(a.id, 40)}
                                 </div>
                                 <div className="avatars-wrapper size-med">
-                                    {getListVoted(i, 30)}
+                                    {getListVoted(a.id, 30)}
                                 </div>
                                 <div className="avatars-wrapper size-small">
-                                    {getListVoted(i, 20)}
+                                    {getListVoted(a.id, 20)}
                                 </div>
-                                <Button className={correct === i ? 'cloud correct' : 'cloud incorrect'}>
-                                    {a}
+                                <Button className={correct === a.id ? 'cloud correct' : 'cloud incorrect'}>
+                                    {a.answer}
                                 </Button>
                             </div>
                         )}

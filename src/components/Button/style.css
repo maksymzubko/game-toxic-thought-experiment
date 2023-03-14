@@ -28,6 +28,7 @@
     width: 248px;
     height: 65px;
     font-size: 20px;
+    line-height: 20px;
     background: url("../../assets/cloud/cloud.png") no-repeat;
     background-size: 100% 100%;
     background-position: center;
@@ -37,6 +38,7 @@
 }
 .btn.unselected_answer {
     font-size: 20px;
+    line-height: 20px;
     background: none;
     width: 248px;
     height: 65px;
