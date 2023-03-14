@@ -100,12 +100,12 @@ const MultiSelect = (
         scrollBox.addEventListener('touchstart', handleTouchStart, false)
         scrollBox.addEventListener('touchmove', handleTouchMove, false)
 
-        function handleTouchStart(event){
+        function handleTouchStart(event: any){
             const firstTouch = event.touches[0];
             coordsY.current = firstTouch.clientY;
         }
 
-        function handleTouchMove(event){
+        function handleTouchMove(event: any){
             if (!coordsY.current) return false;
 
             let y2 = event.touches[0].clientY;

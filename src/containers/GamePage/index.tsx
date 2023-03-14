@@ -41,7 +41,7 @@ interface GameStartedInterface {
     message?: string,
     data: {
         step?: string,
-        question: { question_id: number; question: string; answers: string[] },
+        question: { question_id: number; question: string; answers: AnswerItemInterface[] },
         round: number,
         leader: string
     }
