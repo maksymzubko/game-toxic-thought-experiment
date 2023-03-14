@@ -15,8 +15,9 @@ import dislikeOn from "../assets/dislike-on.png";
 import dislikeOff from "../assets/dislike-off.png";
 import likeOn from "../assets/like-on.png";
 import likeOff from "../assets/like-off.png";
+import { AnswerItemInterface } from "../index";
 
-const Evaluate = (d: {question: { question_id: number; question: string; answers: string[] }, changeGameStatus: any, voted: any}) => {
+const Evaluate = (d: {question: { question_id: number; question: string; answers: AnswerItemInterface[] }, changeGameStatus: any, voted: any}) => {
 
     const dispatch = useDispatch();
     const user = useSelector(SelectUser);

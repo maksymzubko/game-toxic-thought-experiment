@@ -14,7 +14,7 @@ export interface CreateQuestionResponse {
 
 export interface GetMineQuestionsListResponse {
     question: string,
-    answers: string[],
+    answers: any[],
     dateOfCreation: number,
     language: 'en' | 'jp' | null,
     ownerId: number,

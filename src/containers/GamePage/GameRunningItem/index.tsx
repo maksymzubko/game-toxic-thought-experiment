@@ -14,6 +14,7 @@ import {SelectIsSoundMuted, SelectTips} from "../../../redux/store/game/selector
 import ModalHints from "../../../components/ModalHints";
 import {getAnimalByLetter} from "../../../helpers/animalHelp";
 import MultiSelect from "../../../components/MultiSelect";
+import {AnswerItemInterface} from "../index";
 
 interface AnswerInterface {
     status: boolean,
@@ -25,7 +26,7 @@ const GameRunningItem = (d: {
     players: { id: string, letter: string }[],
     timer: number,
     multiplayer: boolean,
-    question: { question: string; answers: string[] },
+    question: { question: string; answers: AnswerItemInterface[] },
     currentStep: string, handleAnswer: any,
     handleSkip: any,
     isAnswered: boolean,
@@ -50,7 +51,7 @@ const GameRunningItem = (d: {
     const isAuthorized = useSelector(SelectIsAuthorized)
     const [questionSoundLoad, setQuestionSoundLoad] = useState(false);
     const [isMultiSelectStage, setIsMultiSelectStage] = useState(true);
-    const [selectedAnswers, setSelectedAnswers] = useState([]);
+    const [selectedAnswers, setSelectedAnswers] = useState<AnswerItemInterface[]>([]);
     const [playQuestion] = useSound(questionSound, {
         onload: () => setQuestionSoundLoad(true),
         volume: isSoundMuted ? 0 : 1
@@ -61,7 +62,7 @@ const GameRunningItem = (d: {
         }
     }, [questionSoundLoad])
 
-    const [selectedIndex, setSelectedIndex] = useState<number>();
+    const [selectedAnswer, setSelectedAnswer] = useState<AnswerItemInterface>();
 
     const submitAnswer = () => {
 
@@ -73,14 +74,14 @@ const GameRunningItem = (d: {
             return;
         }
 
-        if (selectedIndex !== undefined) {
+        if (selectedAnswer.id !== undefined) {
             playButton();
-            d.handleAnswer(selectedIndex)
-            setSelectedIndex(undefined);
+            d.handleAnswer(selectedAnswer)
+            setSelectedAnswer({ id: undefined, answer: '' });
         }
     }
 
-    const passActiveQuestions = (questions: string[]) => {
+    const passActiveQuestions = (questions: AnswerItemInterface[]) => {
         console.log('questions', questions);
         if (questions.length > 1 && questions.length < 5) {
             setSelectedAnswers(questions);
@@ -122,8 +123,8 @@ const GameRunningItem = (d: {
             {!d.isAnswered && !isMultiSelectStage && <Box className={style.answers}>
                 <Box className={style.content}>
                     {d.question.answers.map((a, i) =>
-                        <Button key={i} onClick={() => {setSelectedIndex(i); playButton()}} className={selectedIndex === i ? 'cloud' : 'unselected_answer' }>
-                            {a}
+                        <Button key={i} onClick={() => {setSelectedAnswer(a); playButton()}} className={selectedAnswer?.id === a?.id ? 'cloud' : 'unselected_answer' }>
+                            {a.answer}
                         </Button>)}
 
                 </Box>

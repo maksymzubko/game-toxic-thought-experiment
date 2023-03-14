@@ -139,7 +139,12 @@ const Profile = () => {
             profileApi.getMineQuestionsList()
                 .then((res) => {
                     console.log('res', res)
-                    setQuestionList(res);
+                    const fixedQuestionList = res;
+                    fixedQuestionList.forEach((item, index) => {
+                        const answersStringArray = fixedQuestionList[index].answers.map(answer => answer.answer);
+                        fixedQuestionList[index].answers = answersStringArray;
+                    });
+                    setQuestionList(fixedQuestionList);
                     setIsLoading(false);
                     setQuestionListIsLoaded(true)
                 }).catch((err) => {

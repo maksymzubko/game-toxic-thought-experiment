@@ -74,10 +74,15 @@ interface AnswerInterface {
     message?: string,
     data?: { step?: string }
 }
+export interface AnswerItemInterface {
+    id: number,
+    answer: string,
+}
+
 interface AnswersListInterface {
     status: boolean,
     message?: string,
-    data: { question_id: number; question: string; answers: string[] },
+    data: { question_id: number; question: string; answers: AnswerItemInterface[] },
 }
 
 const GamePage = () => {
@@ -95,7 +100,7 @@ const GamePage = () => {
     const [loadingRequest, setLoadingRequest] = useState(false);
     const [players, setPlayers] = useState<{ id: string, letter: string }[]>([]);
     const [gameStatus, setGameStatus] = useState<"waiting" | "running" | "results" | "drink" | "ready" | "evaluate">("waiting");
-    const [data, setData] = useState<{ question_id: number; question: string; answers: string[] }>({question_id: null, question: "", answers: []})
+    const [data, setData] = useState<{ question_id: number; question: string; answers: AnswerItemInterface[] }>({question_id: null, question: "", answers: []})
     const [time, setTime] = useState<number>(-1);
     const [timer, setTimer] = useState<number>(60);
     const [round, setRound] = useState(1);
@@ -330,7 +335,7 @@ const GamePage = () => {
     const handleSkipQuestion = (reported = false) => {
         setLoadingRequest(true);
         if ((gameStage === 1 || gameStage === 2) && !reported) {
-            handleSetCorrect(-1, true);
+            handleSetCorrect({ id: -1, answer: '' }, true);
         } else {
             if(reported) setReported(true);
 
@@ -348,11 +353,11 @@ const GamePage = () => {
         }
     }
 
-    const handleSetCorrect = (answer: number, skip = false) => {
+    const handleSetCorrect = (answer: AnswerItemInterface, skip = false) => {
         socket?.emit('setCorrect', {correct: answer, skipQuestion: skip});
     }
 
-    const handleAnswer = (variant: number) => {
+    const handleAnswer = (variant: AnswerItemInterface) => {
         setLoadingRequest(true);
         if (gameStage === 2)
             handleSetCorrect(variant)

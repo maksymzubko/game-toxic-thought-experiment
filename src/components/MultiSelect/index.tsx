@@ -3,29 +3,32 @@ import './style.css'
 import checkboxOff from './assets/checkbox-off.svg';
 import checkboxOn from './assets/checkbox-on.svg';
 import plusButton from './assets/plus-button.svg';
+import { AnswerItemInterface } from '../../containers/GamePage';
 
 const MultiSelect = (
     {
         answersList,
         passActiveQuestions
     } : {
-        answersList: string[]
+        answersList: AnswerItemInterface[]
         passActiveQuestions: any,
     }
 ) => {
 
     const [currentIndex, setCurrentIndex] = useState(1);
+    const currentIndexRef = useRef(1);
     const [combinedList, setCombinedList] = useState([]);
     const combinedListRef = useRef([]);
     const [showCustomField, setShowCustomField] = useState(false);
     const [customQuestionIsActive, setCustomQuestionIsActive] = useState(true)
     const [customQuestionText, setCustomQuestionText] = useState('')
+    const coordsY = useRef(null);
 
     useEffect(() => {
         if (answersList.length && !combinedList.length) {
             let combinedListTemp: any[] = [];
             answersList.forEach((item, index) => {
-                combinedListTemp.push({answer: item, active: false});
+                combinedListTemp.push({answerItem: item, active: false});
             })
             setCombinedList(combinedListTemp);
         }
@@ -50,9 +53,9 @@ const MultiSelect = (
             combinedListRef.current[index].active = !combinedListRef.current[index].active
             setCombinedList(combinedListRef.current);
 
-            let activeQuestions = combinedListRef.current.filter(item => item.active).map(item => item.answer);
+            let activeQuestions = combinedListRef.current.filter(item => item.active).map(item => item.answerItem);
             if (customQuestionIsActive && customQuestionText.length) {
-                activeQuestions = [...activeQuestions, customQuestionText]
+                activeQuestions = [...activeQuestions, {id: null, answer: customQuestionText }]
             }
             passActiveQuestions(activeQuestions)
         }
@@ -60,10 +63,10 @@ const MultiSelect = (
 
     const handleTextareaChange = (value: string) => {
         setCustomQuestionText(value);
-        let activeQuestions = combinedList.filter(item => item.active).map(item => item.answer);
+        let activeQuestions = combinedList.filter(item => item.active).map(item => item.answerItem);
         if (customQuestionIsActive) {
             if (value.length){
-                passActiveQuestions([...activeQuestions, value]);
+                passActiveQuestions([...activeQuestions, {id: null, answer: value}]);
             } else {
                 passActiveQuestions(activeQuestions);
             }
@@ -73,15 +76,49 @@ const MultiSelect = (
     const handleCheckboxClick = () => {
         if (customQuestionText.length) {
             setCustomQuestionIsActive(!customQuestionIsActive);
-            let activeQuestions = combinedList.filter(item => item.active).map(item => item.answer);
+            let activeQuestions = combinedList.filter(item => item.active).map(item => item.answerItem);
             if (customQuestionIsActive) {
                 passActiveQuestions(activeQuestions);
             } else{
-                passActiveQuestions([...activeQuestions, customQuestionText]);
+                passActiveQuestions([...activeQuestions, { id: null, answer: customQuestionText }]);
             }
         }
-
     }
+
+    useEffect(() => {
+        if (!combinedListRef.current.length) {
+            combinedListRef.current = combinedList;
+        }
+    }, [combinedList])
+
+    useEffect(() => {
+        currentIndexRef.current = currentIndex;
+    }, [currentIndex])
+
+    useEffect(() => {
+        const scrollBox = document.getElementsByClassName('answer-container')[0];
+        scrollBox.addEventListener('touchstart', handleTouchStart, false)
+        scrollBox.addEventListener('touchmove', handleTouchMove, false)
+
+        function handleTouchStart(event){
+            const firstTouch = event.touches[0];
+            coordsY.current = firstTouch.clientY;
+        }
+
+        function handleTouchMove(event){
+            if (!coordsY.current) return false;
+
+            let y2 = event.touches[0].clientY;
+            let yDiff = y2 - coordsY.current;
+
+            if (yDiff > 0) {
+                if (currentIndexRef.current > 0) setCurrentIndex(currentIndexRef.current - 1);
+            } else {
+                if (currentIndexRef.current < combinedListRef.current.length-1) setCurrentIndex(currentIndexRef.current + 1);
+            }
+            coordsY.current = null;
+        }
+    }, [])
 
     return (
         <div className="multi-select">
@@ -94,7 +131,7 @@ const MultiSelect = (
                                 className={getClass(index) + ' answer'}
                                 onClick={() => handleAnswerClick(index)}
                             >
-                                <p>{item.answer}</p>
+                                <p>{item.answerItem.answer}</p>
                                 <img src={item.active ? checkboxOn : checkboxOff} alt="" />
                             </div>)
                     }
